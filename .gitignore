@@ -1,24 +1,55 @@
-# Compiled class file
+# ===== Backend (Java / Spring Boot / Maven / Gradle) =====
+backend/target/
+backend/build/
+backend/.mvn/
+backend/!.mvn/wrapper/maven-wrapper.jar
+backend/HELP.md
 *.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+*.log
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# Spring Boot
+backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-secrets.yml
+
+# IDE - IntelliJ
+.idea/
+*.iml
+*.iws
+out/
+
+# IDE - Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# ===== Frontend (Vue / Node / Vite) =====
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+frontend/*.local
+
+# Vite
+frontend/.vite/
+
+# ===== IDE - VS Code =====
+.vscode/*
+!.vscode/extensions.json
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== Env files (never commit secrets) =====
+.env
+.env.local
+*.env
+
+# ===== Misc =====
+*.swp
+*.bak
