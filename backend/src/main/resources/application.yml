@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: yntra-sparks-backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/yntra_sparks
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: 8080
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-this-in-env-never-commit-real-secret}
+    access-token-expiry-ms: 900000
+    refresh-token-expiry-ms: 604800000
+
+cors:
+  allowed-origins: http://localhost:5173
