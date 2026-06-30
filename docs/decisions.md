@@ -123,3 +123,29 @@ frontend for those modules).
 surprises than splitting strictly by frontend/backend. Auth is the highest
 security-risk module and should go to whichever intern is stronger in Spring
 Security.
+
+---
+
+## ADR-008: Enums stored as varchar via JPA, not native Postgres ENUM types
+
+**Date:** 2026-06-30
+**Status:** Proposed
+
+**Context:** Database is PostgreSQL (confirmed by mentor). Schema has several
+enum-like fields: `School.status`, `User.status`, `User.role`. Postgres
+supports native `ENUM` types, and Hibernate/JPA can map to either native
+enums or plain `varchar` columns validated at the application layer.
+
+**Decision:** Use `varchar` columns with `@Enumerated(EnumType.STRING)` in
+JPA entities, not native Postgres `ENUM` types.
+
+**Why:** Native Postgres enums require an `ALTER TYPE ... ADD VALUE`
+migration any time a new value is added (e.g. adding `PENDING_APPROVAL`
+later), and some `ALTER TYPE` operations have transaction restrictions in
+Postgres that complicate Flyway migrations. `varchar` + application-level
+enum validation is more flexible to evolve during MVP iteration, at the
+minor cost of losing database-level type enforcement (mitigated by a CHECK
+constraint if stricter enforcement is wanted later).
+
+**Revisit when:** Schema stabilizes post-MVP and stricter DB-level type
+safety becomes worth the migration friction.
