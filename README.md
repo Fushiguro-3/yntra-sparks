@@ -67,5 +67,5 @@ git push origin feature/your-feature-name
 
 | Name | Module Ownership |
 |------|-------------------|
-| [Intern A] | Auth + Security (backend JWT, Spring Security, frontend route guards/token storage) |
-| [Intern B] | Schools + Kits + Users CRUD (backend + frontend) |
+| [Vandana] | Auth + Security (backend JWT, Spring Security, frontend route guards/token storage) |
+| [Thaneesha] | Schools + Kits + Users CRUD (backend + frontend) |
