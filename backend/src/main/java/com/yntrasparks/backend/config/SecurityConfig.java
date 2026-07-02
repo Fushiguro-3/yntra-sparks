@@ -40,30 +40,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable) // stateless JWT — CSRF not needed
+            .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints — no token required
                 .requestMatchers("/api/auth/login", "/api/auth/refresh").permitAll()
-
-                // Super Admin only
                 .requestMatchers("/api/schools/**").hasRole("SUPER_ADMIN")
                 .requestMatchers("/api/categories/**").hasAnyRole("SUPER_ADMIN", "PRINCIPAL", "TEACHER")
-                .requestMatchers("/api/kits").hasRole("SUPER_ADMIN")
-
-                // School-scoped kit access
                 .requestMatchers("/api/kits/school/**").hasAnyRole("PRINCIPAL", "TEACHER")
-
-                // Kit detail — all authenticated users (service layer enforces school boundary)
-                .requestMatchers("/api/kits/{id}").authenticated()
-
-                // Teacher management — Principal and Super Admin
-                .requestMatchers("/api/schools/*/teachers/**")
-                    .hasAnyRole("PRINCIPAL", "SUPER_ADMIN")
-
-                // Everything else requires authentication
+                .requestMatchers("/api/kits/**").hasRole("SUPER_ADMIN")
+                .requestMatchers("/api/schools/*/teachers/**").hasAnyRole("PRINCIPAL", "SUPER_ADMIN")
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
@@ -78,7 +65,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of(allowedOrigins));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // required for httpOnly cookie (refresh token)
+        config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -88,8 +75,9 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
+        // Spring Security 7.x: DaoAuthenticationProvider now takes
+        // UserDetailsService in constructor — no-arg constructor removed
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
