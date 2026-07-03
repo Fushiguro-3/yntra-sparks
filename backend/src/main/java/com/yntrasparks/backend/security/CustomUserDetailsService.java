@@ -2,7 +2,6 @@ package com.yntrasparks.backend.security;
 
 import com.yntrasparks.backend.entity.User;
 import com.yntrasparks.backend.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,16 +10,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Loads a User from the database by email.
- * Spring Security calls this during the login authentication process.
- * After login, the JWT filter handles auth without calling this again.
- */
 @Service
-@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email)

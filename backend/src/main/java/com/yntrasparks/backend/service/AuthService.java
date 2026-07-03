@@ -9,7 +9,6 @@ import com.yntrasparks.backend.security.jwt.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,15 +19,22 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final long refreshTokenExpiryMs;
 
-    @Value("${app.jwt.refresh-token-expiry-ms}")
-    private long refreshTokenExpiryMs;
+    public AuthService(AuthenticationManager authenticationManager,
+                       UserRepository userRepository,
+                       JwtUtil jwtUtil,
+                       @Value("${app.jwt.refresh-token-expiry-ms}") long refreshTokenExpiryMs) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
+        this.refreshTokenExpiryMs = refreshTokenExpiryMs;
+    }
 
     public LoginResponse login(LoginRequest request, HttpServletResponse response) {
         try {
@@ -36,7 +42,6 @@ public class AuthService {
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(), request.getPassword()));
         } catch (BadCredentialsException e) {
-            // Intentionally vague — never reveal whether email or password was wrong
             throw new UnauthorizedException("Invalid email or password");
         }
 
@@ -47,7 +52,6 @@ public class AuthService {
             throw new UnauthorizedException("Account is deactivated. Contact your administrator.");
         }
 
-        // Update last login timestamp
         user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
 
@@ -59,7 +63,6 @@ public class AuthService {
 
         String refreshToken = jwtUtil.generateRefreshToken(user.getId());
 
-        // Set refresh token as httpOnly cookie — never returned in response body (ADR-005)
         setRefreshTokenCookie(response, refreshToken);
 
         return LoginResponse.from(accessToken, user);
@@ -89,7 +92,6 @@ public class AuthService {
     }
 
     public void logout(HttpServletResponse response) {
-        // Clear the refresh token cookie by setting maxAge to 0
         Cookie cookie = new Cookie("refreshToken", "");
         cookie.setHttpOnly(true);
         cookie.setPath("/");
@@ -99,10 +101,9 @@ public class AuthService {
 
     private void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
         Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setHttpOnly(true);   // not accessible via JavaScript — XSS protection
+        cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setMaxAge((int) (refreshTokenExpiryMs / 1000)); // convert ms to seconds
-        // cookie.setSecure(true); // uncomment when running on HTTPS in production
+        cookie.setMaxAge((int) (refreshTokenExpiryMs / 1000));
         response.addCookie(cookie);
     }
 
