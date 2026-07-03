@@ -105,4 +105,17 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error("An unexpected error occurred. Please try again later."));
     }
+
+    /**
+ * Handles business rule violations like duplicate category names.
+ * Returns 409 Conflict.
+ */
+@ExceptionHandler(IllegalArgumentException.class)
+public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(
+        IllegalArgumentException ex) {
+
+    return ResponseEntity
+            .status(HttpStatus.CONFLICT)
+            .body(ApiResponse.error(ex.getMessage()));
+}
 }
