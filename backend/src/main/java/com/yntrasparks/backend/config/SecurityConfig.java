@@ -2,7 +2,6 @@ package com.yntrasparks.backend.config;
 
 import com.yntrasparks.backend.security.CustomUserDetailsService;
 import com.yntrasparks.backend.security.filter.JwtAuthFilter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,14 +27,19 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final CustomUserDetailsService userDetailsService;
+    private final String allowedOrigins;
 
-    @Value("${cors.allowed-origins}")
-    private String allowedOrigins;
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter,
+                          CustomUserDetailsService userDetailsService,
+                          @Value("${cors.allowed-origins}") String allowedOrigins) {
+        this.jwtAuthFilter = jwtAuthFilter;
+        this.userDetailsService = userDetailsService;
+        this.allowedOrigins = allowedOrigins;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -45,7 +49,7 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/refresh").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/refresh", "/error").permitAll()
                 .requestMatchers("/api/schools/**").hasRole("SUPER_ADMIN")
                 .requestMatchers("/api/categories/**").hasAnyRole("SUPER_ADMIN", "PRINCIPAL", "TEACHER")
                 .requestMatchers("/api/kits/school/**").hasAnyRole("PRINCIPAL", "TEACHER")
@@ -75,8 +79,6 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        // Spring Security 7.x: DaoAuthenticationProvider now takes
-        // UserDetailsService in constructor — no-arg constructor removed
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
