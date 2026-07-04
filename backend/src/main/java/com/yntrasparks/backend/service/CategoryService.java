@@ -5,6 +5,7 @@ import com.yntrasparks.backend.dto.response.CategoryResponse;
 import com.yntrasparks.backend.entity.Category;
 import com.yntrasparks.backend.exception.ResourceNotFoundException;
 import com.yntrasparks.backend.repository.CategoryRepository;
+import com.yntrasparks.backend.repository.KitRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +15,12 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final KitRepository kitRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository,
+                           KitRepository kitRepository) {
         this.categoryRepository = categoryRepository;
+        this.kitRepository = kitRepository;
     }
 
     public List<CategoryResponse> getAllCategories() {
@@ -32,10 +36,8 @@ public class CategoryService {
             throw new IllegalArgumentException(
                     "Category already exists: " + request.getName());
         }
-
         Category category = new Category();
         category.setName(request.getName().trim());
-
         return CategoryResponse.from(categoryRepository.save(category));
     }
 
@@ -43,7 +45,6 @@ public class CategoryService {
     public CategoryResponse updateCategory(Long id, CategoryRequest request) {
         Category category = findCategoryById(id);
 
-        // Check name conflict — exclude current category from the check
         if (categoryRepository.existsByIdNotAndNameIgnoreCase(id, request.getName())) {
             throw new IllegalArgumentException(
                     "Category name already in use: " + request.getName());
@@ -55,10 +56,16 @@ public class CategoryService {
 
     @Transactional
     public void deleteCategory(Long id) {
-        Category category = findCategoryById(id);
-        // Per api-contract.md open question #2: block delete if any Kit
-        // references this category. KitRepository check added once Kit entity exists.
-        categoryRepository.delete(category);
+        findCategoryById(id);
+
+        // Block delete if any Kit references this category (api-contract.md Q2)
+        if (kitRepository.existsByCategoryId(id)) {
+            throw new IllegalArgumentException(
+                    "Cannot delete category: kits are still assigned to it. " +
+                    "Reassign or archive those kits first.");
+        }
+
+        categoryRepository.deleteById(id);
     }
 
     private Category findCategoryById(Long id) {
