@@ -49,7 +49,12 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/refresh", "/error").permitAll()
+                .requestMatchers(
+                    "/api/auth/login",
+                    "/api/auth/refresh",
+                    "/api/health",
+                    "/error"
+                ).permitAll()
                 .requestMatchers("/api/schools/**").hasRole("SUPER_ADMIN")
                 .requestMatchers("/api/categories/**").hasAnyRole("SUPER_ADMIN", "PRINCIPAL", "TEACHER")
                 .requestMatchers("/api/kits/school/**").hasAnyRole("PRINCIPAL", "TEACHER")
