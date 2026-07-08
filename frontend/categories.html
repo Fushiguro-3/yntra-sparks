@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Categories — Yntra Sparks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system.css">
+<link rel="stylesheet" href="dashboard.css">
+<link rel="stylesheet" href="components.css">
+<style>
+  .cat-list{ display:flex; flex-direction:column; gap:10px; max-width:640px; }
+  .cat-row{ display:flex; align-items:center; gap:12px; background:#fff; border:1px solid var(--ink-100); border-radius:var(--r-md); padding:12px 16px; }
+  .cat-row input{ flex:1; border:none; outline:none; font-family:var(--font-body); font-size:14.5px; background:transparent; }
+  .cat-row input:focus{ text-decoration:underline; }
+  .cat-row .row-actions{ flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<div class="dash-shell">
+  <aside class="sidebar">
+    <a href="yntra-sparks.html" class="logo">
+      <span class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg></span>
+      Yntra Sparks
+    </a>
+    <nav class="side-nav">
+      <a href="superadmin-portal.html" class="side-link">
+        <svg width="18" height="18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="10" y="2" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="2" y="10" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="10" y="10" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        Dashboard
+      </a>
+      <a href="kits.html" class="side-link">
+        <svg width="18" height="18" fill="none"><rect x="2" y="6" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        STEM Kits
+      </a>
+      <a href="categories.html" class="side-link active">
+        <svg width="18" height="18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="10" y="10" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        Categories
+      </a>
+      <a href="schools.html" class="side-link">
+        <svg width="18" height="18" fill="none"><path d="M3 16V8l6-4 6 4v8" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        Schools
+      </a>
+    </nav>
+    <div class="side-logout">
+      <a href="#" id="logout-link" class="side-link">
+        <svg width="18" height="18" fill="none"><path d="M7 15H4a1 1 0 01-1-1V4a1 1 0 011-1h3M12 12l4-4-4-4M16 8H7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Logout
+      </a>
+    </div>
+  </aside>
+
+  <main class="dash-main">
+    <div class="dash-topbar">
+      <div><h1>Categories</h1><div class="sub" id="cat-count">Group STEM kits so teachers can filter by subject</div></div>
+      <button class="btn btn-primary btn-sm" onclick="addCategory()">+ Add Category</button>
+    </div>
+
+    <div class="table-toolbar" style="max-width:640px;">
+      <div class="search-box">
+        <svg width="16" height="16" fill="none"><circle cx="7" cy="7" r="5" stroke="#94A3B8" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="#94A3B8" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <input type="text" id="cat-search" placeholder="Search categories...">
+      </div>
+    </div>
+
+    <div class="cat-list" id="cat-list"></div>
+  </main>
+</div>
+
+<script src="js/utils.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/mock-data.js"></script>
+<script src="js/components.js"></script>
+<script src="js/animations.js"></script>
+<script>
+  var categories = [];
+  var search = '';
+
+  function renderCategories(){
+    var list = document.getElementById('cat-list');
+    var q = search.trim().toLowerCase();
+    var filtered = !q ? categories : categories.filter(function(c){
+      return c.name.toLowerCase().indexOf(q) > -1;
+    });
+
+    document.getElementById('cat-count').textContent = q
+      ? 'Showing ' + filtered.length + ' of ' + categories.length + ' categories'
+      : 'Group STEM kits so teachers can filter by subject';
+
+    if(!filtered.length){
+      YSComponents.emptyState(list, q ? 'No categories found' : 'No categories yet',
+        q ? 'Try a different search term.' : 'Add your first category to start grouping kits.');
+      return;
+    }
+    // Look up by category id (not array index) so search filtering never scrambles
+    // which row an edit/delete action applies to.
+    list.innerHTML = filtered.map(function(c){
+      return '<div class="cat-row">' +
+        '<svg width="16" height="16" fill="none" style="flex-shrink:0"><rect x="1" y="1" width="14" height="14" rx="4" stroke="#2563EB" stroke-width="1.6"/></svg>' +
+        '<input type="text" value="' + YSUtils.escapeHtml(c.name) + '" data-id="' + c.id + '" onchange="renameCategory(this.dataset.id, this.value)">' +
+        '<div class="row-actions">' +
+          '<button title="Delete" onclick="removeCategory(\'' + c.id + '\')"><svg width="14" height="14" fill="none"><path d="M2 3.5h10M5 3.5V2a1 1 0 011-1h2a1 1 0 011 1v1.5M4 3.5l.6 8.5a1 1 0 001 .9h4.8a1 1 0 001-.9l.6-8.5" stroke="#334155" stroke-width="1.4" stroke-linecap="round"/></svg></button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  YSApi.Categories.list().then(function(res){
+    categories = res.data || [];
+    renderCategories();
+  });
+
+  document.getElementById('cat-search').addEventListener('input', YSUtils.debounce(function(e){
+    search = e.target.value;
+    renderCategories();
+  }, 250));
+
+  function addCategory(){
+    var name = prompt('New category name:');
+    if(name === null) return;
+    name = name.trim();
+    if(!name){
+      YSComponents.toast('Category name cannot be empty.', 'error');
+      return;
+    }
+    YSApi.Categories.create({ name: name }).then(function(res){
+      if(res.ok){
+        categories.push(res.data);
+        renderCategories();
+        YSComponents.toast('Category added.', 'success');
+      } else {
+        YSComponents.toast((res.data && res.data.message) || 'Could not add category.', 'error');
+      }
+    });
+  }
+
+  function renameCategory(id, newName){
+    var c = categories.find(function(cat){ return cat.id === id; });
+    if(!c) return;
+    var trimmed = (newName || '').trim();
+    if(!trimmed || trimmed === c.name){
+      renderCategories(); // reset the input if left blank/unchanged
+      return;
+    }
+    YSApi.Categories.update(id, { name: trimmed }).then(function(res){
+      if(res.ok){
+        c.name = trimmed;
+        renderCategories();
+        YSComponents.toast('Category renamed.', 'success');
+      } else {
+        renderCategories(); // revert the input to the last known-good name
+        YSComponents.toast((res.data && res.data.message) || 'Could not rename category.', 'error');
+      }
+    });
+  }
+
+  function removeCategory(id){
+    var c = categories.find(function(cat){ return cat.id === id; });
+    if(!c) return;
+    YSComponents.confirm({
+      title: 'Delete Category',
+      message: 'Delete "' + c.name + '"? Kits in this category will need to be reassigned.',
+      confirmLabel: 'Delete'
+    }).then(function(confirmed){
+      if(!confirmed) return;
+      YSApi.Categories.remove(id).then(function(res){
+        if(res.ok){
+          categories = categories.filter(function(cat){ return cat.id !== id; });
+          renderCategories();
+          YSComponents.toast('Category deleted.', 'success');
+        } else {
+          YSComponents.toast('Could not delete category.', 'error');
+        }
+      });
+    });
+  }
+
+  document.getElementById('logout-link').addEventListener('click', function(e){
+    e.preventDefault();
+    YSAuth.logout('superadmin-login.html');
+  });
+</script>
+</body>
+</html>

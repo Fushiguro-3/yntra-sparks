@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — Yntra Sparks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system.css">
+<link rel="stylesheet" href="dashboard.css">
+<link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+</head>
+<body>
+
+<div class="dash-shell">
+  <aside class="sidebar">
+    <a href="yntra-sparks.html" class="logo">
+      <span class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg></span>
+      Yntra Sparks
+    </a>
+    <nav class="side-nav">
+      <a href="#" class="side-link">
+        <svg width="18" height="18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="10" y="2" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="2" y="10" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="10" y="10" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        Dashboard
+      </a>
+      <a href="#teachers" class="side-link active">
+        <svg width="18" height="18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 16c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Teachers
+      </a>
+      <a href="#" class="side-link">
+        <svg width="18" height="18" fill="none"><path d="M4 3h10a1 1 0 011 1v11l-3-2-3 2-3-2-3 2V4a1 1 0 011-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        Reports
+      </a>
+      <a href="admin-kits.html" class="side-link">
+        <svg width="18" height="18" fill="none"><rect x="2" y="6" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M6 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="currentColor" stroke-width="1.6"/></svg>
+        Purchased Kits
+      </a>
+      <a href="#" class="side-link">
+        <svg width="18" height="18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 16c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Profile
+      </a>
+      <a href="#" class="side-link">
+        <svg width="18" height="18" fill="none"><circle cx="9" cy="9" r="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2M4 4l1.4 1.4M12.6 12.6L14 14M14 4l-1.4 1.4M5.4 12.6L4 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="side-logout">
+      <a href="#" id="logout-link" class="side-link">
+        <svg width="18" height="18" fill="none"><path d="M7 15H4a1 1 0 01-1-1V4a1 1 0 011-1h3M12 12l4-4-4-4M16 8H7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Logout
+      </a>
+    </div>
+  </aside>
+
+  <main class="dash-main">
+    <div class="dash-topbar">
+      <div>
+        <h1>School Admin Dashboard</h1>
+        <div class="sub">Greenfield Public School</div>
+      </div>
+      <div class="topbar-actions">
+        <div class="icon-btn"><svg width="18" height="18" fill="none"><path d="M9 2a5 5 0 015 5v3l1.5 3h-13L4 10V7a5 5 0 015-5z" stroke="currentColor" stroke-width="1.6"/></svg><span class="dot"></span></div>
+        <div class="profile-chip">
+          <div class="profile-avatar">AK</div>
+          <div><div class="name">Anil Kumar</div><div class="role">Admin</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-grid" data-aos="fade-up">
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon" style="background:var(--blue-light)"><svg width="20" height="20" fill="none"><circle cx="10" cy="7" r="3" stroke="#2563EB" stroke-width="1.6"/></svg></div></div>
+        <div class="stat-value">32</div><div class="stat-label">Teachers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon" style="background:var(--cyan-light)"><svg width="20" height="20" fill="none"><path d="M3 16V8l7-4 7 4v8" stroke="#06B6D4" stroke-width="1.6" stroke-linejoin="round"/></svg></div></div>
+        <div class="stat-value">1</div><div class="stat-label">School</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon" style="background:var(--orange-light)"><svg width="20" height="20" fill="none"><path d="M4 15V9M10 15V4M16 15v-7" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"/></svg></div><span class="stat-trend up">+12%</span></div>
+        <div class="stat-value">214</div><div class="stat-label">Activities This Term</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><div class="stat-icon" style="background:var(--green-light)"><svg width="20" height="20" fill="none"><path d="M4 3h10a1 1 0 011 1v11l-3-2-3 2-3-2-3 2V4a1 1 0 011-1z" stroke="#22C55E" stroke-width="1.6" stroke-linejoin="round"/></svg></div></div>
+        <div class="stat-value">18</div><div class="stat-label">Reports Filed</div>
+      </div>
+    </div>
+
+    <!-- MANAGE TEACHERS -->
+    <div class="panel" id="teachers" style="padding:var(--s-6);">
+      <div class="table-toolbar">
+        <h3>Manage Teachers</h3>
+        <div style="display:flex; gap:10px;">
+          <a href="add-teacher.html" class="btn btn-secondary btn-sm">Full Add-Teacher Form</a>
+          <button class="btn btn-primary btn-sm" onclick="openTeacherForm()">+ Add Teacher</button>
+        </div>
+      </div>
+      <div class="table-toolbar">
+        <div class="search-box">
+          <svg width="16" height="16" fill="none"><circle cx="7" cy="7" r="5" stroke="#94A3B8" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="#94A3B8" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <input type="text" id="teacher-search" placeholder="Search teachers by name or grade...">
+        </div>
+        <div style="display:flex; gap:10px;">
+          <span class="filter-chip">Grade: All ▾</span>
+          <span class="filter-chip">Status: All ▾</span>
+        </div>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Teacher</th><th>Grade</th><th>Activities</th><th>Status</th><th>Joined</th><th></th></tr>
+        </thead>
+        <tbody id="teacher-rows"></tbody>
+      </table>
+
+      <div class="table-pagination">
+        <span id="teacher-count">Showing 1–6 of 6 teachers</span>
+        <div id="teacher-pagination"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ============================================================
+     ADD / EDIT TEACHER MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="teacher-modal">
+  <div class="modal">
+    <h3 id="teacher-modal-title">Add Teacher</h3>
+    <p>Enter the teacher's details below.</p>
+    <div class="form-field"><label>Full Name</label><input type="text" placeholder="e.g. Sarita Rao"></div>
+    <div class="form-field"><label>Email</label><input type="email" placeholder="teacher@school.edu"></div>
+    <div class="form-field"><label>Assigned Grade</label>
+      <select><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option selected>Grade 4</option><option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-sm" onclick="closeTeacherForm()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="closeTeacherForm()">Save Teacher</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TEACHER DETAILS POPUP
+     ============================================================ -->
+<div class="modal-overlay" id="teacher-details-modal">
+  <div class="modal">
+    <div style="display:flex; align-items:center; gap:14px; margin-bottom:var(--s-5);">
+      <div class="profile-avatar" style="width:52px;height:52px;font-size:17px;" id="td-avatar">SR</div>
+      <div><h3 style="margin:0" id="td-name">Sarita Rao</h3><div class="meta" id="td-grade">Grade 4 Teacher</div></div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--s-4); margin-bottom:var(--s-6);">
+      <div><div class="meta">Email</div><div class="title" style="font-size:13.5px;" id="td-email">sarita.rao@school.edu</div></div>
+      <div><div class="meta">Joined</div><div class="title" style="font-size:13.5px;" id="td-joined">Jan 2024</div></div>
+      <div><div class="meta">Activities Completed</div><div class="title" style="font-size:13.5px;" id="td-activities">24</div></div>
+      <div><div class="meta">Status</div><div><span class="badge green">Active</span></div></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-sm" onclick="closeTeacherDetails()">Close</button>
+      <button class="btn btn-primary btn-sm">Message Teacher</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     RESET PASSWORD MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="reset-password-modal">
+  <div class="modal">
+    <h3>Reset Password</h3>
+    <p id="reset-password-subtitle">Set a new password for this teacher.</p>
+    <div class="form-field"><label>New Password</label><input type="password" id="reset-new-password" placeholder="Minimum 8 characters"></div>
+    <div class="form-field"><label>Confirm Password</label><input type="password" id="reset-confirm-password" placeholder="Re-enter password"></div>
+    <p id="reset-password-error" style="color:#DC2626; font-size:13px; display:none; margin-top:-8px; margin-bottom:12px;">Passwords do not match.</p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-sm" onclick="closeResetPassword()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="submitResetPassword()">Save New Password</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/utils.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/mock-data.js"></script>
+<script src="js/components.js"></script>
+<script>
+  const allTeachers = [
+    {id:"t1", name:"Sarita Rao", grade:"Grade 4", activities:24, status:"Active", joined:"Jan 2024", email:"sarita.rao@school.edu"},
+    {id:"t2", name:"Vikram Shah", grade:"Grade 2", activities:18, status:"Active", joined:"Aug 2023", email:"vikram.shah@school.edu"},
+    {id:"t3", name:"Meera Iyer", grade:"Grade 6", activities:31, status:"Active", joined:"Mar 2022", email:"meera.iyer@school.edu"},
+    {id:"t4", name:"Rohan Das", grade:"Grade 1", activities:9, status:"On Leave", joined:"Jun 2024", email:"rohan.das@school.edu"},
+    {id:"t5", name:"Priya Nair", grade:"Grade 7", activities:27, status:"Active", joined:"Feb 2023", email:"priya.nair@school.edu"},
+    {id:"t6", name:"Arjun Mehta", grade:"Grade 3", activities:15, status:"Active", joined:"Oct 2024", email:"arjun.mehta@school.edu"},
+  ];
+
+  const teacherState = { search: '', page: 1, perPage: 6 };
+
+  function initials(name){ return name.split(' ').map(n=>n[0]).join(''); }
+
+  const rows = document.getElementById('teacher-rows');
+
+  function teacherRowHtml(t, i){
+    const badge = t.status === "Active" ? "green" : "orange";
+    return `
+      <tr>
+        <td><span class="row-avatar">${initials(t.name)}</span>${YSUtils.escapeHtml(t.name)}</td>
+        <td>${t.grade}</td>
+        <td>${t.activities}</td>
+        <td><span class="badge ${badge}">${t.status}</span></td>
+        <td>${t.joined}</td>
+        <td>
+          <div class="row-actions">
+            <button title="View" onclick="viewTeacher('${t.id}')"><svg width="14" height="14" fill="none"><path d="M1 7s2.5-4.5 6-4.5S13 7 13 7s-2.5 4.5-6 4.5S1 7 1 7z" stroke="#334155" stroke-width="1.4"/><circle cx="7" cy="7" r="1.6" stroke="#334155" stroke-width="1.4"/></svg></button>
+            <button title="Edit" onclick="openTeacherForm('${t.id}')"><svg width="14" height="14" fill="none"><path d="M9.5 1.5l3 3L4 13H1v-3l8.5-8.5z" stroke="#334155" stroke-width="1.4" stroke-linejoin="round"/></svg></button>
+            <button title="Reset Password" onclick="openResetPassword('${t.id}')"><svg width="14" height="14" fill="none"><rect x="3" y="6.5" width="8" height="6" rx="1.2" stroke="#334155" stroke-width="1.4"/><path d="M5 6.5V4.5a2 2 0 014 0v2" stroke="#334155" stroke-width="1.4"/></svg></button>
+            <button title="Deactivate" onclick="deleteTeacher('${t.id}')"><svg width="14" height="14" fill="none"><path d="M2 3.5h10M5 3.5V2a1 1 0 011-1h2a1 1 0 011 1v1.5M4 3.5l.6 8.5a1 1 0 001 .9h4.8a1 1 0 001-.9l.6-8.5" stroke="#334155" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+          </div>
+        </td>
+      </tr>`;
+  }
+
+  function renderTeachers(){
+    const q = teacherState.search.trim().toLowerCase();
+    const filtered = !q ? allTeachers : allTeachers.filter(t =>
+      t.name.toLowerCase().indexOf(q) > -1 || t.grade.toLowerCase().indexOf(q) > -1
+    );
+    const pageInfo = YSUtils.paginate(filtered, teacherState.page, teacherState.perPage);
+
+    if(!pageInfo.pageItems.length){
+      rows.innerHTML = '<tr><td colspan="6"><div class="ys-empty"><h4>No teachers found</h4><p>Try a different search term.</p></div></td></tr>';
+    } else {
+      // Build the full row markup once and assign in a single write instead of
+      // repeatedly appending to innerHTML (which forces the browser to
+      // re-parse the growing string on every iteration).
+      rows.innerHTML = pageInfo.pageItems.map(teacherRowHtml).join('');
+    }
+
+    YSComponents.pagination(document.getElementById('teacher-pagination'), pageInfo.page, pageInfo.totalPages, function(p){
+      teacherState.page = p;
+      renderTeachers();
+    });
+    document.getElementById('teacher-count').textContent =
+      'Showing ' + pageInfo.pageItems.length + ' of ' + pageInfo.total + ' teachers';
+  }
+
+  renderTeachers();
+
+  document.getElementById('teacher-search').addEventListener('input', YSUtils.debounce(function(e){
+    teacherState.search = e.target.value;
+    teacherState.page = 1;
+    renderTeachers();
+  }, 250));
+
+  function findTeacher(id){ return allTeachers.find(t => t.id === id); }
+
+  function openTeacherForm(){ document.getElementById('teacher-modal').classList.add('open'); }
+  function closeTeacherForm(){ document.getElementById('teacher-modal').classList.remove('open'); }
+
+  function viewTeacher(id){
+    const t = findTeacher(id);
+    if(!t) return;
+    document.getElementById('td-avatar').textContent = initials(t.name);
+    document.getElementById('td-name').textContent = t.name;
+    document.getElementById('td-grade').textContent = t.grade + ' Teacher';
+    document.getElementById('td-email').textContent = t.email;
+    document.getElementById('td-joined').textContent = t.joined;
+    document.getElementById('td-activities').textContent = t.activities;
+    document.getElementById('teacher-details-modal').classList.add('open');
+  }
+  function closeTeacherDetails(){ document.getElementById('teacher-details-modal').classList.remove('open'); }
+
+  function deleteTeacher(id){
+    const t = findTeacher(id);
+    if(!t) return;
+    YSComponents.confirm({
+      title: 'Deactivate Teacher',
+      message: `Deactivate ${t.name}? They will lose access until reactivated.`,
+      confirmLabel: 'Deactivate'
+    }).then((confirmed)=>{
+      if(!confirmed) return;
+      YSApi.Teachers.setStatus(t.id, 'inactive').then((res)=>{
+        if(res.ok){
+          t.status = 'On Leave';
+          renderTeachers();
+          YSComponents.toast(`${t.name} has been deactivated.`, 'success');
+        } else {
+          YSComponents.toast('Could not deactivate teacher. Try again.', 'error');
+        }
+      });
+    });
+  }
+
+  let resetTeacherId = null;
+  function openResetPassword(id){
+    const t = findTeacher(id);
+    if(!t) return;
+    resetTeacherId = id;
+    document.getElementById('reset-password-subtitle').textContent = `Set a new password for ${t.name}.`;
+    document.getElementById('reset-new-password').value = '';
+    document.getElementById('reset-confirm-password').value = '';
+    document.getElementById('reset-password-error').style.display = 'none';
+    document.getElementById('reset-password-modal').classList.add('open');
+  }
+  function closeResetPassword(){ document.getElementById('reset-password-modal').classList.remove('open'); }
+  function submitResetPassword(){
+    const pw = document.getElementById('reset-new-password').value;
+    const confirmPw = document.getElementById('reset-confirm-password').value;
+    const errorEl = document.getElementById('reset-password-error');
+    if(pw.length < 8){
+      errorEl.textContent = 'Password must be at least 8 characters.';
+      errorEl.style.display = 'block';
+      return;
+    }
+    if(pw !== confirmPw){
+      errorEl.textContent = 'Passwords do not match.';
+      errorEl.style.display = 'block';
+      return;
+    }
+    const t = findTeacher(resetTeacherId);
+    YSApi.Teachers.resetPassword(t.id, pw).then((res)=>{
+      closeResetPassword();
+      if(res.ok) YSComponents.toast(`Password reset for ${t.name}.`, 'success');
+      else YSComponents.toast('Could not reset password. Try again.', 'error');
+    });
+  }
+
+  document.getElementById('logout-link').addEventListener('click', (e)=>{
+    e.preventDefault();
+    YSAuth.logout('admin-login.html');
+  });
+</script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="js/animations.js"></script>
+
+<script>
+AOS.init({
+    duration:800,
+    once:true
+});
+</script>
+</body>
+</html>
