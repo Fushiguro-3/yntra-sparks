@@ -1,20 +1,10 @@
 package com.yntrasparks.backend.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
 
 import java.util.List;
 
-/**
- * Standard response envelope for every endpoint.
- * Matches the shape defined in docs/api-contract.md.
- *
- * Usage:
- *   return ResponseEntity.ok(ApiResponse.success(data));
- *   return ResponseEntity.badRequest().body(ApiResponse.error("Validation failed", errors));
- */
-@Getter
-@JsonInclude(JsonInclude.Include.NON_NULL) // omit null fields from JSON output
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
 
     private final boolean success;
@@ -45,7 +35,11 @@ public class ApiResponse<T> {
         return new ApiResponse<>(false, null, message, errors);
     }
 
-    @Getter
+    public boolean isSuccess() { return success; }
+    public T getData() { return data; }
+    public String getMessage() { return message; }
+    public List<FieldError> getErrors() { return errors; }
+
     public static class FieldError {
         private final String field;
         private final String message;
@@ -54,5 +48,8 @@ public class ApiResponse<T> {
             this.field   = field;
             this.message = message;
         }
+
+        public String getField() { return field; }
+        public String getMessage() { return message; }
     }
 }
