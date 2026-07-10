@@ -18,11 +18,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -34,8 +36,8 @@ public class SecurityConfig {
     private final String allowedOrigins;
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter,
-                          CustomUserDetailsService userDetailsService,
-                          @Value("${cors.allowed-origins}") String allowedOrigins) {
+            CustomUserDetailsService userDetailsService,
+            @Value("${cors.allowed-origins}") String allowedOrigins) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.userDetailsService = userDetailsService;
         this.allowedOrigins = allowedOrigins;
@@ -44,26 +46,39 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/api/auth/login",
-                    "/api/auth/refresh",
-                    "/api/health",
-                    "/error"
-                ).permitAll()
-                .requestMatchers("/api/schools/**").hasRole("SUPER_ADMIN")
-                .requestMatchers("/api/categories/**").hasAnyRole("SUPER_ADMIN", "PRINCIPAL", "TEACHER")
-                .requestMatchers("/api/kits/school/**").hasAnyRole("PRINCIPAL", "TEACHER")
-                .requestMatchers("/api/kits/**").hasRole("SUPER_ADMIN")
-                .requestMatchers("/api/schools/*/teachers/**").hasAnyRole("PRINCIPAL", "SUPER_ADMIN")
-                .anyRequest().authenticated()
-            )
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/refresh",
+                                "/api/auth/logout",
+                                "/api/health",
+                                "/api/public/**",
+                                "/uploads/manuals/**",
+                                "/error")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/contact").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/contact").hasRole("SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/contact/{id}").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/schools/*/teachers/**").hasAnyRole("PRINCIPAL", "SUPER_ADMIN")
+                        .requestMatchers("/api/schools", "/api/schools/**").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/categories", "/api/categories/**").hasAnyRole("SUPER_ADMIN", "PRINCIPAL", "TEACHER")
+                        .requestMatchers("/api/kits/school", "/api/kits/school/**").hasAnyRole("PRINCIPAL", "TEACHER")
+                        .requestMatchers(HttpMethod.GET, "/api/kits/{id}/schools").hasRole("SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/kits/{id}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/kits").hasRole("SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/kits/manuals").hasRole("SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/kits").hasRole("SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/kits/{id}").hasRole("SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/kits/{id}").hasRole("SUPER_ADMIN")
+                        .anyRequest().authenticated()
+
+                )
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -71,7 +86,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(allowedOrigins));
+        config.setAllowedOrigins(Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isEmpty())
+                .toList());
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

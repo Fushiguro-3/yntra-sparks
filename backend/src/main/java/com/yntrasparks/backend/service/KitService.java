@@ -3,6 +3,7 @@ package com.yntrasparks.backend.service;
 import com.yntrasparks.backend.dto.request.KitRequest;
 import com.yntrasparks.backend.dto.request.VideoRequest;
 import com.yntrasparks.backend.dto.response.KitResponse;
+import com.yntrasparks.backend.dto.response.SchoolResponse;
 import com.yntrasparks.backend.entity.*;
 import com.yntrasparks.backend.exception.ResourceNotFoundException;
 import com.yntrasparks.backend.exception.UnauthorizedException;
@@ -37,12 +38,34 @@ public class KitService {
     }
 
     // Super Admin — see all active kits
+    @Transactional(readOnly = true)
     public Page<KitResponse> getAllKits(Pageable pageable) {
         return kitRepository.findByStatus(Kit.KitStatus.ACTIVE, pageable)
                 .map(KitResponse::from);
     }
 
+    @Transactional(readOnly = true)
+    public Page<KitResponse> getPublicKits(String grade, Pageable pageable) {
+        if (grade != null && !grade.isBlank()) {
+            return kitRepository.findByStatusAndGradeIgnoreCase(
+                            Kit.KitStatus.ACTIVE,
+                            grade.trim(),
+                            pageable)
+                    .map(KitResponse::from);
+        }
+        return kitRepository.findByStatus(Kit.KitStatus.ACTIVE, pageable)
+                .map(KitResponse::from);
+    }
+
+    @Transactional(readOnly = true)
+    public KitResponse getPublicKitById(Long kitId) {
+        Kit kit = kitRepository.findByIdAndStatus(kitId, Kit.KitStatus.ACTIVE)
+                .orElseThrow(() -> new ResourceNotFoundException("Kit", kitId));
+        return KitResponse.from(kit);
+    }
+
     // Principal / Teacher — see only their school's purchased kits
+    @Transactional(readOnly = true)
     public Page<KitResponse> getSchoolKits(Pageable pageable) {
         Long schoolId = getCurrentUserSchoolId();
         return kitRepository.findBySchoolId(schoolId, pageable)
@@ -50,6 +73,7 @@ public class KitService {
     }
 
     // Single kit detail — enforces school boundary for Principal/Teacher
+    @Transactional(readOnly = true)
     public KitResponse getKitById(Long kitId) {
         Kit kit = findKitById(kitId);
         String role = getCurrentUserRole();
@@ -65,6 +89,15 @@ public class KitService {
         return KitResponse.from(kit);
     }
 
+    @Transactional(readOnly = true)
+    public List<SchoolResponse> getSchoolsForKit(Long kitId) {
+        findKitById(kitId);
+        return schoolKitRepository.findByKitIdWithSchool(kitId).stream()
+                .map(SchoolKit::getSchool)
+                .map(SchoolResponse::from)
+                .toList();
+    }
+
     @Transactional
     public KitResponse createKit(KitRequest request) {
         Category category = categoryRepository.findById(request.getCategoryId())
@@ -75,6 +108,9 @@ public class KitService {
         kit.setTitle(request.getTitle());
         kit.setDescription(request.getDescription());
         kit.setThumbnailUrl(request.getThumbnailUrl());
+        kit.setManualPdfUrl(request.getManualPdfUrl());
+        kit.setGrade(request.getGrade());
+        kit.setPrice(request.getPrice());
         kit.setCategory(category);
 
         if (request.getVideos() != null) {
@@ -96,6 +132,9 @@ public class KitService {
         kit.setTitle(request.getTitle());
         kit.setDescription(request.getDescription());
         kit.setThumbnailUrl(request.getThumbnailUrl());
+        kit.setManualPdfUrl(request.getManualPdfUrl());
+        kit.setGrade(request.getGrade());
+        kit.setPrice(request.getPrice());
         kit.setCategory(category);
 
         // Replace videos entirely — clear existing, add new ones
@@ -153,11 +192,52 @@ public class KitService {
             Video video = new Video();
             video.setKit(kit);
             video.setTitle(vr.getTitle());
-            video.setYoutubeVideoId(vr.getYoutubeVideoId());
+            video.setYoutubeVideoId(extractYoutubeVideoId(vr.getYoutubeVideoId()));
             video.setSequence(vr.getSequence());
             videos.add(video);
         }
         return videos;
+    }
+
+    private String extractYoutubeVideoId(String value) {
+        if (value == null) return "";
+        String trimmed = value.trim();
+
+        String[] markers = {
+                "watch?v=",
+                "youtu.be/",
+                "youtube.com/embed/",
+                "youtube.com/shorts/"
+        };
+
+        for (String marker : markers) {
+            int markerIndex = trimmed.indexOf(marker);
+            if (markerIndex >= 0) {
+                String id = trimmed.substring(markerIndex + marker.length());
+                int endIndex = findVideoIdEndIndex(id);
+                return validateYoutubeVideoId(id.substring(0, endIndex));
+            }
+        }
+
+        return validateYoutubeVideoId(trimmed);
+    }
+
+    private String validateYoutubeVideoId(String value) {
+        if (!value.matches("[A-Za-z0-9_-]{11}")) {
+            throw new IllegalArgumentException("Enter a valid YouTube video URL or 11-character video ID.");
+        }
+        return value;
+    }
+
+    private int findVideoIdEndIndex(String value) {
+        int endIndex = value.length();
+        for (char separator : new char[] { '&', '?', '/' }) {
+            int index = value.indexOf(separator);
+            if (index >= 0 && index < endIndex) {
+                endIndex = index;
+            }
+        }
+        return endIndex;
     }
 
     private JwtAuthDetails getCurrentUserDetails() {

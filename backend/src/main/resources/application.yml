@@ -22,14 +22,21 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 55MB
+
 server:
   port: 8080
 
 app:
+  upload:
+    manual-dir: uploads/manuals
   jwt:
     secret: ${JWT_SECRET:change-this-in-env-never-commit-real-secret}
     access-token-expiry-ms: 900000
     refresh-token-expiry-ms: 604800000
 
 cors:
-  allowed-origins: http://localhost:5173
+  allowed-origins: http://localhost:5173,http://127.0.0.1:5173

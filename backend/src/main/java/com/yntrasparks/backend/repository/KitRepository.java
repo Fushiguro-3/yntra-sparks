@@ -7,10 +7,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface KitRepository extends JpaRepository<Kit, Long> {
 
     // Super Admin — all active kits, optionally filtered by category
     Page<Kit> findByStatus(Kit.KitStatus status, Pageable pageable);
+
+    Page<Kit> findByStatusAndGradeIgnoreCase(Kit.KitStatus status, String grade, Pageable pageable);
+
+    Optional<Kit> findByIdAndStatus(Long id, Kit.KitStatus status);
 
     // Principal/Teacher — only kits their school has purchased, active only
     @Query("""

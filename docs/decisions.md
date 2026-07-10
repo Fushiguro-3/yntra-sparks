@@ -149,3 +149,27 @@ constraint if stricter enforcement is wanted later).
 
 **Revisit when:** Schema stabilizes post-MVP and stricter DB-level type
 safety becomes worth the migration friction.
+
+---
+
+## ADR-009: Grade is a simple Kit field for MVP
+
+**Date:** 2026-07-10
+**Status:** Accepted
+
+**Context:** Public navigation and kit cards need grade-based browsing, and
+Super Admin needs to enter the target grade while creating/editing a kit.
+The current product does not need managed grade records, grade bands,
+multi-grade assignment, or curriculum metadata.
+
+**Decision:** Store grade as a plain text column on `Kit` (`kit.grade`), not
+as a separate `Grade` table or many-to-many relationship. The public kit list
+may filter by exact grade label, and the admin kit form edits the label
+directly.
+
+**Why:** This keeps the MVP data model small while still supporting the
+visible product requirement. A separate entity would add CRUD, migrations,
+joins, and admin UI without a current business rule that needs it.
+
+**Revisit when:** Kits need multiple grades, canonical grade ordering,
+regional curriculum mappings, or admin-managed grade metadata.

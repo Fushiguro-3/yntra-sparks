@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+/*
+  Brand tokens pulled from Logo__1_-removebg-preview.png (navy Y-shaped
+  bolt + circuit nodes, orange/yellow gradient bolt, navy+orange wordmark).
+  Ervan's earlier design-system.css used a bright #2563EB blue that didn't
+  match the real logo — these values replace that with the actual brand
+  palette. Use as `bg-navy-700`, `text-navy-900`, `from-spark-500
+  to-spark-600`, etc.
+*/
+@theme {
+  --color-navy-50: #eef1f8;
+  --color-spark-50: #fff4e8;
+  --color-navy-900: #0a1f4d;
+  --color-navy-800: #0d2760;
+  --color-navy-700: #123573;
+  --color-navy-600: #1a4590;
+  --color-navy-500: #2456a8;
+
+  --color-spark-600: #f26522;
+  --color-spark-500: #f7941d;
+  --color-spark-400: #fbb040;
+  --color-spark-300: #ffc20e;
+
+  --color-lavender-50: #F6F3FC;
+  --color-ink-900: #1F1B2E;
+  --color-ink-600: #6B6580;
+  --color-line-200: #E7E1F5;
+
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* Radius scale — Yntraa Design Spec §2.4 */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* Shadow scale — soft/low-contrast so cards read as "lifted" not "boxed" */
+  --shadow-card-sm: 0px 4px 12px rgba(31,27,46,0.06);
+  --shadow-card-md: 0px 12px 28px rgba(10,31,77,0.12);
+  --shadow-card-lg: 0px 24px 48px rgba(31,27,46,0.14);
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-ink-900);
+  background: var(--color-lavender-50);
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float {
+  animation: float-y 3400ms ease-in-out infinite;
+}
+
+[data-aos] {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 620ms cubic-bezier(.2,.8,.2,1),
+    transform 620ms cubic-bezier(.2,.8,.2,1);
+  transition-delay: var(--aos-delay, 0ms);
+}
+
+[data-aos="fade-in"] {
+  transform: none;
+}
+
+[data-aos="zoom-pop"] {
+  transform: translate3d(0, 18px, 0) scale(.96);
+}
+
+[data-aos="slide-left"] {
+  transform: translate3d(24px, 0, 0);
+}
+
+[data-aos="slide-right"] {
+  transform: translate3d(-24px, 0, 0);
+}
+
+[data-aos].aos-visible,
+.aos-reduced-motion [data-aos] {
+  opacity: 1;
+  transform: none;
+}
+
+.playful-shell {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, #fff9f0 0%, #f6f3fc 42%, #eef8ff 100%);
+}
+
+.playful-shell::before,
+.playful-shell::after {
+  content: "";
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .9;
+}
+
+.playful-shell::before {
+  width: 260px;
+  height: 420px;
+  left: -150px;
+  top: 160px;
+  background: #35b9e9;
+  border-radius: 48% 52% 58% 42% / 36% 46% 54% 64%;
+  transform: rotate(-16deg);
+}
+
+.playful-shell::after {
+  width: 300px;
+  height: 420px;
+  right: -180px;
+  bottom: 80px;
+  background: #ffae22;
+  border-radius: 54% 46% 40% 60% / 42% 36% 64% 58%;
+  transform: rotate(18deg);
+}
+
+.playful-layer {
+  position: relative;
+  z-index: 1;
+}
+
+.kit-card-fun {
+  border: 1px solid rgba(10, 31, 77, .08);
+  box-shadow: 0 14px 30px rgba(10, 31, 77, .12);
+}
+
+.kit-card-fun:hover {
+  box-shadow: 0 22px 46px rgba(10, 31, 77, .18);
+}
+
+.splash-chip {
+  position: relative;
+}
+
+.splash-chip::before {
+  content: "";
+  position: absolute;
+  inset: -8px -12px;
+  z-index: -1;
+  background: #ffb12b;
+  border-radius: 48% 52% 45% 55% / 52% 38% 62% 48%;
+  transform: rotate(-3deg);
+  opacity: .22;
+}
+
+.blue-splash {
+  background: #38b9e8;
+  border-radius: 42% 58% 62% 38% / 52% 42% 58% 48%;
+}
+
+.orange-splash {
+  background: #ffae22;
+  border-radius: 58% 42% 46% 54% / 44% 58% 42% 56%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float { animation: none; }
+  [data-aos] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
