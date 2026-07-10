@@ -1,8 +1,8 @@
 # Yntra Sparks — MVP Requirements
 
 **Status:** Draft v1 — Day 1
-**Owner:** [Intern A / Intern B]
-**Last updated:** 2026-06-30
+**Owner:** [vandana / thaneesha ]
+**Last updated:** 2026-07-10
 
 ## 1. Product Summary
 
@@ -82,6 +82,14 @@ entity with its own CRUD, not a free-text column on Kit.
 **Recommendation:** yes, `Category` entity now — cheap today, expensive as a
 migration later.
 
+### 4.3a Grade model
+Kits need to be grouped and filtered by grade on the public site and in the
+admin catalog. For MVP, grade is a simple text label stored on `Kit.grade`
+(examples: `Grade 6`, `Grade 7`, `Grade 8`), not a separate `Grade` entity
+or join table.
+**Recommendation:** keep grade as a kit attribute until the product needs
+managed grade metadata, grade bands, multi-grade kits, or curriculum mapping.
+
 ### 4.4 School/User status as enum vs boolean
 Should `School.status` and `User.active` be booleans or enums?
 **Recommendation:** enum. At minimum `ACTIVE`, `INACTIVE`, and reserve room
@@ -118,3 +126,4 @@ held in memory (Pinia store, not localStorage) to reduce XSS exposure.
 | 3 | Category as entity | Open | — |
 | 4 | Status as enum | Open | — |
 | 5 | Refresh token storage | Open | — |
+| 6 | Grade model | Resolved | ADR-009: grade is a simple `Kit.grade` text label for MVP, not a separate entity |

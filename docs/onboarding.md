@@ -297,4 +297,4 @@ Before writing any code, read these in order:
 | [Co-intern name] | Frontend | All Vue 3 UI |
 
 Backend questions → Vandana
-Frontend questions → [Co-intern name]
+Frontend questions → Thaneesha

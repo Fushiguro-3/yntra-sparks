@@ -3,6 +3,9 @@ package com.yntrasparks.backend.controller;
 import com.yntrasparks.backend.dto.request.KitRequest;
 import com.yntrasparks.backend.dto.response.ApiResponse;
 import com.yntrasparks.backend.dto.response.KitResponse;
+import com.yntrasparks.backend.dto.response.ManualUploadResponse;
+import com.yntrasparks.backend.dto.response.SchoolResponse;
+import com.yntrasparks.backend.service.FileStorageService;
 import com.yntrasparks.backend.service.KitService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -11,15 +14,20 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class KitController {
 
     private final KitService kitService;
+    private final FileStorageService fileStorageService;
 
-    public KitController(KitService kitService) {
+    public KitController(KitService kitService, FileStorageService fileStorageService) {
         this.kitService = kitService;
+        this.fileStorageService = fileStorageService;
     }
 
     /**
@@ -54,6 +62,15 @@ public class KitController {
     }
 
     /**
+     * GET /api/kits/{id}/schools
+     * Super Admin only - schools that currently have access to this kit
+     */
+    @GetMapping("/kits/{id}/schools")
+    public ResponseEntity<ApiResponse<List<SchoolResponse>>> getSchoolsForKit(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(kitService.getSchoolsForKit(id)));
+    }
+
+    /**
      * POST /api/kits
      * Super Admin only
      */
@@ -65,6 +82,20 @@ public class KitController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success(kit, "Kit created successfully"));
+    }
+
+    /**
+     * POST /api/kits/manuals
+     * Super Admin only — uploads a kit manual PDF and returns its public URL.
+     */
+    @PostMapping("/kits/manuals")
+    public ResponseEntity<ApiResponse<ManualUploadResponse>> uploadManual(
+            @RequestParam("file") MultipartFile file) {
+
+        ManualUploadResponse manual = fileStorageService.storeManualPdf(file);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(manual, "Manual uploaded successfully"));
     }
 
     /**
