@@ -12,8 +12,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -27,21 +31,24 @@ public class AuthService {
     private final long refreshTokenExpiryMs;
 
     public AuthService(AuthenticationManager authenticationManager,
-                       UserRepository userRepository,
-                       JwtUtil jwtUtil,
-                       @Value("${app.jwt.refresh-token-expiry-ms}") long refreshTokenExpiryMs) {
+            UserRepository userRepository,
+            JwtUtil jwtUtil,
+            @Value("${app.jwt.refresh-token-expiry-ms}") long refreshTokenExpiryMs) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
         this.refreshTokenExpiryMs = refreshTokenExpiryMs;
     }
 
+    @Transactional
     public LoginResponse login(LoginRequest request, HttpServletResponse response) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(), request.getPassword()));
-        } catch (BadCredentialsException e) {
+        } catch (LockedException e) {
+            throw new UnauthorizedException("Account is deactivated. Contact your administrator.");
+        } catch (AuthenticationException e) {
             throw new UnauthorizedException("Invalid email or password");
         }
 
@@ -68,6 +75,7 @@ public class AuthService {
         return LoginResponse.from(accessToken, user);
     }
 
+    @Transactional(readOnly = true)
     public String refresh(HttpServletRequest request) {
         String refreshToken = extractRefreshTokenFromCookie(request);
 
@@ -108,7 +116,8 @@ public class AuthService {
     }
 
     private String extractRefreshTokenFromCookie(HttpServletRequest request) {
-        if (request.getCookies() == null) return null;
+        if (request.getCookies() == null)
+            return null;
         return Arrays.stream(request.getCookies())
                 .filter(c -> "refreshToken".equals(c.getName()))
                 .findFirst()
