@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.yntrasparks.backend.dto.response.ManualDownloadResponse;
 
 import java.util.List;
 
@@ -96,6 +97,20 @@ public class KitController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success(manual, "Manual uploaded successfully"));
+    }
+
+    /**
+     * GET /api/kits/manuals/{key}/download-url
+     * Generates a fresh, short-lived (15 min) download link for a manual.
+     * Never store this URL — call this endpoint again each time a download is
+     * needed.
+     */
+    @GetMapping("/kits/manuals/{key}/download-url")
+    public ResponseEntity<ApiResponse<ManualDownloadResponse>> getManualDownloadUrl(
+            @PathVariable String key) {
+
+        String downloadUrl = fileStorageService.generateDownloadUrl("manuals/" + key);
+        return ResponseEntity.ok(ApiResponse.success(new ManualDownloadResponse(downloadUrl)));
     }
 
     /**

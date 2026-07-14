@@ -46,6 +46,8 @@ body {
   font-family: var(--font-body);
   color: var(--color-ink-900);
   background: var(--color-lavender-50);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3, h4, .font-display {
@@ -166,6 +168,144 @@ h1, h2, h3, h4, .font-display {
   border-radius: 58% 42% 46% 54% / 44% 58% 42% 56%;
 }
 
+/* A restrained dotted background keeps quiet surfaces from feeling flat. */
+.accent-grid {
+  background-color: #f5f8ff;
+  background-image:
+    radial-gradient(circle at 0 0, rgba(56, 185, 232, .18) 0 8px, transparent 9px),
+    radial-gradient(circle at 100% 100%, rgba(255, 174, 34, .2) 0 9px, transparent 10px);
+  background-size: 62px 62px;
+}
+
+.dashboard-shell {
+  background: linear-gradient(135deg, #f7fbff 0%, #eef4ff 48%, #fff9ec 100%);
+}
+
+.dashboard-rail {
+  background: linear-gradient(180deg, #071a43 0%, #0d3474 58%, #0a1f4d 100%);
+}
+
+.dashboard-nav-link {
+  border: 1px solid transparent;
+}
+
+.dashboard-nav-link.router-link-active {
+  color: #fff;
+  background: linear-gradient(90deg, #f26522, #f7941d);
+  border-color: rgba(255,255,255,.22);
+  box-shadow: 0 8px 20px rgba(242,101,34,.26);
+}
+
+.dashboard-hero {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(118deg, #0a1f4d 0%, #123573 63%, #126b9c 100%);
+  box-shadow: 0 16px 34px rgba(10,31,77,.16);
+}
+
+.dashboard-hero::after {
+  content: "";
+  position: absolute;
+  width: 168px;
+  height: 168px;
+  right: -52px;
+  top: -76px;
+  border: 30px solid rgba(255, 255, 255, .08);
+  border-radius: 50%;
+}
+
+.kit-dashboard-card {
+  box-shadow: 0 12px 26px rgba(10,31,77,.09);
+}
+
+.kit-dashboard-card:hover {
+  transform: translateY(-5px) rotate(-.25deg);
+  box-shadow: 0 20px 36px rgba(10,31,77,.16);
+}
+
+/* Shared SaaS interface primitives. These are deliberately framework-neutral
+   so all Vue routes retain their existing markup and behaviour. */
+.app-surface {
+  background: rgba(255, 255, 255, .9);
+  border: 1px solid rgba(18, 53, 115, .11);
+  box-shadow: 0 12px 28px rgba(10, 31, 77, .08);
+}
+
+.app-panel-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--color-navy-900);
+}
+
+.app-button-primary,
+.app-button-secondary,
+.app-button-quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  min-height: 2.65rem;
+  padding: .625rem 1rem;
+  border-radius: .75rem;
+  font-size: .875rem;
+  font-weight: 700;
+  line-height: 1;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.app-button-primary {
+  color: #fff;
+  background: linear-gradient(125deg, #f26522, #f7941d);
+  box-shadow: 0 8px 16px rgba(242, 101, 34, .22);
+}
+.app-button-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 22px rgba(242, 101, 34, .3); }
+.app-button-secondary { color: #fff; background: #123573; box-shadow: 0 8px 16px rgba(10, 31, 77, .16); }
+.app-button-secondary:hover { background: #0a1f4d; transform: translateY(-1px); }
+.app-button-quiet { color: #40506e; background: #f5f7fb; }
+.app-button-quiet:hover { background: #e9eef8; color: #0a1f4d; }
+
+.app-input {
+  width: 100%;
+  min-height: 2.65rem;
+  border: 1px solid #dbe3f1;
+  border-radius: .75rem;
+  background: #fff;
+  padding: .625rem .8rem;
+  color: var(--color-ink-900);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+.app-input::placeholder { color: #9ba8bd; }
+.app-input:focus { outline: none; border-color: #2456a8; box-shadow: 0 0 0 4px rgba(36, 86, 168, .12); }
+
+.app-data-table th { font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; }
+.app-data-table tbody tr { transition: background-color 160ms ease; }
+.app-data-table tbody tr:hover { background: #f7faff; }
+.app-action-link { display: inline-flex; align-items: center; min-height: 2rem; font-size: .8125rem; font-weight: 700; transition: color 150ms ease; }
+
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: .5rem;
+  padding: 2.75rem 1.5rem;
+  text-align: center;
+  color: #71809a;
+}
+.empty-state::before { content: "✦"; display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 1rem; color: #f26522; background: #fff4e8; font-size: 1.5rem; }
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+.skeleton { position: relative; overflow: hidden; border-radius: .75rem; background: #e9eef6; }
+.skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,.72), transparent); animation: shimmer 1.4s infinite; }
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-enter { animation: rise-in 420ms cubic-bezier(.2,.8,.2,1) both; }
+
 @media (prefers-reduced-motion: reduce) {
   .animate-float { animation: none; }
   [data-aos] {
@@ -173,4 +313,11 @@ h1, h2, h3, h4, .font-display {
     transform: none;
     transition: none;
   }
+  .page-enter, .skeleton::after { animation: none; }
+  .app-button-primary:hover, .app-button-secondary:hover { transform: none; }
+}
+
+@media (max-width: 767px) {
+  .dashboard-rail { width: 100%; }
+  .dashboard-hero::after { right: -72px; }
 }

@@ -42,8 +42,9 @@ onMounted(loadKits)
 
 <template>
   <div>
-    <div class="mb-6">
-      <h1 class="font-display text-xl font-bold text-navy-900">Purchased Kits</h1>
+    <div class="dashboard-hero rounded-[28px] px-6 py-7 md:px-8 mb-7">
+      <p class="text-xs font-bold uppercase tracking-[.18em] text-spark-300 mb-2">School kit collection</p>
+      <h1 class="font-display text-2xl md:text-3xl font-bold">Learning experiences, ready for class</h1>
       <p class="text-slate-500 text-sm">STEM kits your school currently has access to.</p>
     </div>
 
@@ -61,15 +62,15 @@ onMounted(loadKits)
         v-for="kit in kits"
         :key="kit.id"
         :to="{ name: 'principal-kit-detail', params: { id: kit.id } }"
-        class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-md hover:border-navy-300 transition group"
+        class="kit-dashboard-card bg-white rounded-[22px] border border-navy-100 overflow-hidden transition duration-300 group"
       >
-        <div class="aspect-video bg-slate-100 flex items-center justify-center overflow-hidden">
+        <div class="aspect-video accent-grid flex items-center justify-center overflow-hidden">
           <img v-if="kit.thumbnailUrl" :src="kit.thumbnailUrl" :alt="kit.title" class="w-full h-full object-cover">
           <span v-else class="text-slate-300 text-3xl">🧪</span>
         </div>
         <div class="p-4">
           <p class="text-xs text-spark-600 font-semibold mb-1">{{ kit.categoryName ?? kit.category?.name ?? 'Uncategorized' }}</p>
-          <h3 class="font-medium text-slate-800 group-hover:text-navy-700 transition">{{ kit.title }}</h3>
+          <h3 class="font-display font-semibold text-navy-900 group-hover:text-spark-600 transition">{{ kit.title }}</h3>
           <div class="mt-3 flex flex-wrap gap-2 text-xs text-slate-500">
             <span v-if="kit.grade" class="rounded-md bg-slate-100 px-2 py-1">{{ kit.grade }}</span>
             <span v-if="kit.price !== null && kit.price !== undefined" class="rounded-md bg-slate-100 px-2 py-1">{{ formatPrice(kit.price) }}</span>

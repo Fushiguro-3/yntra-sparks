@@ -83,6 +83,14 @@ public class TeacherService {
     }
 
     @Transactional
+    public void reactivateTeacher(Long schoolId, Long teacherId) {
+        enforceSchoolAccess(schoolId);
+        User teacher = findTeacherInSchool(schoolId, teacherId);
+        teacher.setStatus(User.UserStatus.ACTIVE);
+        userRepository.save(teacher);
+    }
+
+    @Transactional
     public TempPasswordResponse resetPassword(Long schoolId, Long teacherId) {
         enforceSchoolAccess(schoolId);
         User teacher = findTeacherInSchool(schoolId, teacherId);

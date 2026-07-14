@@ -23,6 +23,11 @@ export const teacherService = {
     return unwrap(http.delete(`/schools/${schoolId}/teachers/${teacherId}`))
   },
 
+  /** Reverses a deactivation — sets status ACTIVE. */
+  activate(schoolId, teacherId) {
+    return unwrap(http.patch(`/schools/${schoolId}/teachers/${teacherId}/activate`))
+  },
+
   /** @returns {Promise<{tempPassword: string}>} same one-time-display rule as create(). */
   resetPassword(schoolId, teacherId) {
     return unwrap(http.patch(`/schools/${schoolId}/teachers/${teacherId}/reset-password`))

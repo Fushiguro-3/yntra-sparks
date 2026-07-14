@@ -7,12 +7,12 @@ const emit = defineEmits(['close'])
 </script>
 
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-slate-900/50" @click="emit('close')" />
-    <div :class="['relative bg-white rounded-2xl shadow-lg w-full', maxWidth]">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-        <h2 class="font-display font-semibold text-slate-900">{{ title }}</h2>
-        <button @click="emit('close')" class="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" :aria-label="title">
+    <div class="absolute inset-0 bg-navy-900/55 backdrop-blur-[2px]" @click="emit('close')" />
+    <div :class="['relative bg-white rounded-[22px] shadow-[0_24px_60px_rgba(10,31,77,.26)] border border-white/70 w-full page-enter', maxWidth]">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-navy-100">
+        <h2 class="font-display font-bold text-navy-900">{{ title }}</h2>
+        <button @click="emit('close')" class="w-8 h-8 rounded-full text-slate-400 hover:text-navy-800 hover:bg-navy-50 text-xl leading-none transition" aria-label="Close dialog">&times;</button>
       </div>
       <div class="px-6 py-5">
         <slot />

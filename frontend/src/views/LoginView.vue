@@ -43,35 +43,40 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-    <div class="w-full max-w-md">
-      <div class="flex flex-col items-center mb-8">
-        <img src="@/assets/logo.png" alt="Yntra Sparks" class="w-20 h-20 mb-3" />
-        <h1 class="font-display text-2xl font-bold text-navy-900">Yntra Sparks</h1>
-        <p class="text-slate-500 text-sm mt-1">Sign in to your dashboard</p>
+  <div class="min-h-screen flex items-center justify-center accent-grid px-4 py-10 relative overflow-hidden">
+    <span class="absolute -left-20 top-12 w-64 h-48 blue-splash opacity-35"></span>
+    <span class="absolute -right-20 bottom-10 w-64 h-52 orange-splash opacity-35"></span>
+    <div class="w-full max-w-md relative page-enter">
+      <div class="flex flex-col items-center mb-7 text-center">
+        <div class="bg-white rounded-[26px] shadow-[0_12px_30px_rgba(10,31,77,.12)] p-3 mb-4">
+          <img src="@/assets/logo.png" alt="Yntra Sparks" class="w-16 h-16" />
+        </div>
+        <p class="text-xs font-bold uppercase tracking-[.18em] text-spark-600 mb-2">Learning starts here</p>
+        <h1 class="font-display text-3xl font-bold text-navy-900">Welcome back</h1>
+        <p class="text-ink-600 text-sm mt-2">Sign in to continue to your Yntra Sparks workspace.</p>
       </div>
 
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+      <div class="app-surface rounded-[28px] p-6 sm:p-8">
         <form @submit.prevent="handleSubmit" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+            <label class="block text-sm font-bold text-navy-900 mb-1.5">Email address</label>
             <input
               v-model="email"
               type="email"
               placeholder="you@school.com"
               autocomplete="username"
-              class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500 focus:border-transparent"
+              class="app-input"
             >
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+            <label class="block text-sm font-bold text-navy-900 mb-1.5">Password</label>
             <input
               v-model="password"
               type="password"
               placeholder="••••••••"
               autocomplete="current-password"
-              class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500 focus:border-transparent"
+              class="app-input"
             >
           </div>
 
@@ -82,14 +87,14 @@ async function handleSubmit() {
           <button
             type="submit"
             :disabled="isSubmitting"
-            class="w-full py-2.5 rounded-lg font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 transition disabled:opacity-60"
+            class="app-button-primary w-full"
           >
             {{ isSubmitting ? 'Signing in…' : 'Sign In' }}
           </button>
         </form>
       </div>
 
-      <p class="text-center text-xs text-slate-400 mt-6">
+      <p class="text-center text-xs text-ink-600 mt-5">
         Accounts are created by administrators — there's no self-signup.
       </p>
     </div>

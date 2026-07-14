@@ -47,9 +47,13 @@ onMounted(loadKits)
       <p class="text-ink-600 max-w-lg mx-auto">Browse real kit programs from the catalog, organized by STEM category.</p>
     </div>
 
-    <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">{{ errorMessage }}</p>
-    <p v-if="isLoading" class="text-sm text-slate-400 text-center">Loading programs...</p>
-    <p v-else-if="kits.length === 0" class="text-sm text-slate-400 text-center">No programs available yet.</p>
+    <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4">{{ errorMessage }}</p>
+    <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div v-for="item in 3" :key="item" class="bg-white rounded-[24px] p-5 kit-card-fun">
+        <div class="skeleton aspect-[16/10] mb-5"></div><div class="skeleton h-3 w-20 mb-3"></div><div class="skeleton h-6 w-3/4 mb-3"></div><div class="skeleton h-3 w-full"></div>
+      </div>
+    </div>
+    <div v-else-if="kits.length === 0" class="empty-state app-surface rounded-[24px]">No programs are available yet. Check back soon for new learning adventures.</div>
 
     <div v-else class="space-y-12">
       <section v-for="(items, category) in programs" :key="category">
