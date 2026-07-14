@@ -77,9 +77,11 @@ onMounted(loadKits)
         <p class="text-sm text-ink-600 mt-1">Click a grade above to filter kits from the demo catalog.</p>
       </div>
 
-      <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">{{ errorMessage }}</p>
-      <p v-if="isLoading" class="text-sm text-slate-400">Loading kits...</p>
-      <p v-else-if="kits.length === 0" class="text-sm text-slate-400">No kits found for this grade yet.</p>
+      <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4">{{ errorMessage }}</p>
+      <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div v-for="item in 3" :key="item" class="bg-white rounded-[24px] p-5 kit-card-fun"><div class="skeleton aspect-[16/10] mb-5"></div><div class="skeleton h-5 w-2/3 mb-3"></div><div class="skeleton h-3 w-full"></div></div>
+      </div>
+      <div v-else-if="kits.length === 0" class="empty-state app-surface rounded-[24px]">No kits are available for this grade yet.</div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <article

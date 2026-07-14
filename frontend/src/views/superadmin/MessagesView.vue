@@ -93,15 +93,16 @@ onMounted(loadMessages)
 
 <template>
   <div>
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
       <div>
-        <h1 class="font-display text-xl font-bold text-navy-900">Contact Messages</h1>
-        <p class="text-slate-500 text-sm">Review enquiries submitted from the public contact form.</p>
+        <p class="text-xs font-bold uppercase tracking-[.16em] text-spark-600 mb-1">Inbox</p>
+        <h1 class="app-panel-title text-2xl">Contact Messages</h1>
+        <p class="text-ink-600 text-sm mt-1">Review enquiries submitted from the public contact form.</p>
       </div>
       <button
         @click="loadMessages"
         :disabled="isLoading"
-        class="px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 disabled:opacity-60 transition text-sm"
+        class="self-start sm:self-auto inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 disabled:opacity-60 transition text-sm"
       >
         {{ isLoading ? 'Refreshing...' : 'Refresh' }}
       </button>
@@ -111,18 +112,19 @@ onMounted(loadMessages)
       {{ errorMessage }}
     </p>
 
-    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div class="app-surface rounded-[22px] overflow-hidden">
       <div class="px-5 py-3 border-b border-slate-100 text-sm text-slate-500">
         {{ messageCountLabel }}
       </div>
-      <table class="w-full text-sm">
+      <div class="overflow-x-auto">
+      <table class="app-data-table w-full min-w-[760px] text-sm">
         <thead class="bg-slate-50 text-left text-slate-500">
           <tr>
             <th class="px-5 py-3 font-medium">Name</th>
             <th class="px-5 py-3 font-medium">Email</th>
             <th class="px-5 py-3 font-medium">Subject</th>
             <th class="px-5 py-3 font-medium">Received</th>
-            <th class="px-5 py-3 font-medium text-right">Actions</th>
+            <th class="px-5 py-3 font-medium text-right w-[220px]">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
@@ -139,7 +141,8 @@ onMounted(loadMessages)
             </td>
             <td class="px-5 py-3 text-slate-700 max-w-xs truncate">{{ message.subject }}</td>
             <td class="px-5 py-3 text-slate-500 whitespace-nowrap">{{ formatDate(message.createdAt) }}</td>
-            <td class="px-5 py-3 text-right space-x-3">
+            <td class="px-5 py-3">
+              <div class="flex items-center justify-end gap-3 whitespace-nowrap">
               <button @click="selectedMessage = message" class="text-navy-600 hover:text-navy-800 font-medium">
                 View
               </button>
@@ -158,10 +161,12 @@ onMounted(loadMessages)
               >
                 {{ deletingId === message.id ? 'Deleting...' : 'Delete' }}
               </button>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
 
     <Pagination :page="page" :total-pages="totalPages" @change="onPageChange" />
@@ -192,7 +197,7 @@ onMounted(loadMessages)
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Message</p>
           <p class="whitespace-pre-wrap text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-3">{{ selectedMessage.message }}</p>
         </div>
-        <div class="flex justify-end gap-2 pt-2">
+        <div class="flex flex-wrap justify-end gap-2 pt-2">
           <a
             :href="buildReplyUrl(selectedMessage)"
             target="_blank"

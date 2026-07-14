@@ -79,14 +79,15 @@ onMounted(loadCategories)
 
 <template>
   <div>
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
       <div>
-        <h1 class="font-display text-xl font-bold text-navy-900">Categories</h1>
-        <p class="text-slate-500 text-sm">Organize kits by subject area.</p>
+        <p class="text-xs font-bold uppercase tracking-[.16em] text-spark-600 mb-1">Catalog setup</p>
+        <h1 class="app-panel-title text-2xl">Categories</h1>
+        <p class="text-ink-600 text-sm mt-1">Organize kits by subject area.</p>
       </div>
       <button
         @click="openCreate"
-        class="px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 transition text-sm"
+        class="self-start sm:self-auto inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 transition text-sm"
       >
         + Add Category
       </button>
@@ -96,12 +97,13 @@ onMounted(loadCategories)
       {{ errorMessage }}
     </p>
 
-    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-      <table class="w-full text-sm">
+    <div class="app-surface rounded-[22px] overflow-hidden">
+      <div class="overflow-x-auto">
+      <table class="app-data-table w-full min-w-[440px] text-sm">
         <thead class="bg-slate-50 text-left text-slate-500">
           <tr>
             <th class="px-5 py-3 font-medium">Name</th>
-            <th class="px-5 py-3 font-medium text-right">Actions</th>
+            <th class="px-5 py-3 font-medium text-right w-[150px]">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
@@ -113,13 +115,16 @@ onMounted(loadCategories)
           </tr>
           <tr v-for="category in categories" :key="category.id" class="hover:bg-slate-50">
             <td class="px-5 py-3 font-medium text-slate-800">{{ category.name }}</td>
-            <td class="px-5 py-3 text-right space-x-3">
+            <td class="px-5 py-3">
+              <div class="flex items-center justify-end gap-3 whitespace-nowrap">
               <button @click="openEdit(category)" class="text-navy-600 hover:text-navy-800 font-medium">Edit</button>
               <button @click="removeCategory(category)" class="text-red-500 hover:text-red-700 font-medium">Delete</button>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
 
     <Modal v-if="showModal" :title="editingId ? 'Edit Category' : 'Add Category'" @close="showModal = false">
@@ -129,7 +134,7 @@ onMounted(loadCategories)
           <input v-model="name" type="text" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
         </div>
         <p v-if="formError" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ formError }}</p>
-        <div class="flex justify-end gap-2 pt-2">
+        <div class="flex flex-wrap justify-end gap-2 pt-2">
           <button type="button" @click="showModal = false" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100">Cancel</button>
           <button type="submit" :disabled="isSaving" class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 disabled:opacity-60">
             {{ isSaving ? 'Saving…' : 'Save' }}

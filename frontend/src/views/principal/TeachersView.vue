@@ -78,6 +78,17 @@ async function deactivateTeacher(teacher) {
   }
 }
 
+async function activateTeacher(teacher) {
+  if (!confirm(`Activate ${teacher.name}? They'll be able to sign in again.`)) return
+  errorMessage.value = ''
+  try {
+    await teacherService.activate(schoolId, teacher.id)
+    await loadTeachers()
+  } catch (err) {
+    errorMessage.value = err.message
+  }
+}
+
 async function resetPassword(teacher) {
   if (!confirm(`Reset password for ${teacher.name}? Their old password will stop working immediately.`)) return
   errorMessage.value = ''
@@ -142,6 +153,7 @@ onMounted(loadTeachers)
             <td class="px-5 py-3 text-right space-x-3">
               <button @click="resetPassword(teacher)" class="text-navy-600 hover:text-navy-800 font-medium">Reset Password</button>
               <button v-if="teacher.status === 'ACTIVE'" @click="deactivateTeacher(teacher)" class="text-red-500 hover:text-red-700 font-medium">Deactivate</button>
+              <button v-else @click="activateTeacher(teacher)" class="text-green-600 hover:text-green-800 font-medium">Activate</button>
             </td>
           </tr>
         </tbody>

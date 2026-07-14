@@ -31,3 +31,16 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Secrets — NEVER commit these ###
+src/main/resources/application-local.yml
+.env
+.env.local
+*.env
+
+### Local file uploads (pre-S3 leftovers, or any future local storage) ###
+uploads/
+
+### OS ###
+.DS_Store
+Thumbs.db

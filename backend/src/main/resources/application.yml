@@ -37,6 +37,13 @@ app:
     secret: ${JWT_SECRET:change-this-in-env-never-commit-real-secret}
     access-token-expiry-ms: 900000
     refresh-token-expiry-ms: 604800000
+  s3:
+    bucket-name: ${AWS_S3_BUCKET:yntra-sparks-manuals-prod}
+    region: ${AWS_REGION:ap-south-1}
 
 cors:
   allowed-origins: http://localhost:5173,http://127.0.0.1:5173
+
+# Add this block to application.yml, alongside your existing "app:" section
+
+

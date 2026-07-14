@@ -70,6 +70,20 @@ public class TeacherController {
     }
 
     /**
+     * PATCH /api/schools/{schoolId}/teachers/{teacherId}/activate
+     * Principal (own school) only — reverses a deactivation (sets status ACTIVE)
+     */
+    @PatchMapping("/{teacherId}/activate")
+    public ResponseEntity<ApiResponse<Void>> reactivateTeacher(
+            @PathVariable Long schoolId,
+            @PathVariable Long teacherId) {
+
+        teacherService.reactivateTeacher(schoolId, teacherId);
+        return ResponseEntity.ok(
+                ApiResponse.success(null, "Teacher activated"));
+    }
+
+    /**
      * PATCH /api/schools/{schoolId}/teachers/{teacherId}/reset-password
      * Principal (own school) only
      * Returns new temp password ONCE

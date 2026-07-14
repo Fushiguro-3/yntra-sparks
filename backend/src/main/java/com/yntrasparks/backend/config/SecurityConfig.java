@@ -74,6 +74,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/kits").hasRole("SUPER_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/kits/{id}").hasRole("SUPER_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/kits/{id}").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/kits/manuals/*/download-url").authenticated()
                         .anyRequest().authenticated()
 
                 )

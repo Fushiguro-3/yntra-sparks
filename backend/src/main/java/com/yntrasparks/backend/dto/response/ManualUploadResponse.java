@@ -2,14 +2,14 @@ package com.yntrasparks.backend.dto.response;
 
 public class ManualUploadResponse {
 
-    private final String url;
-    private final String fileName;
+    private final String key;           // S3 object key — stored in DB, not a public URL
+    private final String originalFilename;
 
-    public ManualUploadResponse(String url, String fileName) {
-        this.url = url;
-        this.fileName = fileName;
+    public ManualUploadResponse(String key, String originalFilename) {
+        this.key = key;
+        this.originalFilename = originalFilename;
     }
 
-    public String getUrl() { return url; }
-    public String getFileName() { return fileName; }
+    public String getKey() { return key; }
+    public String getOriginalFilename() { return originalFilename; }
 }

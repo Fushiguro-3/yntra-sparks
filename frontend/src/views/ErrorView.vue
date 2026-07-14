@@ -26,14 +26,14 @@ function goHome() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-    <div class="text-center max-w-sm">
-      <p class="font-display text-6xl font-extrabold text-navy-800 mb-4">{{ code }}</p>
-      <h1 class="text-lg font-semibold text-slate-800 mb-2">{{ copy.title }}</h1>
-      <p class="text-slate-500 text-sm mb-6">{{ copy.message }}</p>
+  <div class="min-h-screen flex items-center justify-center accent-grid px-4">
+    <div class="text-center max-w-sm app-surface rounded-[28px] p-8 page-enter">
+      <p class="font-display text-6xl font-extrabold text-spark-600 mb-3">{{ code }}</p>
+      <h1 class="font-display text-xl font-bold text-navy-900 mb-2">{{ copy.title }}</h1>
+      <p class="text-ink-600 text-sm mb-7">{{ copy.message }}</p>
       <button
         @click="goHome"
-        class="px-5 py-2.5 rounded-lg font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 transition"
+        class="app-button-primary"
       >
         Go back
       </button>
