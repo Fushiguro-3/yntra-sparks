@@ -3,7 +3,7 @@ spring:
     name: yntra-sparks-backend
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/yntra_sparks
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/yntra_sparks}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
@@ -41,9 +41,9 @@ app:
     bucket-name: ${AWS_S3_BUCKET:yntra-sparks-manuals-prod}
     region: ${AWS_REGION:ap-south-1}
 
+aws:
+  access-key-id: ${AWS_ACCESS_KEY_ID:}
+  secret-access-key: ${AWS_SECRET_ACCESS_KEY:}
+
 cors:
-  allowed-origins: http://localhost:5173,http://127.0.0.1:5173
-
-# Add this block to application.yml, alongside your existing "app:" section
-
-
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
