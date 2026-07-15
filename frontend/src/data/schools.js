@@ -1,0 +1,38 @@
+export const schoolsData = [
+  {
+    id: 1,
+    name: 'Delhi Public School',
+    email: 'admin@dps.edu.in',
+    address: '12 Mathura Road, New Delhi, 110003',
+    status: 'ACTIVE',
+    createdAt: '2024-02-10T10:00:00',
+    updatedAt: '2024-02-10T10:00:00',
+  },
+  {
+    id: 2,
+    name: 'Kendriya Vidyalaya Sector 8',
+    email: 'principal@kvsec8.edu.in',
+    address: 'Sector 8, RK Puram, New Delhi, 110022',
+    status: 'ACTIVE',
+    createdAt: '2024-02-12T09:30:00',
+    updatedAt: '2024-02-12T09:30:00',
+  },
+  {
+    id: 3,
+    name: 'The Heritage School',
+    email: 'info@heritageschool.in',
+    address: '463 Madurdaha, Kolkata, 700107',
+    status: 'ACTIVE',
+    createdAt: '2024-03-01T11:00:00',
+    updatedAt: '2024-03-01T11:00:00',
+  },
+  {
+    id: 4,
+    name: 'Ryan International School',
+    email: 'contact@ryanschool.org',
+    address: 'Plot 12, Sector 25, Navi Mumbai, 400706',
+    status: 'INACTIVE',
+    createdAt: '2024-03-15T08:00:00',
+    updatedAt: '2024-04-01T08:00:00',
+  },
+]

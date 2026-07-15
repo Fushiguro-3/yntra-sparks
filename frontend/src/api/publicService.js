@@ -1,6 +1,8 @@
+import { USE_MOCK } from '@/config'
+import { mockPublicService } from './mock/mockPublicService'
 import http, { unwrap } from './http'
 
-export const publicService = {
+const realPublicService = {
   listKits({ grade = '', page = 0, size = 12 } = {}) {
     const params = { page, size }
     if (grade) params.grade = grade
@@ -15,3 +17,5 @@ export const publicService = {
     return unwrap(http.post('/contact', payload))
   }
 }
+
+export const publicService = USE_MOCK ? mockPublicService : realPublicService

@@ -5,7 +5,7 @@ import axios from 'axios'
 // token is never persisted — it lives only in the auth store's memory and
 // is attached here on every request.
 const http = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   withCredentials: true
 })
 

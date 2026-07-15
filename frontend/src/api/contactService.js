@@ -1,6 +1,8 @@
+import { USE_MOCK } from '@/config'
+import { mockContactService } from './mock/mockContactService'
 import http, { unwrap } from './http'
 
-export const contactService = {
+const realContactService = {
   list({ page = 0, size = 20 } = {}) {
     return unwrap(http.get('/contact', { params: { page, size } }))
   },
@@ -9,3 +11,5 @@ export const contactService = {
     return unwrap(http.delete(`/contact/${id}`))
   }
 }
+
+export const contactService = USE_MOCK ? mockContactService : realContactService
