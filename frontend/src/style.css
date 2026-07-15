@@ -789,3 +789,31 @@ input, textarea, select {
     transform:translateY(-32px) scale(.96);
     filter:blur(8px);
 }
+/* Apple-style infinite testimonial slider */
+
+.testimonial-wrapper {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+}
+
+.testimonial-track {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    width: max-content;
+    animation: testimonial-scroll 40s linear infinite;
+}
+
+.testimonial-wrapper:hover .testimonial-track {
+    animation-play-state: paused;
+}
+
+@keyframes testimonial-scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-33.333%);
+    }
+}

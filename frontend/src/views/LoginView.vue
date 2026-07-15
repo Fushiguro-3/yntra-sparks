@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { RouterLink,useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import FloatingBubbles from '@/components/public/FloatingBubbles.vue'
 
@@ -48,6 +48,12 @@ async function handleSubmit() {
     <FloatingBubbles density="soft" />
     <span class="absolute -left-20 top-12 w-64 h-48 blue-splash opacity-35 animate-float"></span>
     <span class="absolute -right-20 bottom-10 w-64 h-52 orange-splash opacity-35 animate-float" style="animation-delay: -1.7s"></span>
+    <RouterLink
+      to="/"
+      class="absolute top-6 left-6 z-20 inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-navy-900 shadow-md backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-spark-600"
+    >
+      ← Back To Home
+    </RouterLink>
     <div class="w-full max-w-md relative z-10 page-enter">
       <div class="flex flex-col items-center mb-7 text-center">
         <div class="bg-white rounded-[26px] shadow-[0_12px_30px_rgba(10,31,77,.12)] p-3 mb-4">

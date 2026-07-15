@@ -86,18 +86,14 @@ const testimonials = [
   { quote: "Every kit comes with everything I need to teach it well — I don't have to build lesson plans from scratch anymore.", name: 'Deepak Menon', role: 'STEM Teacher', initials: 'DM' },
   { quote: 'The measurable outcomes made it easy to show our board this was worth the investment.', name: 'Fatima Sheikh', role: 'Academic Coordinator', initials: 'FS' }
 ]
+const scrollingTestimonials = [
+  ...testimonials,
+  ...testimonials,
+  ...testimonials
+]
 
-const activeTestimonial = ref(0)
-let testimonialTimer = null
 
-function startCarousel() {
-  testimonialTimer = setInterval(() => {
-    activeTestimonial.value = (activeTestimonial.value + 1) % testimonials.length
-  }, 5000)
-}
-function stopCarousel() {
-  clearInterval(testimonialTimer)
-}
+
 
 async function loadFeaturedKits() {
   try {
@@ -243,22 +239,24 @@ function scrollToContent() {
   <section class="py-16 bg-white/70">
     <div class="max-w-[1440px] mx-auto px-5 md:px-10">
       <h2 class="font-display text-2xl md:text-3xl font-semibold text-navy-900 mb-10 text-center" data-aos="fade-up">What Schools Are Saying</h2>
-      <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-5"
-        @mouseenter="stopCarousel"
-        @mouseleave="startCarousel"
-      >
-        <TestimonialCard
-          v-for="(t, i) in testimonials"
-          :key="t.name"
-          v-bind="t"
-          class="transition-opacity duration-300"
-          data-aos="fade-up"
-          :style="{ '--aos-delay': `${i * 160}ms` }"
-          :class="{ 'md:opacity-100': true, 'ring-2 ring-navy-200': i === activeTestimonial }"
-        />
-      </div>
-    </div>
+      
+      <div class="testimonial-wrapper">
+  <div class="testimonial-track">
+
+    <TestimonialCard
+      v-for="(t, i) in scrollingTestimonials"
+      :key="`${t.name}-${i}`"
+      v-bind="t"
+      class="w-[380px] flex-shrink-0 transition-opacity duration-300"
+     
+      :style="{ '--aos-delay': `${i * 160}ms` }"
+      :class="{ 'md:opacity-100': true }"
+    />
+
+  </div>
+</div>
+</div>
+
   </section>
 
   <!-- About preview -->
