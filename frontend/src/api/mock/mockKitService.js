@@ -77,9 +77,9 @@ export const mockKitService = {
     access[Number(kitId)]?.delete(Number(schoolId))
   },
 
-  // Returns a fake presigned URL — opens nothing, but prevents the UI from breaking.
-  async getManualDownloadUrl(key) {
+  // Returns a real public PDF so the manual viewer works in demo/mock mode.
+  async getManualDownloadUrl(_key) {
     await fakeDelay(100)
-    return { downloadUrl: `https://mock-s3.example.com/${key}?mock=true` }
+    return { downloadUrl: 'https://www.w3.org/WAI/WCAG21/wcag21.pdf' }
   }
 }
