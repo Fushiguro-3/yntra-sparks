@@ -1,9 +1,8 @@
+import { USE_MOCK } from '@/config'
+import { mockSchoolService } from './mock/mockSchoolService'
 import http, { unwrap } from './http'
 
-// Maps 1:1 to SchoolController (/api/schools). Pageable uses Spring's
-// zero-indexed `page` param — keep that indexing at this layer so callers
-// think in 0-indexed pages consistently with what the backend returns.
-export const schoolService = {
+const realSchoolService = {
   /** @returns {Promise<{content, page, size, totalElements, totalPages}>} */
   list({ page = 0, size = 20, sort = 'createdAt,desc' } = {}) {
     return unwrap(http.get('/schools', { params: { page, size, sort } }))
@@ -26,3 +25,5 @@ export const schoolService = {
     return unwrap(http.patch(`/schools/${id}/status`, { status }))
   }
 }
+
+export const schoolService = USE_MOCK ? mockSchoolService : realSchoolService

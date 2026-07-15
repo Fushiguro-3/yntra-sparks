@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { kitService } from '@/api/kitService'
 import { categoryService } from '@/api/categoryService'
+import { schoolService } from '@/api/schoolService'
 
 const props = defineProps({
   id: { type: String, default: null } // present when editing (route param)
@@ -12,6 +13,8 @@ const router = useRouter()
 const isEditing = computed(() => !!props.id)
 
 const categories = ref([])
+const schools = ref([])
+const selectedSchoolIds = ref(new Set())
 const isLoading = ref(true)
 const isSaving = ref(false)
 const errorMessage = ref('')
@@ -54,6 +57,24 @@ function moveVideo(index, direction) {
 
 async function loadCategories() {
   categories.value = await categoryService.list()
+}
+
+async function loadSchools() {
+  const result = await schoolService.list({ size: 100, sort: 'name,asc' })
+  schools.value = result.content.filter((school) => school.status === 'ACTIVE')
+}
+
+async function loadAssignedSchools() {
+  if (!isEditing.value) return
+  const assignedSchools = await kitService.listSchoolsForKit(props.id)
+  selectedSchoolIds.value = new Set(assignedSchools.map((school) => school.id))
+}
+
+function toggleSchool(schoolId) {
+  const next = new Set(selectedSchoolIds.value)
+  if (next.has(schoolId)) next.delete(schoolId)
+  else next.add(schoolId)
+  selectedSchoolIds.value = next
 }
 
 async function loadKit() {
@@ -116,6 +137,21 @@ function handleManualFileChange(event) {
   }
 }
 
+async function syncSchoolAccess(kitId) {
+  const assignedSchools = await kitService.listSchoolsForKit(kitId)
+  const assignedIds = new Set(assignedSchools.map((school) => school.id))
+  const selectedIds = selectedSchoolIds.value
+
+  await Promise.all([
+    ...[...selectedIds]
+      .filter((schoolId) => !assignedIds.has(schoolId))
+      .map((schoolId) => kitService.assignToSchool(schoolId, kitId)),
+    ...[...assignedIds]
+      .filter((schoolId) => !selectedIds.has(schoolId))
+      .map((schoolId) => kitService.revokeFromSchool(schoolId, kitId))
+  ])
+}
+
 async function handleSave() {
   errorMessage.value = ''
   if (!form.value.title.trim() || !form.value.grade.trim() || !form.value.categoryId) {
@@ -137,13 +173,12 @@ async function handleSave() {
     const payload = buildPayload()
     if (manualFile.value) {
       const manual = await kitService.uploadManual(manualFile.value)
-      payload.manualPdfUrl = manual.url
+      payload.manualPdfUrl = manual.key
     }
-    if (isEditing.value) {
-      await kitService.update(props.id, payload)
-    } else {
-      await kitService.create(payload)
-    }
+    const savedKit = isEditing.value
+      ? await kitService.update(props.id, payload)
+      : await kitService.create(payload)
+    await syncSchoolAccess(savedKit.id)
     router.push({ name: 'admin-kits' })
   } catch (err) {
     errorMessage.value = err.errors?.map((e) => e.message).join(' ') || err.message
@@ -155,7 +190,7 @@ async function handleSave() {
 onMounted(async () => {
   isLoading.value = true
   try {
-    await Promise.all([loadCategories(), loadKit()])
+    await Promise.all([loadCategories(), loadSchools(), loadKit(), loadAssignedSchools()])
   } catch (err) {
     errorMessage.value = err.message
   } finally {
@@ -239,6 +274,26 @@ onMounted(async () => {
           </div>
           <button type="button" @click="removeVideo(index)" class="text-red-400 hover:text-red-600 pt-2 text-sm">&times;</button>
         </div>
+      </div>
+
+      <div class="app-surface rounded-[24px] p-6">
+        <div class="mb-4">
+          <h2 class="font-display font-semibold text-slate-800 text-sm">School access</h2>
+          <p class="text-sm text-slate-500 mt-1">Select the schools whose principals and teachers can see this kit.</p>
+        </div>
+
+        <div v-if="schools.length" class="max-h-64 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-xl px-4">
+          <label v-for="school in schools" :key="school.id" class="flex items-center gap-3 py-3 cursor-pointer">
+            <input
+              type="checkbox"
+              :checked="selectedSchoolIds.has(school.id)"
+              @change="toggleSchool(school.id)"
+              class="h-4 w-4 rounded border-slate-300 text-navy-700 focus:ring-navy-500"
+            >
+            <span class="text-sm text-slate-700">{{ school.name }}</span>
+          </label>
+        </div>
+        <p v-else class="text-sm text-slate-400">No active schools are available to assign.</p>
       </div>
 
       <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ errorMessage }}</p>

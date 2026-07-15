@@ -11,12 +11,18 @@ const kit = ref(null)
 const activeVideoIndex = ref(0)
 const isLoading = ref(true)
 const errorMessage = ref('')
+const manualDownloadUrl = ref(null)
 
 async function loadKit() {
   isLoading.value = true
   errorMessage.value = ''
   try {
     kit.value = await kitService.getById(props.kitId)
+    if (kit.value.manualPdfUrl) {
+      const key = kit.value.manualPdfUrl.replace('manuals/', '')
+      const res = await kitService.getManualDownloadUrl(key)
+      manualDownloadUrl.value = res.downloadUrl
+    }
   } catch (err) {
     errorMessage.value = err.message
   } finally {
@@ -54,7 +60,7 @@ onMounted(loadKit)
       <p class="text-white/75 text-sm mb-1 max-w-2xl">{{ kit.description }}</p>
       </div>
 
-      <div v-if="(kit.videos && kit.videos.length > 0) || kit.manualPdfUrl" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div v-if="(kit.videos && kit.videos.length > 0) || manualDownloadUrl" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2">
           <div v-if="kit.videos && kit.videos.length > 0" class="aspect-video bg-black rounded-xl overflow-hidden">
             <iframe
@@ -74,12 +80,12 @@ onMounted(loadKit)
         </div>
 
         <div class="space-y-2">
-          <div v-if="kit.manualPdfUrl" class="app-surface rounded-[20px] overflow-hidden mb-4">
+          <div v-if="manualDownloadUrl" class="app-surface rounded-[20px] overflow-hidden mb-4">
             <div class="px-3 py-2.5 border-b border-slate-100 flex items-center justify-between gap-3">
               <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Manual</p>
-              <a :href="kit.manualPdfUrl" target="_blank" rel="noopener" class="text-xs font-semibold text-navy-700 hover:text-navy-900">Open PDF</a>
+              <a :href="manualDownloadUrl" target="_blank" rel="noopener" class="text-xs font-semibold text-navy-700 hover:text-navy-900">Open PDF</a>
             </div>
-            <iframe :src="kit.manualPdfUrl" title="Kit manual PDF" class="w-full h-72 bg-slate-50"></iframe>
+            <iframe :src="manualDownloadUrl" title="Kit manual PDF" class="w-full h-72 bg-slate-50"></iframe>
           </div>
 
           <p v-if="kit.videos && kit.videos.length > 0" class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Playlist</p>

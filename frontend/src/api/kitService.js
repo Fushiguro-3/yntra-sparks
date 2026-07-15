@@ -1,14 +1,22 @@
+import { USE_MOCK } from '@/config'
+import { mockKitService } from './mock/mockKitService'
 import http, { unwrap } from './http'
 
-// Maps 1:1 to KitController.
-//
-// NOTE on search: the backend's GET /kits does not implement search or
-// categoryId filtering — it only does findByStatus(ACTIVE) /
-// findBySchoolId server-side. Don't pass a `search` param here, it'll be
-// silently ignored; filter client-side over the loaded page instead. This
-// was caught while porting Ervan's service layer — worth double-checking
-// against the actual KitService.java before "fixing" it.
-export const kitService = {
+// In mock mode, listForMySchool needs the schoolId from the auth store since
+// there's no real JWT. We defer the import to call time to avoid circular deps.
+const mockKitServiceWrapped = {
+  ...mockKitService,
+  listForMySchool(opts) {
+    // Dynamic import at call time — store is always initialised by the time
+    // a Principal/Teacher view loads.
+    return import('@/stores/auth').then(({ useAuthStore }) => {
+      const schoolId = useAuthStore().user?.schoolId
+      return mockKitService.listForMySchool(opts, schoolId)
+    })
+  }
+}
+
+const realKitService = {
   /** Super Admin — all active kits. */
   list({ page = 0, size = 20, sort = 'createdAt,desc' } = {}) {
     return unwrap(http.get('/kits', { params: { page, size, sort } }))
@@ -42,6 +50,10 @@ export const kitService = {
     }))
   },
 
+  getManualDownloadUrl(key) {
+    return unwrap(http.get(`/kits/manuals/${key}/download-url`))
+  },
+
   update(id, payload) {
     return unwrap(http.put(`/kits/${id}`, payload))
   },
@@ -59,3 +71,5 @@ export const kitService = {
     return unwrap(http.delete(`/schools/${schoolId}/kits/${kitId}`))
   }
 }
+
+export const kitService = USE_MOCK ? mockKitServiceWrapped : realKitService

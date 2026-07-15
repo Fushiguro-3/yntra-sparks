@@ -1,8 +1,8 @@
+import { USE_MOCK } from '@/config'
+import { mockAuthService } from './mock/mockAuthService'
 import http, { unwrap } from './http'
 
-// Maps to the backend auth/session endpoints. There is still no self-service
-// password reset or registration flow (ADR-001, admin-mediated resets only).
-export const authService = {
+const realAuthService = {
   /** @returns {Promise<{accessToken, user}>} */
   login(email, password) {
     return unwrap(http.post('/auth/login', { email, password }))
@@ -22,3 +22,5 @@ export const authService = {
     return unwrap(http.post('/auth/logout'))
   }
 }
+
+export const authService = USE_MOCK ? mockAuthService : realAuthService

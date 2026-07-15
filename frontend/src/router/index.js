@@ -87,12 +87,22 @@ const router = createRouter({
   }
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const auth = useAuthStore()
 
-  // App.vue holds initial render until bootstrap() finishes, but a route
-  // change can still fire before that resolves — don't act on stale state.
-  if (auth.isBootstrapping) return true
+  // Wait for bootstrap to finish before making any auth decision.
+  // Without this, a hard refresh races: the guard sees isAuthenticated=false
+  // mid-bootstrap and redirects to /login or /403 prematurely.
+  if (auth.isBootstrapping) {
+    await new Promise((resolve) => {
+      const unwatch = auth.$subscribe(() => {
+        if (!auth.isBootstrapping) {
+          unwatch()
+          resolve()
+        }
+      })
+    })
+  }
 
   const requiredRoles = to.meta.roles
 
