@@ -44,7 +44,7 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center accent-grid px-4 py-10 relative overflow-hidden">
+  <div class="min-h-screen flex items-center justify-center accent-grid px-4 py-10 relative overflow-y-auto">
     <FloatingBubbles density="soft" />
     <span class="absolute -left-20 top-12 w-64 h-48 blue-splash opacity-35 animate-float"></span>
     <span class="absolute -right-20 bottom-10 w-64 h-52 orange-splash opacity-35 animate-float" style="animation-delay: -1.7s"></span>
@@ -58,8 +58,8 @@ async function handleSubmit() {
         <p class="text-ink-600 text-sm mt-2">Sign in to continue to your Yntra Sparks workspace.</p>
       </div>
 
-      <div class="app-surface rounded-[28px] p-6 sm:p-8">
-        <form @submit.prevent="handleSubmit" class="space-y-4">
+      <div class="app-surface rounded-[28px] p-6 sm:p-8 flex flex-col">
+        <form @submit.prevent="handleSubmit" class="space-y-4 pd-2">
           <div data-aos="fade-up" data-aos-delay="100">
             <label class="block text-sm font-bold text-navy-900 mb-1.5">Email address</label>
             <input
@@ -92,8 +92,7 @@ async function handleSubmit() {
             type="submit"
             :disabled="isSubmitting"
             class="app-button-primary w-full"
-            data-aos="fade-up"
-            data-aos-delay="340"
+           
           >
             <span v-if="isSubmitting" class="btn-spinner" aria-hidden="true"></span>
             {{ isSubmitting ? 'Signing in…' : 'Sign In' }}
