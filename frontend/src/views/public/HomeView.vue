@@ -107,14 +107,14 @@ async function loadFeaturedKits() {
 let detachParallax = () => {}
 
 onMounted(() => {
-  startCarousel()
+ 
   loadFeaturedKits()
   heroReveal([heroEyebrow.value, heroCopy.value, heroActions.value], heroHeading.value)
   heroVisualReveal(heroVisual.value)
   detachParallax = attachCursorParallax(heroVisual.value, { strength: 6 })
 })
 onUnmounted(() => {
-  stopCarousel()
+  
   detachParallax()
 })
 
