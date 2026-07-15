@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "./animations.css";
+@import "./transitions.css";
+@import "./hover-effects.css";
 
 /*
   Brand tokens pulled from Logo__1_-removebg-preview.png (navy Y-shaped
@@ -42,6 +45,30 @@
   --shadow-card-lg: 0px 24px 48px rgba(31,27,46,0.14);
 }
 
+/* ------------------------------------------------------------------ */
+/* MOTION SYSTEM v2 — shared tokens                                    */
+/* One small set of curves/durations, reused everywhere, so every      */
+/* animation on the site (nav, buttons, cards, sections, page          */
+/* transitions) feels like it belongs to the same physical system      */
+/* instead of a pile of one-off tweaks.                                */
+/* ------------------------------------------------------------------ */
+:root {
+  /* Expo-out — the "premium settle": fast start, long soft landing.    */
+  --ease-premium: cubic-bezier(.16, 1, .3, 1);
+  /* Gentle symmetric ease, used for ambient/looping motion.            */
+  --ease-ambient: cubic-bezier(.45, .05, .55, .95);
+  /* Snappy in/out, used for things leaving the screen or closing.      */
+  --ease-exit: cubic-bezier(.7, 0, .84, 0);
+  /* Slight overshoot — micro-interactions that should feel tactile.    */
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+
+  --dur-micro: 180ms;
+  --dur-fast: 320ms;
+  --dur-base: 520ms;
+  --dur-slow: 780ms;
+  --dur-ambient: 1200ms;
+}
+
 body {
   font-family: var(--font-body);
   color: var(--color-ink-900);
@@ -55,42 +82,198 @@ h1, h2, h3, h4, .font-display {
 }
 
 @keyframes float-y {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  25%  { transform: translate3d(4px, -10px, 0) rotate(.6deg) scale(1.008); }
+  50%  { transform: translate3d(0, -14px, 0) rotate(0deg) scale(1); }
+  75%  { transform: translate3d(-4px, -6px, 0) rotate(-.6deg) scale(.996); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
 }
 .animate-float {
-  animation: float-y 3400ms ease-in-out infinite;
+  animation: float-y 5200ms var(--ease-ambient) infinite;
+}
+
+/* ------------------------------------------------------------------ */
+/* Ambient floating decoration v2 (FloatingBubbles.vue + playful-shell) */
+/* Each loop now visits 5–6 irregular waypoints instead of a single    */
+/* back-and-forth wobble, and every bubble carries its own duration,   */
+/* delay AND timing-function so the field reads as many independent    */
+/* particles drifting rather than a handful of things breathing in     */
+/* lockstep. Still transform/opacity (+ the two decorative blob shapes */
+/* which also get a slow border-radius morph — cheap, since there are  */
+/* only two of them) so this stays off the main thread.                */
+/* ------------------------------------------------------------------ */
+@keyframes bubble-loop-1 {
+  0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); opacity: .5; }
+  22%  { transform: translate3d(16px, -22px, 0) scale(1.1) rotate(4deg); opacity: .78; }
+  48%  { transform: translate3d(30px, 6px, 0) scale(.96) rotate(-2deg); opacity: .62; }
+  74%  { transform: translate3d(6px, 26px, 0) scale(1.05) rotate(3deg); opacity: .8; }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); opacity: .5; }
+}
+@keyframes bubble-loop-2 {
+  0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); opacity: .38; }
+  20%  { transform: translate3d(-18px, 12px, 0) scale(.9) rotate(-5deg); opacity: .6; }
+  46%  { transform: translate3d(-8px, -24px, 0) scale(1.08) rotate(2deg); opacity: .72; }
+  72%  { transform: translate3d(20px, -6px, 0) scale(.95) rotate(-3deg); opacity: .5; }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); opacity: .38; }
+}
+@keyframes bubble-loop-3 {
+  0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); opacity: .46; }
+  25%  { transform: translate3d(12px, 22px, 0) scale(1.14) rotate(5deg); opacity: .74; }
+  55%  { transform: translate3d(-16px, 10px, 0) scale(.92) rotate(-4deg); opacity: .58; }
+  80%  { transform: translate3d(-4px, -18px, 0) scale(1.04) rotate(2deg); opacity: .7; }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); opacity: .46; }
+}
+@keyframes bubble-loop-4 {
+  0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); opacity: .42; }
+  30%  { transform: translate3d(-22px, -14px, 0) scale(1.06) rotate(-3deg); opacity: .66; }
+  60%  { transform: translate3d(10px, -28px, 0) scale(.94) rotate(4deg); opacity: .5; }
+  85%  { transform: translate3d(18px, 8px, 0) scale(1.1) rotate(-2deg); opacity: .76; }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); opacity: .42; }
+}
+
+@keyframes blob-morph-a {
+  0%   { border-radius: 48% 52% 58% 42% / 36% 46% 54% 64%; transform: rotate(-16deg) translate3d(0,0,0) scale(1); }
+  33%  { border-radius: 58% 42% 46% 54% / 48% 40% 60% 52%; transform: rotate(-12deg) translate3d(14px,-18px,0) scale(1.04); }
+  66%  { border-radius: 42% 58% 52% 48% / 58% 52% 42% 48%; transform: rotate(-20deg) translate3d(-10px,16px,0) scale(.97); }
+  100% { border-radius: 48% 52% 58% 42% / 36% 46% 54% 64%; transform: rotate(-16deg) translate3d(0,0,0) scale(1); }
+}
+@keyframes blob-morph-b {
+  0%   { border-radius: 54% 46% 40% 60% / 42% 36% 64% 58%; transform: rotate(18deg) translate3d(0,0,0) scale(1); }
+  33%  { border-radius: 44% 56% 58% 42% / 54% 48% 52% 46%; transform: rotate(22deg) translate3d(-16px,14px,0) scale(1.05); }
+  66%  { border-radius: 60% 40% 46% 54% / 46% 58% 42% 54%; transform: rotate(14deg) translate3d(12px,-14px,0) scale(.96); }
+  100% { border-radius: 54% 46% 40% 60% / 42% 36% 64% 58%; transform: rotate(18deg) translate3d(0,0,0) scale(1); }
+}
+
+.bubble-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* .bubble-wrap carries position (left/top/right) plus the per-mount
+   randomized static scale + opacity set inline by FloatingBubbles.vue.
+   .bubble (nested inside) carries size/color and keeps running the
+   bubble-loop-N keyframe drift — the two compose so every bubble ends up
+   with its own independent size, speed AND resting opacity/scale instead
+   of a handful of shared presets breathing in lockstep. */
+.bubble-wrap {
+  position: absolute;
+  will-change: transform, opacity;
+  transition: transform 400ms var(--ease-premium), opacity 400ms var(--ease-premium);
+}
+
+.bubble {
+  position: relative;
+  display: block;
+  border-radius: 9999px;
+  filter: blur(1px);
+  will-change: transform, opacity;
+}
+
+.bubble-wrap-a { left: 6%;   top: 18%; }
+.bubble-wrap-b { left: 22%;  top: 68%; }
+.bubble-wrap-c { right: 10%; top: 24%; }
+.bubble-wrap-d { right: 20%; top: 74%; }
+.bubble-wrap-e { left: 42%;  top: 8%;  }
+.bubble-wrap-f { left: 62%;  top: 46%; }
+.bubble-wrap-g { left: 34%;  top: 82%; }
+.bubble-wrap-h { right: 34%; top: 12%; }
+.bubble-wrap-i { left: 12%;  top: 52%; }
+
+.bubble-a { width: 74px;  height: 74px;  background: radial-gradient(circle at 32% 30%, rgba(56,185,232,.55), rgba(56,185,232,0) 70%); animation-name: bubble-loop-1; animation-timing-function: var(--ease-ambient); animation-iteration-count: infinite; }
+.bubble-b { width: 46px;  height: 46px;  background: radial-gradient(circle at 32% 30%, rgba(255,174,34,.5), rgba(255,174,34,0) 70%); animation-name: bubble-loop-2; animation-timing-function: var(--ease-ambient); animation-iteration-count: infinite; }
+.bubble-c { width: 100px; height: 100px; background: radial-gradient(circle at 32% 30%, rgba(247,148,29,.4), rgba(247,148,29,0) 70%); animation-name: bubble-loop-3; animation-timing-function: ease-in-out; animation-iteration-count: infinite; filter: blur(2px); }
+.bubble-d { width: 58px;  height: 58px;  background: radial-gradient(circle at 32% 30%, rgba(36,86,168,.42), rgba(36,86,168,0) 70%); animation-name: bubble-loop-4; animation-timing-function: var(--ease-ambient); animation-iteration-count: infinite; }
+.bubble-e { width: 34px;  height: 34px;  background: radial-gradient(circle at 32% 30%, rgba(56,185,232,.5), rgba(56,185,232,0) 70%); animation-name: bubble-loop-2; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+.bubble-f { width: 62px;  height: 62px;  background: radial-gradient(circle at 32% 30%, rgba(255,174,34,.38), rgba(255,174,34,0) 70%); animation-name: bubble-loop-3; animation-timing-function: var(--ease-ambient); animation-iteration-count: infinite; }
+.bubble-g { width: 26px;  height: 26px;  background: radial-gradient(circle at 32% 30%, rgba(247,148,29,.45), rgba(247,148,29,0) 70%); animation-name: bubble-loop-1; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+.bubble-h { width: 48px;  height: 48px;  background: radial-gradient(circle at 32% 30%, rgba(36,86,168,.4), rgba(36,86,168,0) 70%); animation-name: bubble-loop-4; animation-timing-function: var(--ease-ambient); animation-iteration-count: infinite; filter: blur(1.5px); }
+.bubble-i { width: 20px;  height: 20px;  background: radial-gradient(circle at 32% 30%, rgba(255,174,34,.55), rgba(255,174,34,0) 70%); animation-name: bubble-loop-2; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+
+/* The two big blob shapes on .playful-shell now morph shape as they    */
+/* drift, so they read as slow, living forms rather than shapes sliding */
+/* around on rails. */
+.playful-shell::before { animation: blob-morph-a 24s var(--ease-ambient) infinite; }
+.playful-shell::after  { animation: blob-morph-b 27s var(--ease-ambient) infinite; }
+
+/* Soft glow used on card hover, layered on top of the existing kit-card-fun
+   shadow so cards feel like they're lifting toward the light, not just
+   moving up. Premium ease + a hint of rotation keeps the lift from
+   feeling like a linear mechanical slide. */
+.hover-glow {
+  transition:
+    box-shadow var(--dur-base) var(--ease-premium),
+    transform var(--dur-base) var(--ease-premium);
+}
+.hover-glow:hover {
+  transform: translateY(-6px) scale(1.015) rotate(-.3deg);
+  box-shadow:
+    0 26px 52px rgba(10,31,77,.18),
+    0 0 0 1px rgba(255,174,34,.14),
+    0 0 36px rgba(255,174,34,.24);
+}
+.hover-glow:active {
+  transition-duration: var(--dur-micro);
+  transform: translateY(-2px) scale(1.005);
+}
+
+/* Hero copy elements are revealed by utils/motion.js (GSAP). Nothing to
+   hide by default in CSS — GSAP sets the initial opacity/transform itself
+   so content stays visible if JS is unavailable or fails to load. */
+
+/* Word-masked heading reveal (utils/motion.js splitIntoMaskedWords). Each
+   word sits in an overflow-hidden box so GSAP can slide the inner word up
+   from below without ever showing empty space — the heading reads as
+   rising into place line by line. Falls back to plain inline text if JS
+   never runs (no split = no wrapper spans = heading renders normally). */
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.word-inner {
+  display: inline-block;
+  will-change: transform, opacity;
 }
 
 [data-aos] {
   opacity: 0;
-  transform: translate3d(0, 18px, 0);
+  transform: translate3d(0, 42px, 0) scale(.96);
+  filter: blur(6px);
   transition:
-    opacity 620ms cubic-bezier(.2,.8,.2,1),
-    transform 620ms cubic-bezier(.2,.8,.2,1);
+    opacity 1s ease-out,
+    transform 1s ease-out,
+    filter 1s ease-out;
   transition-delay: var(--aos-delay, 0ms);
+  will-change: transform, opacity, filter;
 }
 
 [data-aos="fade-in"] {
-  transform: none;
+  transform: scale(.98);
 }
 
 [data-aos="zoom-pop"] {
-  transform: translate3d(0, 18px, 0) scale(.96);
+  transform: translate3d(0, 30px, 0) scale(.88);
+  transition-timing-function: ease-out;
 }
 
 [data-aos="slide-left"] {
-  transform: translate3d(24px, 0, 0);
+  transform: translate3d(52px, 0, 0) scale(.97);
 }
 
 [data-aos="slide-right"] {
-  transform: translate3d(-24px, 0, 0);
+  transform: translate3d(-52px, 0, 0) scale(.97);
 }
 
 [data-aos].aos-visible,
 .aos-reduced-motion [data-aos] {
   opacity: 1;
   transform: none;
+  filter: blur(0);
 }
 
 .playful-shell {
@@ -177,6 +360,66 @@ h1, h2, h3, h4, .font-display {
   background-size: 62px 62px;
 }
 
+/* Navbar.vue: shadow fades in once the page has scrolled, layered with the
+   existing background/blur/border transition on the header itself. */
+.nav-shadow {
+  transition: box-shadow var(--dur-base) var(--ease-premium);
+}
+.nav-shadow-active {
+  box-shadow: 0 8px 24px rgba(10, 31, 77, .08);
+}
+
+.header-enter {
+  opacity: 0;
+  transform: translateY(-12px);
+  animation: header-slide-down 420ms var(--ease-premium) forwards;
+}
+
+@keyframes header-slide-down {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Shared hover-tracking highlight bar in Navbar.vue — glides between links
+   instead of each link running its own isolated hover transition. */
+.nav-slider {
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--color-spark-600), var(--color-spark-400));
+  transition: transform var(--dur-base) var(--ease-premium), width var(--dur-base) var(--ease-premium), opacity var(--dur-fast) ease;
+  pointer-events: none;
+}
+
+/* Hamburger → close morph (Navbar.vue mobile trigger). Three bars pivot
+   into an X rather than being swapped for a static icon. */
+.hamburger-bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 9999px;
+  background: currentColor;
+  transition: transform var(--dur-fast) var(--ease-premium), opacity var(--dur-fast) var(--ease-premium);
+}
+
+/* Dropdown ("Grades") reveal — fades + rises + scales in with the premium
+   curve, instead of Tailwind's binary hidden/block toggle. */
+.grades-menu {
+  opacity: 0;
+  transform: translateY(-6px) scale(.96);
+  visibility: hidden;
+  transform-origin: top center;
+  transition: opacity var(--dur-fast) var(--ease-premium), transform var(--dur-fast) var(--ease-premium), visibility 0s linear var(--dur-fast);
+}
+.group:hover .grades-menu {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  visibility: visible;
+  transition: opacity var(--dur-fast) var(--ease-premium), transform var(--dur-fast) var(--ease-premium), visibility 0s linear;
+}
+
 .dashboard-shell {
   background: linear-gradient(135deg, #f7fbff 0%, #eef4ff 48%, #fff9ec 100%);
 }
@@ -242,6 +485,8 @@ h1, h2, h3, h4, .font-display {
 .app-button-primary,
 .app-button-secondary,
 .app-button-quiet {
+  position: relative;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -252,19 +497,45 @@ h1, h2, h3, h4, .font-display {
   font-size: .875rem;
   font-weight: 700;
   line-height: 1;
-  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+  transition: transform var(--dur-fast) var(--ease-premium), box-shadow var(--dur-fast) var(--ease-premium), background-color var(--dur-fast) var(--ease-premium);
 }
+
+/* Diagonal shine that sweeps across on hover — a small, cheap (opacity +
+   transform only) touch that reads as "premium" on solid-color buttons. */
+.app-button-primary::after,
+.app-button-secondary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.32) 45%, transparent 60%);
+  transform: translateX(-120%);
+  transition: transform var(--dur-slow) var(--ease-premium);
+  pointer-events: none;
+}
+.app-button-primary:hover::after,
+.app-button-secondary:hover::after { transform: translateX(120%); }
 
 .app-button-primary {
   color: #fff;
   background: linear-gradient(125deg, #f26522, #f7941d);
   box-shadow: 0 8px 16px rgba(242, 101, 34, .22);
 }
-.app-button-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 22px rgba(242, 101, 34, .3); }
+.app-button-primary:hover { transform: translateY(-2px) scale(1.015); box-shadow: 0 16px 28px rgba(242, 101, 34, .32); }
 .app-button-secondary { color: #fff; background: #123573; box-shadow: 0 8px 16px rgba(10, 31, 77, .16); }
-.app-button-secondary:hover { background: #0a1f4d; transform: translateY(-1px); }
+.app-button-secondary:hover { background: #0a1f4d; transform: translateY(-2px) scale(1.015); box-shadow: 0 16px 26px rgba(10,31,77,.24); }
 .app-button-quiet { color: #40506e; background: #f5f7fb; }
-.app-button-quiet:hover { background: #e9eef8; color: #0a1f4d; }
+.app-button-quiet:hover { background: #e9eef8; color: #0a1f4d; transform: translateY(-1px); }
+.app-button-primary:active,
+.app-button-secondary:active,
+.app-button-quiet:active {
+  transition: transform var(--dur-micro) var(--ease-exit);
+}
+
+/* Smooth focus transition for every input/textarea/select, including the
+   raw Tailwind-styled fields in the admin forms (not just .app-input). */
+input, textarea, select {
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
 
 .app-input {
   width: 100%;
@@ -301,23 +572,220 @@ h1, h2, h3, h4, .font-display {
 .skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,.72), transparent); animation: shimmer 1.4s infinite; }
 
 @keyframes rise-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(18px) scale(.985); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
-.page-enter { animation: rise-in 420ms cubic-bezier(.2,.8,.2,1) both; }
+.page-enter { animation: rise-in 700ms var(--ease-premium) both; }
+
+/* Slim top progress bar shown while a route transition is in flight
+   (App.vue). Purely cosmetic, mirrors the "page is loading" cue premium
+   sites use so navigation feels acknowledged instantly, even though the
+   route change itself is near-instant. */
+.route-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  z-index: 60;
+  background: linear-gradient(90deg, var(--color-spark-600), var(--color-spark-400) 60%, var(--color-navy-500));
+  box-shadow: 0 0 12px rgba(242,101,34,.55);
+  transform-origin: left center;
+  transform: scaleX(0);
+  width: 100%;
+  opacity: 0;
+  transition: transform var(--dur-slow) var(--ease-premium), opacity var(--dur-fast) ease;
+}
+.route-progress-bar.is-active {
+  opacity: 1;
+  transform: scaleX(.78);
+  transition: transform 900ms var(--ease-ambient), opacity var(--dur-fast) ease;
+}
+.route-progress-bar.is-done {
+  opacity: 0;
+  transform: scaleX(1);
+  transition: transform var(--dur-fast) var(--ease-premium), opacity var(--dur-fast) ease var(--dur-fast);
+}
+
+/* Modal open/close (Modal.vue). Backdrop fades, panel fades + scales in
+   on the shared premium curve, with an asymmetric close (quicker, snappier
+   exit) to match the route-transition philosophy. */
+.modal-backdrop-enter-active { transition: opacity var(--dur-fast) var(--ease-premium); }
+.modal-backdrop-leave-active { transition: opacity var(--dur-micro) var(--ease-exit); }
+.modal-backdrop-enter-from,
+.modal-backdrop-leave-to { opacity: 0; }
+
+.modal-panel-enter-active { transition: opacity var(--dur-base) var(--ease-premium), transform var(--dur-base) var(--ease-premium); }
+.modal-panel-leave-active { transition: opacity var(--dur-micro) var(--ease-exit), transform var(--dur-micro) var(--ease-exit); }
+.modal-panel-enter-from { opacity: 0; transform: translateY(18px) scale(.94); }
+.modal-panel-leave-to { opacity: 0; transform: translateY(10px) scale(.97); }
+
+/* MarketingButton.vue primary/secondary shine sweep — same technique as
+   the app-button-* shine, exposed as a reusable utility class. */
+.mkt-btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.34) 45%, transparent 60%);
+  transform: translateX(-120%);
+  transition: transform var(--dur-slow) var(--ease-premium);
+  pointer-events: none;
+}
+.mkt-btn-shine:hover::after { transform: translateX(120%); }
+
+/* Button loading spinner (MarketingButton.vue, app-button-*). */
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+.btn-spinner {
+  width: 1em;
+  height: 1em;
+  border-radius: 9999px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  opacity: .85;
+  animation: btn-spin 650ms linear infinite;
+}
+
+/* Form field + validation transitions (used across login/admin forms). */
+.field-message-enter-active { transition: opacity var(--dur-fast) var(--ease-premium), transform var(--dur-fast) var(--ease-premium); }
+.field-message-leave-active { transition: opacity var(--dur-micro) var(--ease-exit); }
+.field-message-enter-from { opacity: 0; transform: translateY(-6px); }
+.field-message-leave-to { opacity: 0; }
+
+/* Pagination page-change fade. */
+.pagination-fade-enter-active { transition: opacity var(--dur-fast) var(--ease-premium); }
+.pagination-fade-leave-active { transition: opacity var(--dur-micro) var(--ease-exit); }
+.pagination-fade-enter-from,
+.pagination-fade-leave-to { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-float { animation: none; }
+  .bubble, .playful-shell::before, .playful-shell::after { animation: none; }
+  .hover-glow:hover { box-shadow: 0 22px 46px rgba(10,31,77,.16); }
   [data-aos] {
     opacity: 1;
     transform: none;
+    filter: none;
     transition: none;
   }
-  .page-enter, .skeleton::after { animation: none; }
+  .page-enter, .skeleton::after, .btn-spinner { animation: none; }
   .app-button-primary:hover, .app-button-secondary:hover { transform: none; }
+  .route-fade-enter-active, .route-fade-leave-active,
+  .modal-panel-enter-active, .modal-panel-leave-active,
+  .field-message-enter-active, .field-message-leave-active {
+    transition: none;
+  }
+  .route-fade-enter-from, .route-fade-leave-to,
+  .modal-panel-enter-from, .modal-panel-leave-to {
+    transform: none;
+    filter: none;
+  }
+  .route-progress-bar { display: none; }
+  .playful-shell::before, .playful-shell::after { animation: none; }
 }
 
 @media (max-width: 767px) {
   .dashboard-rail { width: 100%; }
   .dashboard-hero::after { right: -72px; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll indicator (HomeView.vue hero). transform/opacity only.       */
+/* ------------------------------------------------------------------ */
+@keyframes scroll-indicator-bob {
+  0%   { transform: translateY(0) scale(1); opacity: .5; }
+  40%  { transform: translateY(9px) scale(1.04); opacity: 1; }
+  70%  { transform: translateY(3px) scale(1); opacity: .8; }
+  100% { transform: translateY(0) scale(1); opacity: .5; }
+}
+.scroll-indicator {
+  animation: scroll-indicator-bob 2.4s var(--ease-ambient) infinite;
+  transition: opacity var(--dur-fast) var(--ease-premium), transform var(--dur-fast) var(--ease-premium);
+}
+.scroll-indicator:hover {
+  opacity: 1;
+  transform: scale(1.08);
+  animation-play-state: paused;
+}
+
+/* Click feedback for shared SaaS button primitives. */
+.app-button-primary:active,
+.app-button-secondary:active,
+.app-button-quiet:active { transform: scale(.97); }
+
+/* Dashboard kit cards pick up the same restrained hover-scale used on the
+   public cards, layered on the existing lift + rotate + shadow. */
+.kit-dashboard-card {
+  transition: transform var(--dur-base) var(--ease-premium), box-shadow var(--dur-base) var(--ease-premium);
+}
+.kit-dashboard-card:hover {
+  transform: translateY(-7px) scale(1.02) rotate(-.35deg);
+}
+.kit-dashboard-card:active {
+  transition-duration: var(--dur-micro);
+  transform: translateY(-2px) scale(1.005);
+}
+
+/* TestimonialCard.vue hover state. */
+.testimonial-card {
+  transition: transform var(--dur-base) var(--ease-premium), box-shadow var(--dur-base) var(--ease-premium);
+}
+.testimonial-card:hover {
+  transform: translateY(-6px) scale(1.02) rotate(.3deg);
+  box-shadow: var(--shadow-card-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-indicator { animation: none; }
+  .kit-dashboard-card:hover { transform: none; }
+  .testimonial-card:hover { transform: none; }
+  .app-button-primary:active,
+  .app-button-secondary:active,
+  .app-button-quiet:active { transform: none; }
+}
+.page-wrapper{
+    width:100%;
+    position: relative;
+}
+
+.route-fade-enter-active{
+    transition:
+        opacity 1s cubic-bezier(.16,1,.3,1),
+        transform 1s cubic-bezier(.16,1,.3,1),
+        filter 1s cubic-bezier(.16,1,.3,1);
+}
+
+.route-fade-leave-active{
+    transition:
+        opacity 1s cubic-bezier(.22,1,.36,1),
+        transform 1s cubic-bezier(.22,1,.36,1),
+        filter 1s cubic-bezier(.22,1,.36,1);
+
+    position:absolute;
+    inset:0;
+    width:100%;
+}
+
+.route-fade-enter-from{
+    opacity:0;
+    transform:translateY(48px) scale(.95);
+    filter:blur(12px);
+}
+
+.route-fade-enter-to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+}
+
+.route-fade-leave-from{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+}
+
+.route-fade-leave-to{
+    opacity:0;
+    transform:translateY(-32px) scale(.96);
+    filter:blur(8px);
 }

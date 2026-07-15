@@ -51,7 +51,11 @@ async function handleLogout() {
         <span class="text-xs font-bold text-navy-700 bg-navy-50 rounded-full px-3 py-1.5">Teacher workspace</span>
       </header>
       <div class="p-5 md:p-8">
-        <RouterView />
+        <RouterView v-slot="{ Component }">
+          <div class="page-wrapper">
+            <component :is="Component" />
+          </div>
+        </RouterView>
       </div>
     </main>
   </div>

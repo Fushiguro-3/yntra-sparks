@@ -171,7 +171,7 @@ onMounted(loadMessages)
 
     <Pagination :page="page" :total-pages="totalPages" @change="onPageChange" />
 
-    <Modal v-if="selectedMessage" title="Contact Message" @close="selectedMessage = null">
+    <Modal :show="!!selectedMessage" title="Contact Message" @close="selectedMessage = null">
       <div class="space-y-4 text-sm">
         <div class="grid sm:grid-cols-2 gap-4">
           <div>

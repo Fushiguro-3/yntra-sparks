@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-label="Electronics illustration">
+  <defs>
+    <linearGradient id="e1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7fbff"/>
+      <stop offset="100%" stop-color="#e5f0ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="96" fill="url(#e1)"/>
+  <rect x="164" y="192" width="312" height="280" rx="44" fill="#fff" stroke="#0d3c75" stroke-width="18"/>
+  <rect x="204" y="248" width="232" height="180" rx="24" fill="#eef5ff"/>
+  <path d="M264 288v96h96" stroke="#123573" stroke-width="20" stroke-linecap="round"/>
+  <path d="M320 344h-56" stroke="#123573" stroke-width="20" stroke-linecap="round"/>
+  <path d="M320 408h-56" stroke="#123573" stroke-width="20" stroke-linecap="round"/>
+  <path d="M256 368h112" stroke="#ffae24" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="344" cy="358" r="34" fill="#ffae24"/>
+  <path d="M344 330v-34" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M344 386v34" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M250 310h-34" stroke="#0d3c75" stroke-width="12" stroke-linecap="round"/>
+  <path d="M284 310h34" stroke="#0d3c75" stroke-width="12" stroke-linecap="round"/>
+  <path d="M220 488h200" stroke="#0d3c75" stroke-width="20" stroke-linecap="round"/>
+  <path d="M260 528h120" stroke="#0d3c75" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="270" cy="262" r="16" fill="#0d3c75"/>
+  <circle cx="358" cy="262" r="16" fill="#0d3c75"/>
+</svg>

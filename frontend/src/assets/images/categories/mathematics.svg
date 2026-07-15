@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-label="Mathematics illustration">
+  <defs>
+    <linearGradient id="g4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffbf2"/>
+      <stop offset="100%" stop-color="#fff1d8"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="96" fill="url(#g4)"/>
+  <rect x="160" y="212" width="320" height="260" rx="32" fill="#fff"/>
+  <path d="M212 262h216" stroke="#0d3c75" stroke-width="18" stroke-linecap="round"/>
+  <path d="M212 316h216" stroke="#0d3c75" stroke-width="18" stroke-linecap="round"/>
+  <path d="M212 368h216" stroke="#0d3c75" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="254" cy="448" r="38" fill="#ffae24"/>
+  <path d="M240 432l28 28" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+  <path d="M268 432l-28 28" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+  <path d="M372 420c0-18 14-32 32-32h56v64h-56c-18 0-32-14-32-32Z" fill="#0d3c75" opacity="0.95"/>
+  <path d="M196 410l40 40 56-56" fill="none" stroke="#0d3c75" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M386 278h42v88h-42" fill="#fbb040" stroke="#0d3c75" stroke-width="14" stroke-linecap="round"/>
+  <path d="M456 300h44" stroke="#0d3c75" stroke-width="14" stroke-linecap="round"/>
+  <path d="M500 338v56" stroke="#0d3c75" stroke-width="14" stroke-linecap="round"/>
+  <path d="M308 252h36" stroke="#0d3c75" stroke-width="14" stroke-linecap="round"/>
+  <path d="M322 238v36" stroke="#0d3c75" stroke-width="14" stroke-linecap="round"/>
+</svg>

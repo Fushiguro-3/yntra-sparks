@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-label="Science illustration">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7f9ff"/>
+      <stop offset="100%" stop-color="#e3f1ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="96" fill="url(#g)"/>
+  <circle cx="202" cy="190" r="38" fill="#fff" opacity="0.9"/>
+  <path d="M222 334c0-60-48-108-108-108-60 0-108 48-108 108 0 37 19 70 47 89l61 42 61-42c28-19 47-52 47-89Z" fill="#fff"/>
+  <path d="M182 246c18 22 26 50 22 78-7 50-53 86-103 79-28-4-52-21-67-44" stroke="#0d3c75" stroke-width="18" fill="none" stroke-linecap="round"/>
+  <path d="M182 246c16-12 34-18 53-18 54 0 98 44 98 98 0 53-43 96-96 98" stroke="#ffae24" stroke-width="18" fill="none" stroke-linecap="round"/>
+  <rect x="262" y="332" width="212" height="244" rx="32" fill="#fff"/>
+  <path d="M282 378h172" stroke="#0d3c75" stroke-width="14" stroke-linecap="round"/>
+  <path d="M282 418h112" stroke="#0d3c75" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="392" cy="240" r="42" fill="#fbb040" opacity="0.95"/>
+  <path d="M392 188v-42" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M392 292v42" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M340 240h-42" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M434 240h42" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M292 292l-30 30" stroke="#0d3c75" stroke-width="12" stroke-linecap="round"/>
+  <path d="M492 188l30-30" stroke="#0d3c75" stroke-width="12" stroke-linecap="round"/>
+</svg>

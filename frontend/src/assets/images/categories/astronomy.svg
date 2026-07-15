@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-label="Astronomy illustration">
+  <defs>
+    <linearGradient id="as1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f4f6ff"/>
+      <stop offset="100%" stop-color="#e5efff"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="96" fill="url(#as1)"/>
+  <circle cx="320" cy="292" r="124" fill="#fff" stroke="#0d3c75" stroke-width="18"/>
+  <circle cx="260" cy="250" r="22" fill="#ffae24"/>
+  <circle cx="390" cy="190" r="18" fill="#0d3c75"/>
+  <path d="M320 170a90 90 0 0 1 70 152" fill="none" stroke="#123573" stroke-width="18"/>
+  <path d="M320 260a60 60 0 0 1 46 100" fill="none" stroke="#123573" stroke-width="14"/>
+  <path d="M199 392c18-16 42-26 70-26 63 0 114 51 114 114 0 28-10 53-26 72" stroke="#0d3c75" stroke-width="16" fill="none"/>
+  <rect x="196" y="438" width="248" height="32" rx="16" fill="#0d3c75" opacity="0.1"/>
+  <rect x="208" y="478" width="184" height="22" rx="11" fill="#0d3c75" opacity="0.12"/>
+  <path d="M322 250l24 24-24 24" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M302 250l-24 24 24 24" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

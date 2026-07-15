@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-label="3D printing illustration">
+  <defs>
+    <linearGradient id="p1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f7ff"/>
+      <stop offset="100%" stop-color="#dde7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="96" fill="url(#p1)"/>
+  <path d="M216 226h208v44H216z" fill="#fff" stroke="#0d3c75" stroke-width="18"/>
+  <path d="M208 272h224v18H208z" fill="#123573" opacity="0.08"/>
+  <path d="M250 294v144" stroke="#0d3c75" stroke-width="20" stroke-linecap="round"/>
+  <path d="M390 294v144" stroke="#0d3c75" stroke-width="20" stroke-linecap="round"/>
+  <path d="M232 334h176" stroke="#0d3c75" stroke-width="18" stroke-linecap="round"/>
+  <path d="M232 384h176" stroke="#0d3c75" stroke-width="18" stroke-linecap="round"/>
+  <path d="M232 434h176" stroke="#0d3c75" stroke-width="18" stroke-linecap="round"/>
+  <path d="M232 484h176" stroke="#0d3c75" stroke-width="18" stroke-linecap="round"/>
+  <path d="M261 460c0 12 9 22 20 22h78c11 0 20-10 20-22v-54H261v54Z" fill="#ffae24" opacity="0.92"/>
+  <rect x="182" y="440" width="276" height="108" rx="34" fill="#fff" stroke="#0d3c75" stroke-width="18"/>
+  <path d="M232 520h176" stroke="#0d3c75" stroke-width="18" stroke-linecap="round"/>
+  <path d="M340 176v-34" stroke="#0d3c75" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="340" cy="410" r="28" fill="#ffae24"/>
+</svg>

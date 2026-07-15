@@ -1,0 +1,30 @@
+/* Shared transition helpers for smooth page and component motion. */
+
+.transition-smooth {
+  transition: transform 320ms cubic-bezier(.16,1,.3,1),
+              opacity 320ms cubic-bezier(.16,1,.3,1),
+              box-shadow 320ms cubic-bezier(.16,1,.3,1),
+              background-color 320ms cubic-bezier(.16,1,.3,1);
+}
+
+.transition-slow {
+  transition: transform 520ms cubic-bezier(.16,1,.3,1),
+              opacity 520ms cubic-bezier(.16,1,.3,1);
+}
+
+.fade-into-view {
+  opacity: 0;
+}
+
+.fade-into-view.is-visible {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transition-smooth,
+  .transition-slow,
+  .fade-into-view {
+    transition: none;
+    animation: none;
+  }
+}

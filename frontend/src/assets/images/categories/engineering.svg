@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-label="Engineering illustration">
+  <defs>
+    <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3f7ff"/>
+      <stop offset="100%" stop-color="#e9f3ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="96" fill="url(#g3)"/>
+  <path d="M190 316h260v180H190z" fill="#fff"/>
+  <path d="M190 316l40-140h180l40 140" fill="#dbe7ff"/>
+  <path d="M210 386h220v90H210z" fill="#fff"/>
+  <path d="M210 386h220" stroke="#0d3c75" stroke-width="18"/>
+  <circle cx="420" cy="420" r="32" fill="#ffae24"/>
+  <circle cx="250" cy="420" r="32" fill="#0d3c75"/>
+  <path d="M220 390h60" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M390 390h60" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M260 452h52" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M170 220c0-20 16-36 36-36h8c10 0 18 8 18 18v30c0 10-8 18-18 18h-8c-20 0-36-16-36-36Z" fill="#fff" stroke="#0d3c75" stroke-width="14"/>
+  <path d="M274 172h28v82h-28z" fill="#fff" stroke="#0d3c75" stroke-width="14"/>
+  <path d="M330 168h32v78h-32z" fill="#fbb040" stroke="#0d3c75" stroke-width="12"/>
+  <path d="M408 180h18v78h-18z" fill="#fff" stroke="#0d3c75" stroke-width="12"/>
+  <path d="M438 230h130" stroke="#0d3c75" stroke-width="16" stroke-linecap="round"/>
+  <path d="M438 260h104" stroke="#0d3c75" stroke-width="16" stroke-linecap="round"/>
+  <rect x="434" y="298" width="110" height="30" rx="12" fill="#0d3c75" opacity="0.05"/>
+</svg>

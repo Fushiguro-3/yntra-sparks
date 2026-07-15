@@ -1,0 +1,40 @@
+/* Shared animation utilities for entrance and micro-interaction motion.
+   Uses opacity/transform only so it remains GPU-friendly and graceful
+   under reduced-motion. */
+
+@keyframes fade-up-soft {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up-soft {
+  opacity: 0;
+  animation: fade-up-soft 520ms ease-out both;
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(22px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.slide-in-right {
+  opacity: 0;
+  animation: slide-in-right 480ms ease-out both;
+}
+
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.01); }
+}
+
+.pulse-soft {
+  animation: pulse-soft 2.4s infinite ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up-soft,
+  .slide-in-right,
+  .pulse-soft {
+    animation: none;
+  }
+}

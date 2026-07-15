@@ -160,7 +160,7 @@ onMounted(loadKits)
 
     <Pagination :page="page" :total-pages="totalPages" @change="onPageChange" />
 
-    <Modal v-if="showAccessModal" :title="`Manage Access - ${activeKit?.title}`" @close="showAccessModal = false" max-width="max-w-lg">
+    <Modal :show="showAccessModal" :title="`Manage Access - ${activeKit?.title}`" @close="showAccessModal = false" max-width="max-w-lg">
       <p class="text-xs text-slate-500 mb-4">
         Toggle which schools can see this kit.
       </p>

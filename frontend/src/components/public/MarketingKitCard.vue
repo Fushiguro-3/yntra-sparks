@@ -14,12 +14,12 @@ defineProps({
 </script>
 
 <template>
-  <div class="w-72 shrink-0 bg-white rounded-[24px] overflow-hidden kit-card-fun hover:-translate-y-1.5 transition-all duration-200">
+  <div class="w-72 shrink-0 bg-white rounded-[24px] overflow-hidden kit-card-fun hover-glow group">
     <div class="aspect-[16/10] bg-gradient-to-br from-white to-navy-50 flex items-center justify-center text-4xl p-4 relative overflow-hidden">
-      <span class="absolute -left-8 top-4 w-20 h-16 orange-splash"></span>
-      <span class="absolute -right-8 -bottom-5 w-24 h-20 blue-splash"></span>
-      <img v-if="imageUrl" :src="imageUrl" :alt="title" class="relative z-10 w-full h-full object-contain">
-      <span v-else class="relative z-10 font-display font-bold text-navy-800 text-2xl">{{ emoji }}</span>
+      <span class="absolute -left-8 top-4 w-20 h-16 orange-splash transition-transform duration-[760ms] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-110 group-hover:-translate-x-1"></span>
+      <span class="absolute -right-8 -bottom-5 w-24 h-20 blue-splash transition-transform duration-[760ms] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-110 group-hover:translate-x-1"></span>
+      <img v-if="imageUrl" :src="imageUrl" :alt="title" class="relative z-10 w-full h-full object-contain transition-transform duration-[760ms] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.12]">
+      <span v-else class="relative z-10 font-display font-bold text-navy-800 text-2xl transition-transform duration-[520ms] ease-[cubic-bezier(.34,1.56,.64,1)] group-hover:scale-110">{{ emoji }}</span>
     </div>
     <div class="p-5">
       <p class="text-xs font-semibold text-spark-600 mb-1">{{ category }}</p>

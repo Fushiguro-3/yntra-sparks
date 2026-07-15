@@ -41,8 +41,8 @@ onMounted(loadKit)
 
 <template>
   <section class="max-w-[1440px] mx-auto px-5 md:px-10 pt-10 pb-20">
-    <RouterLink :to="{ name: 'public-programs' }" class="text-sm font-semibold text-navy-700 hover:text-navy-900">
-      &larr; Back to Programs
+    <RouterLink :to="{ name: 'public-programs' }" class="group inline-flex items-center text-sm font-semibold text-navy-700 hover:text-navy-900 transition-colors">
+      <span class="inline-block transition-transform duration-200 group-hover:-translate-x-1">&larr;</span>&nbsp;Back to Programs
     </RouterLink>
 
     <div v-if="isLoading" class="mt-8 text-sm text-slate-400">Loading kit...</div>
@@ -52,7 +52,7 @@ onMounted(loadKit)
 
     <div v-else-if="kit" class="mt-8">
       <div class="grid grid-cols-1 lg:grid-cols-[1.1fr,0.9fr] gap-10 items-start">
-        <div>
+        <div data-aos="slide-right">
           <p class="text-xs font-semibold uppercase tracking-wide text-spark-600 mb-2">{{ kit.categoryName || 'STEM Kit' }}</p>
           <h1 class="font-display text-3xl md:text-4xl font-bold text-navy-900 mb-4">{{ kit.title }}</h1>
           <div class="flex flex-wrap gap-2 mb-5 text-xs text-slate-600">
@@ -77,7 +77,7 @@ onMounted(loadKit)
           </div>
         </div>
 
-        <div>
+        <div data-aos="slide-left">
           <div v-if="activeVideo" class="bg-white rounded-[20px] overflow-hidden shadow-[0px_4px_12px_rgba(31,27,46,0.06)]">
             <div class="aspect-video bg-black">
               <iframe
@@ -94,8 +94,8 @@ onMounted(loadKit)
             </div>
           </div>
 
-          <div v-else-if="kit.thumbnailUrl" class="aspect-video rounded-[20px] overflow-hidden bg-lavender-50 shadow-[0px_4px_12px_rgba(31,27,46,0.06)]">
-            <img :src="kit.thumbnailUrl" :alt="kit.title" class="w-full h-full object-cover">
+          <div v-else-if="kit.thumbnailUrl" class="group aspect-video rounded-[20px] overflow-hidden bg-lavender-50 shadow-[0px_4px_12px_rgba(31,27,46,0.06)]">
+            <img :src="kit.thumbnailUrl" :alt="kit.title" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105">
           </div>
 
           <div v-else class="aspect-video rounded-[20px] bg-gradient-to-br from-navy-50 to-spark-50 flex items-center justify-center text-sm text-slate-500">

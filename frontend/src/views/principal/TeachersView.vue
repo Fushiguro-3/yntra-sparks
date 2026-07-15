@@ -162,7 +162,7 @@ onMounted(loadTeachers)
 
     <Pagination :page="page" :total-pages="totalPages" @change="onPageChange" />
 
-    <Modal v-if="showAddModal" title="Add Teacher" @close="showAddModal = false">
+    <Modal :show="showAddModal" title="Add Teacher" @close="showAddModal = false">
       <form @submit.prevent="saveTeacher" class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
@@ -172,17 +172,20 @@ onMounted(loadTeachers)
           <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
           <input v-model="addForm.email" type="email" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
         </div>
-        <p v-if="addError" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ addError }}</p>
+        <Transition name="field-message">
+          <p v-if="addError" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ addError }}</p>
+        </Transition>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" @click="showAddModal = false" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100">Cancel</button>
           <button type="submit" :disabled="isSaving" class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 disabled:opacity-60">
+            <span v-if="isSaving" class="btn-spinner" aria-hidden="true"></span>
             {{ isSaving ? 'Creating…' : 'Create' }}
           </button>
         </div>
       </form>
     </Modal>
 
-    <Modal v-if="showPasswordModal" title="Temporary Password" @close="showPasswordModal = false">
+    <Modal :show="showPasswordModal" title="Temporary Password" @close="showPasswordModal = false">
       <p class="text-sm text-slate-600 mb-3">
         Share this with <span class="font-medium text-slate-800">{{ revealedFor }}</span> now — it won't be shown again.
       </p>

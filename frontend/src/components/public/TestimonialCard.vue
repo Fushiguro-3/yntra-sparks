@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="bg-lavender-50 rounded-[20px] p-7">
+  <div class="bg-lavender-50 rounded-[20px] p-7 testimonial-card">
     <span class="text-spark-500 text-4xl font-display leading-none">"</span>
     <p class="text-ink-900 text-[15px] leading-relaxed mb-6 -mt-2">{{ quote }}</p>
     <div class="flex items-center gap-3">

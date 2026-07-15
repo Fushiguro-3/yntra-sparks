@@ -59,9 +59,9 @@ onMounted(loadKits)
         v-for="(grade, index) in grades"
         :key="grade.name"
         :to="{ name: 'public-grades', query: { grade: grade.name } }"
-        class="bg-white rounded-[22px] p-6 kit-card-fun hover:-translate-y-1 transition-all duration-200"
+        class="bg-white rounded-[22px] p-6 kit-card-fun hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200"
         data-aos="zoom-pop"
-        :style="{ '--aos-delay': `${index * 45}ms` }"
+        :style="{ '--aos-delay': `${index * 90}ms` }"
         :class="{ 'ring-2 ring-navy-200': selectedGrade === grade.name }"
       >
         <p class="font-display font-medium text-lg text-navy-900 mb-1">{{ grade.name }}</p>
@@ -87,14 +87,14 @@ onMounted(loadKits)
         <article
           v-for="(kit, index) in kits"
           :key="kit.id"
-          class="bg-white rounded-[24px] overflow-hidden kit-card-fun"
+          class="group bg-white rounded-[24px] overflow-hidden kit-card-fun hover-glow hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200"
           data-aos="fade-up"
-          :style="{ '--aos-delay': `${index * 70}ms` }"
+          :style="{ '--aos-delay': `${index * 130}ms` }"
         >
           <div class="aspect-[16/10] bg-gradient-to-br from-white to-spark-50 overflow-hidden p-4 relative">
             <span class="absolute -left-8 top-3 w-20 h-16 blue-splash opacity-80"></span>
             <span class="absolute -right-8 bottom-3 w-20 h-16 orange-splash opacity-80"></span>
-            <img v-if="kit.thumbnailUrl" :src="kit.thumbnailUrl" :alt="kit.title" class="relative z-10 w-full h-full object-contain">
+            <img v-if="kit.thumbnailUrl" :src="kit.thumbnailUrl" :alt="kit.title" loading="lazy" class="relative z-10 w-full h-full object-contain transition-transform duration-500 ease-out group-hover:scale-110">
           </div>
           <div class="p-5">
             <p class="text-xs font-semibold text-spark-600 mb-1">{{ kit.categoryName || 'STEM Kit' }}</p>

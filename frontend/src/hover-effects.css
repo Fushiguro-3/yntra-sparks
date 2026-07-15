@@ -1,0 +1,30 @@
+/* Shared hover helpers for buttons, cards, and interactive surface motion. */
+
+.hover-pop {
+  transition: transform 280ms cubic-bezier(.16,1,.3,1),
+              box-shadow 280ms cubic-bezier(.16,1,.3,1);
+}
+
+.hover-pop:hover {
+  transform: translateY(-4px) scale(1.01);
+}
+
+.hover-pop:active {
+  transform: translateY(-1px) scale(.99);
+}
+
+.hover-glow-soft {
+  transition: transform 320ms cubic-bezier(.16,1,.3,1),
+              box-shadow 320ms cubic-bezier(.16,1,.3,1);
+}
+
+.hover-glow-soft:hover {
+  box-shadow: 0 22px 44px rgba(10,31,77,.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-pop,
+  .hover-glow-soft {
+    transition: none;
+  }
+}
