@@ -1,7 +1,7 @@
 package com.yntrasparks.backend.controller;
 
 import com.yntrasparks.backend.dto.response.ApiResponse;
-import com.yntrasparks.backend.dto.response.KitResponse;
+import com.yntrasparks.backend.dto.response.PublicKitResponse;
 import com.yntrasparks.backend.service.KitService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +20,7 @@ public class PublicKitController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<KitResponse>>> list(
+    public ResponseEntity<ApiResponse<Page<PublicKitResponse>>> list(
             @RequestParam(required = false) String grade,
             @PageableDefault(size = 12, sort = "createdAt") Pageable pageable) {
 
@@ -28,7 +28,7 @@ public class PublicKitController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<KitResponse>> getById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<PublicKitResponse>> getById(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(kitService.getPublicKitById(id)));
     }
 }

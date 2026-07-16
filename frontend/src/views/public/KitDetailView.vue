@@ -65,15 +65,6 @@ onMounted(loadKit)
             <MarketingButton as="router-link" :to="{ name: 'public-contact' }" variant="primary">
               Enquire About This Kit
             </MarketingButton>
-            <a
-              v-if="kit.manualPdfUrl"
-              :href="kit.manualPdfUrl"
-              target="_blank"
-              rel="noopener"
-              class="inline-flex h-11 items-center justify-center rounded-full border-[1.5px] border-navy-700 px-6 text-sm font-semibold text-navy-700 hover:bg-navy-50 transition"
-            >
-              Open Manual
-            </a>
           </div>
         </div>
 
