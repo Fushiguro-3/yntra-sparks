@@ -4,7 +4,9 @@ import { fakeDelay, toPage } from './mockHelpers'
 export const mockPublicService = {
   async listKits({ grade = '', page = 0, size = 12 } = {}) {
     await fakeDelay()
-    const active = kitsData.filter((k) => k.status === 'ACTIVE' && (!grade || k.grade === grade))
+    const active = kitsData
+      .filter((k) => k.status === 'ACTIVE' && (!grade || k.grade === grade))
+      .map(({ manualPdfUrl, ...rest }) => rest)
     return toPage(active, page, size)
   },
 
@@ -12,7 +14,8 @@ export const mockPublicService = {
     await fakeDelay()
     const kit = kitsData.find((k) => k.id === Number(id))
     if (!kit) throw { message: 'Kit not found', status: 404 }
-    return kit
+    const { manualPdfUrl, ...publicKit } = kit
+    return publicKit
   },
 
   async submitContact(payload) {

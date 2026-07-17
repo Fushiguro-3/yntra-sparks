@@ -1,9 +1,10 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { publicService } from '@/api/publicService'
 
 const route = useRoute()
+const router = useRouter()
 const kits = ref([])
 const isLoading = ref(false)
 const errorMessage = ref('')
@@ -30,7 +31,15 @@ function formatPrice(price) {
   }).format(Number(price))
 }
 
+function clearGrade() {
+  router.push({ name: 'public-grades' })
+}
+
 async function loadKits() {
+  if (!selectedGrade.value) {
+    kits.value = []
+    return
+  }
   isLoading.value = true
   errorMessage.value = ''
   try {
@@ -49,39 +58,55 @@ onMounted(loadKits)
 
 <template>
   <section class="max-w-[1440px] mx-auto px-5 md:px-10 pt-16 pb-20">
-    <div class="text-center mb-12" data-aos="fade-up">
-      <h1 class="font-display text-3xl md:text-4xl font-bold text-navy-900 mb-3">Explore by Grade</h1>
-      <p class="text-ink-600 max-w-lg mx-auto">Find STEM kits matched to classroom readiness and learning goals.</p>
-    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      <RouterLink
-        v-for="(grade, index) in grades"
-        :key="grade.name"
-        :to="{ name: 'public-grades', query: { grade: grade.name } }"
-        class="bg-white rounded-[22px] p-6 kit-card-fun hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200"
-        data-aos="zoom-pop"
-        :style="{ '--aos-delay': `${index * 90}ms` }"
-        :class="{ 'ring-2 ring-navy-200': selectedGrade === grade.name }"
-      >
-        <p class="font-display font-medium text-lg text-navy-900 mb-1">{{ grade.name }}</p>
-        <p class="text-sm text-ink-600">{{ grade.focus }}</p>
-      </RouterLink>
-    </div>
+    <!-- No grade selected — show all grade cards -->
+    <template v-if="!selectedGrade">
+      <div class="text-center mb-12" data-aos="fade-up">
+        <h1 class="font-display text-3xl md:text-4xl font-bold text-navy-900 mb-3">Explore by Grade</h1>
+        <p class="text-ink-600 max-w-lg mx-auto">Find STEM kits matched to classroom readiness and learning goals.</p>
+      </div>
 
-    <div class="mt-14">
-      <div class="mb-6">
-        <h2 class="font-display text-2xl font-semibold text-navy-900">
-          {{ selectedGrade ? `${selectedGrade} Kits` : 'All Demo Kits' }}
-        </h2>
-        <p class="text-sm text-ink-600 mt-1">Click a grade above to filter kits from the demo catalog.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <RouterLink
+          v-for="(grade, index) in grades"
+          :key="grade.name"
+          :to="{ name: 'public-grades', query: { grade: grade.name } }"
+          class="bg-white rounded-[22px] p-6 kit-card-fun hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200"
+          data-aos="zoom-pop"
+          :style="{ '--aos-delay': `${index * 90}ms` }"
+        >
+          <p class="font-display font-medium text-lg text-navy-900 mb-1">{{ grade.name }}</p>
+          <p class="text-sm text-ink-600">{{ grade.focus }}</p>
+        </RouterLink>
+      </div>
+    </template>
+
+    <!-- Grade selected — show only that grade's kits -->
+    <template v-else>
+      <div class="mb-8" data-aos="fade-up">
+        <button
+          @click="clearGrade"
+          class="inline-flex items-center gap-2 text-sm font-semibold text-ink-600 hover:text-navy-800 transition mb-5"
+        >
+          &larr; All Grades
+        </button>
+        <h1 class="font-display text-3xl md:text-4xl font-bold text-navy-900 mb-2">{{ selectedGrade }} Kits</h1>
+        <p class="text-ink-600 text-sm">STEM kits designed for {{ selectedGrade }} students.</p>
       </div>
 
       <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4">{{ errorMessage }}</p>
+
       <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div v-for="item in 3" :key="item" class="bg-white rounded-[24px] p-5 kit-card-fun"><div class="skeleton aspect-[16/10] mb-5"></div><div class="skeleton h-5 w-2/3 mb-3"></div><div class="skeleton h-3 w-full"></div></div>
+        <div v-for="item in 3" :key="item" class="bg-white rounded-[24px] p-5 kit-card-fun">
+          <div class="skeleton aspect-[16/10] mb-5"></div>
+          <div class="skeleton h-5 w-2/3 mb-3"></div>
+          <div class="skeleton h-3 w-full"></div>
+        </div>
       </div>
-      <div v-else-if="kits.length === 0" class="empty-state app-surface rounded-[24px]">No kits are available for this grade yet.</div>
+
+      <div v-else-if="kits.length === 0" class="empty-state app-surface rounded-[24px]">
+        No kits are available for {{ selectedGrade }} yet.
+      </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <article
@@ -113,6 +138,7 @@ onMounted(loadKits)
           </div>
         </article>
       </div>
-    </div>
+    </template>
+
   </section>
 </template>

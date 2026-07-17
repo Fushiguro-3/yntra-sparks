@@ -3,6 +3,7 @@ package com.yntrasparks.backend.service;
 import com.yntrasparks.backend.dto.request.KitRequest;
 import com.yntrasparks.backend.dto.request.VideoRequest;
 import com.yntrasparks.backend.dto.response.KitResponse;
+import com.yntrasparks.backend.dto.response.PublicKitResponse;
 import com.yntrasparks.backend.dto.response.SchoolResponse;
 import com.yntrasparks.backend.entity.*;
 import com.yntrasparks.backend.exception.ResourceNotFoundException;
@@ -45,23 +46,23 @@ public class KitService {
     }
 
     @Transactional(readOnly = true)
-    public Page<KitResponse> getPublicKits(String grade, Pageable pageable) {
+    public Page<PublicKitResponse> getPublicKits(String grade, Pageable pageable) {
         if (grade != null && !grade.isBlank()) {
             return kitRepository.findByStatusAndGradeIgnoreCase(
                             Kit.KitStatus.ACTIVE,
                             grade.trim(),
                             pageable)
-                    .map(KitResponse::from);
+                    .map(PublicKitResponse::from);
         }
         return kitRepository.findByStatus(Kit.KitStatus.ACTIVE, pageable)
-                .map(KitResponse::from);
+                .map(PublicKitResponse::from);
     }
 
     @Transactional(readOnly = true)
-    public KitResponse getPublicKitById(Long kitId) {
+    public PublicKitResponse getPublicKitById(Long kitId) {
         Kit kit = kitRepository.findByIdAndStatus(kitId, Kit.KitStatus.ACTIVE)
                 .orElseThrow(() -> new ResourceNotFoundException("Kit", kitId));
-        return KitResponse.from(kit);
+        return PublicKitResponse.from(kit);
     }
 
     // Principal / Teacher — see only their school's purchased kits
