@@ -66,7 +66,13 @@ async function handleSubmit() {
         <p class="text-xs font-bold uppercase tracking-[.16em] text-spark-300 mb-2">Yntra Sparks</p>
         <p class="font-display text-2xl font-bold text-white mb-5">Contact info</p>
         <div class="space-y-4 text-sm text-white/80">
-          <p><span class="block text-xs uppercase tracking-wide text-white/50 mb-1">Call</span>+91 80802 70366</p>
+          <p><span class="block text-xs uppercase tracking-wide text-white/50 mb-1">Call</span> <a href="tel:+918080270366" class="block hover:text-spark-400 transition-colors">
+    +91 80802 70366
+  </a>
+
+  <a href="tel:+917667972579" class="block hover:text-spark-400 transition-colors mt-1">
+    +91 76679 72579
+  </a></p>
           <p><span class="block text-xs uppercase tracking-wide text-white/50 mb-1">Email</span>yntrasparksofficial@gmail.com</p>
           <p><span class="block text-xs uppercase tracking-wide text-white/50 mb-1">Based in</span>Dharwad, Karnataka, India</p>
         </div>
