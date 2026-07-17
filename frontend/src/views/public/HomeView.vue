@@ -1,5 +1,5 @@
 <script setup>
-import ScrollIndicator from '@/components/public/ScrollIndicator.vue'
+
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import MarketingButton from '@/components/public/MarketingButton.vue'
 import FeatureCard from '@/components/public/FeatureCard.vue'
@@ -172,7 +172,7 @@ function scrollToContent() {
       </svg>
     </button>
   </section>
-  <ScrollIndicator />
+
 
   <!-- Why Yntra Sparks -->
   <section class="max-w-[1440px] mx-auto px-5 md:px-10 py-16">
