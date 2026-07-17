@@ -82,10 +82,10 @@ onMounted(loadKits)
               <h3 class="font-display font-medium text-lg text-navy-900">{{ kit.title }}</h3>
               <p class="text-sm text-ink-600 mt-2">{{ kit.description }}</p>
               <div class="flex flex-wrap gap-2 mt-4 text-xs text-slate-600">
-                <span class="rounded-md bg-slate-100 px-2 py-1">{{ formatPrice(kit.price) }}</span>
+                <span class="inline-flex items-center justify-center rounded-md bg-slate-100 px-4 py-3 text-lg font-semibold min-w-[80px]">{{ formatPrice(kit.price) }}</span>
                 <RouterLink
                   :to="{ name: 'public-kit-detail', params: { id: kit.id } }"
-                  class="rounded-md bg-navy-50 px-2 py-1 font-semibold text-navy-700 hover:bg-navy-100"
+                  class="app-button-primary inline-flex items-center justify-center"
                 >
                   Explore Kit
                 </RouterLink>
