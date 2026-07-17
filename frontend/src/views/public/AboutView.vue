@@ -5,10 +5,22 @@ const storyImage = 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d
 const storyImageAlt = 'Students learning together in a STEM classroom'
 
 const values = [
-  { icon: '🤝', label: 'Hands-on first' },
-  { icon: '🎯', label: 'Outcomes over hype' },
-  { icon: '🧑‍🏫', label: 'Teachers, supported' },
-  { icon: '🌱', label: 'Built to grow with a school' }
+  {
+    image: '/images/hands-on.jpg',
+    label: 'Hands-on first'
+  },
+  {
+    image: '/images/outcome.jpg',
+    label: 'Outcomes over hype'
+  },
+  {
+    image: '/images/teacher.jpg',
+    label: 'Teachers, supported'
+  },
+  {
+    image: '/images/school.jpg',
+    label: 'Built to grow with a school'
+  }
 ]
 </script>
 
@@ -44,7 +56,11 @@ const values = [
         data-aos="fade-up"
         :style="{ '--aos-delay': `${index * 130}ms` }"
       >
-        <p class="text-3xl mb-3">{{ v.icon }}</p>
+        <img
+  :src="v.image"
+  :alt="v.label"
+  class="w-20 h-20 mx-auto mb-4 rounded-full object-cover shadow-lg"
+/>
         <p class="font-display font-medium text-navy-900 text-sm">{{ v.label }}</p>
       </div>
     </div>
