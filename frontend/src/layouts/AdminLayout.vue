@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/auth'
 
 const nav = [
   { name: 'admin-schools', label: 'Schools' },
+  { name: 'admin-principals', label: 'Principals' },
   { name: 'admin-categories', label: 'Categories' },
   { name: 'admin-kits', label: 'Kits' },
   { name: 'admin-messages', label: 'Messages' }
