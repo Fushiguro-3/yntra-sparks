@@ -32,7 +32,7 @@ const features = [
 ]
 const team = [
   {
-    name: 'Vikas Kumar',
+    name: 'Vikas Singh',
     role: 'Founder',
     description:
       'Focused on product development and innovative design to create practical STEM kits that make learning delightful and effective.',
@@ -48,7 +48,7 @@ const team = [
     image: '/images/team/kush-kumar.jpeg'
   },
   {
-    name: 'Dhanashri',
+    name: 'Dhanashri Bende',
     role: 'Co-Founder',
     description:
       'Dedicated to curriculum alignment and enhancing classroom experiences through engaging, student-friendly STEM activities.',
@@ -194,9 +194,6 @@ By turning classroom concepts into real experiences, we help students develop cu
         Recognition & Support
       </h2>
 
-      <p class="mt-4 text-lg text-ink-600 max-w-3xl mx-auto">
-        Proudly supported by IIIT Dharwad through the Innovation & Research Development Program (IDRP), helping us transform our vision of hands-on STEM education into reality.
-      </p>
     </div>
 
     <div
@@ -218,7 +215,7 @@ By turning classroom concepts into real experiences, we help students develop cu
         </h3>
 
         <p class="text-ink-600 leading-relaxed">
-          Proudly supported by IIIT Dharwad through the Innovation & Research Development Program (IDRP), helping us transform our vision of hands-on STEM education into reality.
+Proudly supported by IIIT Dharwad Research Park (IDRP) through the Innovation & Development Program – Yuva Udhyami 2025, empowering us to transform our vision of hands-on STEM education into meaningful classroom experiences for students across India.
         </p>
       </div>
 
