@@ -1,7 +1,7 @@
 <script setup>
 import CtaBanner from '@/components/public/CtaBanner.vue'
 
-const storyImage = 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80'
+const storyImage = '/images/about-us.jpeg'
 const storyImageAlt = 'Students learning together in a STEM classroom'
 
 const features = [
