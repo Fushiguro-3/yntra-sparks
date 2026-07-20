@@ -37,6 +37,12 @@ async function handleLogout() {
         >
           {{ item.label }}
         </RouterLink>
+        <button
+          @click="handleLogout"
+          class="md:hidden whitespace-nowrap px-3 py-2.5 rounded-xl text-sm text-white/70 hover:bg-white/10 hover:text-white transition"
+        >
+          Log out
+        </button>
       </nav>
       <div class="hidden md:block px-3 py-4 border-t border-white/10">
         <button

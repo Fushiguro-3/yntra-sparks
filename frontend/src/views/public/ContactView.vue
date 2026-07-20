@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import MarketingButton from '@/components/public/MarketingButton.vue'
-import { publicService } from '@/api/publicService'
+
+const WEB3FORMS_KEY = '60253e58-36ae-4f2f-8002-084285faaf2c'
 
 const form = ref({ name: '', email: '', subject: '', message: '' })
 const submitted = ref(false)
@@ -12,11 +13,20 @@ async function handleSubmit() {
   errorMessage.value = ''
   isSubmitting.value = true
   try {
-    await publicService.submitContact(form.value)
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        ...form.value
+      })
+    })
+    const data = await res.json()
+    if (!data.success) throw new Error(data.message || 'Submission failed')
     submitted.value = true
     form.value = { name: '', email: '', subject: '', message: '' }
   } catch (err) {
-    errorMessage.value = err.message
+    errorMessage.value = err.message || 'Something went wrong. Please try again.'
   } finally {
     isSubmitting.value = false
   }
