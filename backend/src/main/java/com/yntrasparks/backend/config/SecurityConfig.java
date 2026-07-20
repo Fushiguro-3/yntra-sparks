@@ -64,6 +64,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/contact").hasRole("SUPER_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/contact/{id}").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/schools/*/teachers/**").hasAnyRole("PRINCIPAL", "SUPER_ADMIN")
+                        .requestMatchers("/api/schools/*/principals/**").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/schools", "/api/schools/**").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/categories", "/api/categories/**").hasAnyRole("SUPER_ADMIN", "PRINCIPAL", "TEACHER")
                         .requestMatchers("/api/kits/school", "/api/kits/school/**").hasAnyRole("PRINCIPAL", "TEACHER")

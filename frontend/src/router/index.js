@@ -32,6 +32,7 @@ const routes = [
     children: [
       { path: '', name: 'admin-dashboard', redirect: { name: 'admin-schools' } },
       { path: 'schools', name: 'admin-schools', component: () => import('@/views/superadmin/SchoolsView.vue') },
+      { path: 'principals', name: 'admin-principals', component: () => import('@/views/superadmin/PrincipalsView.vue') },
       { path: 'categories', name: 'admin-categories', component: () => import('@/views/superadmin/CategoriesView.vue') },
       { path: 'kits', name: 'admin-kits', component: () => import('@/views/superadmin/KitsView.vue') },
       { path: 'messages', name: 'admin-messages', component: () => import('@/views/superadmin/MessagesView.vue') },
