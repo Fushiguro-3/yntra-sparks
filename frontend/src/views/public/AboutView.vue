@@ -4,22 +4,56 @@ import CtaBanner from '@/components/public/CtaBanner.vue'
 const storyImage = 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80'
 const storyImageAlt = 'Students learning together in a STEM classroom'
 
-const values = [
+const features = [
   {
-    image: '/images/hands-on.jpg',
-    label: 'Hands-on first'
+    icon: '📚',
+    title: 'Curriculum Aligned',
+    description:
+      'Designed to fit classroom lessons and learning objectives.'
   },
   {
-    image: '/images/outcome.jpg',
-    label: 'Outcomes over hype'
+    icon: '🧪',
+    title: 'Hands-on Learning',
+    description:
+      'Students learn by building, experimenting, and discovering.'
   },
   {
-    image: '/images/teacher.jpg',
-    label: 'Teachers, supported'
+    icon: '👩‍🏫',
+    title: 'Teacher Friendly',
+    description:
+      'Easy to set up and simple to conduct in regular classrooms.'
   },
   {
-    image: '/images/school.jpg',
-    label: 'Built to grow with a school'
+    icon: '♻️',
+    title: 'Reusable Kits',
+    description:
+      'Built for repeated classroom use with durable components.'
+  }
+]
+const team = [
+  {
+    name: 'Vikas Kumar',
+    role: 'Founder',
+    description:
+      'Focused on product development and innovative design to create practical STEM kits that make learning delightful and effective.',
+    linkedin: 'https://linkedin.com/in/vikas-singh-0b9b34381',
+    image: '/images/team/vikas-kumar.jpeg'
+  },
+  {
+    name: 'Kush Kumar',
+    role: 'Co-Founder',
+    description:
+      'Passionate about making STEM education engaging and accessible through innovative, hands-on learning solutions for every classroom.',
+    linkedin: 'https://linkedin.com/in/kush-kumar-1095ab379',
+    image: '/images/team/kush-kumar.jpeg'
+  },
+  {
+    name: 'Dhanashri',
+    role: 'Co-Founder',
+    description:
+      'Dedicated to curriculum alignment and enhancing classroom experiences through engaging, student-friendly STEM activities.',
+    linkedin: 'https://linkedin.com/in/dhanashri-bende-6a30b8382',
+    image: '/images/team/dhanashri.jpeg'
   }
 ]
 </script>
@@ -28,7 +62,9 @@ const values = [
   <section class="max-w-[900px] mx-auto px-5 md:px-10 pt-16 pb-20 text-center" data-aos="fade-up">
     <h1 class="font-display text-3xl md:text-4xl font-bold text-navy-900 mb-4">Our Story</h1>
     <p class="text-lg text-ink-600 leading-relaxed">
-      Yntra Sparks began with a simple observation: students remember what they build far longer than what they're told. We set out to make hands-on STEM education something every school could realistically offer — not just the ones with a dedicated lab budget.
+     Every child is naturally curious. They love asking questions, exploring, and learning by doing.
+But in many classrooms, science is still taught mainly through textbooks. We wanted to change that.
+That's why we started Yntra Sparks—to create affordable, curriculum-aligned STEM kits that help students learn by building, experimenting, and discovering.
     </p>
   </section>
 
@@ -37,34 +73,158 @@ const values = [
       <img :src="storyImage" :alt="storyImageAlt" class="w-full h-full object-cover" />
     </div>
     <div class="space-y-6" data-aos="slide-left">
-      <p class="font-display text-xl text-spark-600 font-semibold">Built for real classrooms</p>
+      <p class="font-display text-xl text-spark-600 font-semibold">Designed for Every Classroom</p>
       <p class="text-ink-600 leading-relaxed text-lg">
-        Every kit we design is rooted in real classroom practice. From guided lesson pacing to materials that can survive an active middle-school lab, we make sure teachers can focus on learning instead of logistics.
+        Every Yntra Sparks kit is created with real classrooms in mind. 
+They are easy for teachers to use, simple for students to understand, and aligned with the school curriculum. 
+Each activity is carefully designed to fit naturally into classroom lessons, making learning both practical and engaging.
       </p>
       <p class="text-ink-600 leading-relaxed text-lg">
-        We believe the best learning happens when students build, test, and improve. That is why our curriculum connects physical experimentation with classroom-ready outcomes, so every lesson is meaningful and memorable.
+        Our goal is to make science more interactive through hands-on activities that encourage students to explore, build, experiment, and learn with confidence. 
+By turning classroom concepts into real experiences, we help students develop curiosity, creativity, problem-solving skills, and a deeper understanding of the world around them.
       </p>
     </div>
   </section>
 
-  <section class="bg-white/70 py-16">
-    <div class="max-w-[1440px] mx-auto px-5 md:px-10 grid grid-cols-2 md:grid-cols-4 gap-5">
+  <section class="bg-white py-20">
+  <div class="max-w-[1200px] mx-auto px-5 md:px-10">
+
+    <div class="text-center mb-14" data-aos="fade-up">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-navy-900">
+        Why Schools Choose Yntra Sparks
+      </h2>
+
+      <p class="mt-4 text-lg text-ink-600 max-w-2xl mx-auto">
+        Discover what makes our STEM kits an effective and trusted choice for classrooms.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+
       <div
-        v-for="(v, index) in values"
-        :key="v.label"
-        class="bg-white rounded-[22px] p-6 text-center kit-card-fun hover-glow hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200"
+        v-for="(feature, index) in features"
+        :key="feature.title"
+        class="bg-white rounded-[24px] p-8 shadow-lg border border-gray-100 hover:-translate-y-2 hover:shadow-xl transition-all duration-300"
         data-aos="fade-up"
-        :style="{ '--aos-delay': `${index * 130}ms` }"
+        :style="{ '--aos-delay': `${index * 150}ms` }"
       >
-        <img
-  :src="v.image"
-  :alt="v.label"
-  class="w-20 h-20 mx-auto mb-4 rounded-full object-cover shadow-lg"
-/>
-        <p class="font-display font-medium text-navy-900 text-sm">{{ v.label }}</p>
-      </div>
-    </div>
-  </section>
 
+        <div class="text-5xl mb-5">
+          {{ feature.icon }}
+        </div>
+
+        <h3 class="font-display text-2xl font-semibold text-navy-900 mb-3">
+          {{ feature.title }}
+        </h3>
+
+        <p class="text-ink-600 leading-relaxed">
+          {{ feature.description }}
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<section class="py-20 bg-slate-50">
+  <div class="max-w-[1200px] mx-auto px-5 md:px-10">
+
+    <div class="text-center mb-14" data-aos="fade-up">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-navy-900">
+        Meet the Team
+      </h2>
+
+      <p class="mt-4 text-lg text-ink-600">
+        Meet the People behind Yntra Sparks
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+
+      <div
+        v-for="(member, index) in team"
+        :key="member.name"
+        class="bg-white rounded-[24px] shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-xl transition-all duration-300"
+        data-aos="fade-up"
+        :style="{ '--aos-delay': `${index * 150}ms` }"
+      >
+
+        <img
+          :src="member.image"
+          :alt="member.name"
+          class="w-full h-72 object-cover"
+        />
+
+        <div class="p-6">
+
+          <h3 class="font-display text-2xl font-semibold text-navy-900">
+            {{ member.name }}
+          </h3>
+
+          <p class="text-spark-600 font-medium mb-4">
+            {{ member.role }}
+          </p>
+
+          <p class="text-ink-600 leading-relaxed mb-6">
+            {{ member.description }}
+          </p>
+
+          <a
+            :href="member.linkedin"
+            target="_blank"
+            class="inline-flex items-center text-spark-600 font-medium hover:underline"
+          >
+            LinkedIn →
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<section class="py-20 bg-slate-50">
+  <div class="max-w-[1100px] mx-auto px-5 md:px-10">
+
+    <div class="text-center mb-12" data-aos="fade-up">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-navy-900">
+        Recognition & Support
+      </h2>
+
+      <p class="mt-4 text-lg text-ink-600 max-w-3xl mx-auto">
+        Proudly supported by IIIT Dharwad through the Innovation & Research Development Program (IDRP), helping us transform our vision of hands-on STEM education into reality.
+      </p>
+    </div>
+
+    <div
+      class="bg-white rounded-[24px] p-8 md:p-10 shadow-lg border border-gray-100 flex flex-col md:flex-row items-center gap-8"
+      data-aos="fade-up"
+    >
+
+      <!-- Logo Placeholder -->
+      <img
+  src="/images/partners/idrp.jpg"
+  alt="IIIT Dharwad"
+  class="w-40 h-40 object-contain"
+/>
+
+      <!-- Content -->
+      <div class="flex-1">
+        <h3 class="font-display text-2xl font-semibold text-navy-900 mb-4">
+          Innovation & Research Development Program (IDRP)
+        </h3>
+
+        <p class="text-ink-600 leading-relaxed">
+          Proudly supported by IIIT Dharwad through the Innovation & Research Development Program (IDRP), helping us transform our vision of hands-on STEM education into reality.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
   <CtaBanner />
 </template>
