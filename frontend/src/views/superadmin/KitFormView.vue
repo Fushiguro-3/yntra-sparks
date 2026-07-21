@@ -203,7 +203,7 @@ onMounted(async () => {
   <div class="max-w-2xl">
     <div class="mb-6">
       <RouterLink :to="{ name: 'admin-kits' }" class="text-sm text-slate-500 hover:text-slate-700">&larr; Back to Kits</RouterLink>
-      <h1 class="font-display text-xl font-bold text-navy-900 mt-1">{{ isEditing ? 'Edit Kit' : 'Add Kit' }}</h1>
+      <h1 class="app-panel-title text-xl mt-1">{{ isEditing ? 'Edit Kit' : 'Add Kit' }}</h1>
     </div>
 
     <div v-if="isLoading" class="text-slate-400 text-sm">Loading…</div>

@@ -4,7 +4,7 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import MarketingButton from '@/components/public/MarketingButton.vue'
 import FeatureCard from '@/components/public/FeatureCard.vue'
 import MarketingKitCard from '@/components/public/MarketingKitCard.vue'
-import TestimonialCard from '@/components/public/TestimonialCard.vue'
+import TestimonialMarquee from '@/components/public/TestimonialMarquee.vue'
 import CtaBanner from '@/components/public/CtaBanner.vue'
 import FloatingBubbles from '@/components/public/FloatingBubbles.vue'
 import { publicService } from '@/api/publicService'
@@ -87,12 +87,6 @@ const testimonials = [
   { quote: "Every kit comes with everything I need to teach it well — I don't have to build lesson plans from scratch anymore.", name: 'Deepak Menon', role: 'STEM Teacher', initials: 'DM' },
   { quote: 'The measurable outcomes made it easy to show our board this was worth the investment.', name: 'Fatima Sheikh', role: 'Academic Coordinator', initials: 'FS' }
 ]
-const scrollingTestimonials = [
-  ...testimonials,
-  ...testimonials,
-  ...testimonials
-]
-
 
 
 
@@ -181,7 +175,7 @@ function scrollToContent() {
         :key="f.title"
         v-bind="f"
         data-aos="zoom-pop"
-        :style="{ '--aos-delay': `${index * 140}ms` }"
+        :style="{ '--aos-delay': `${index * 45}ms` }"
       />
     </div>
   </section>
@@ -202,7 +196,7 @@ function scrollToContent() {
         :key="kit.to?.params?.id || `${kit.title}-${index}`"
         class="snap-start"
         data-aos="fade-up"
-        :style="{ '--aos-delay': `${index * 130}ms` }"
+        :style="{ '--aos-delay': `${index * 40}ms` }"
       >
         <MarketingKitCard v-bind="kit" />
       </div>
@@ -219,14 +213,14 @@ function scrollToContent() {
         :to="{ name: 'public-categories' }"
         class="group bg-white rounded-[22px] p-5 text-center kit-card-fun hover-glow"
         data-aos="zoom-pop"
-        :style="{ '--aos-delay': `${index * 110}ms` }"
+        :style="{ '--aos-delay': `${index * 35}ms` }"
       >
         <div class="w-full aspect-square rounded-2xl mb-3 overflow-hidden">
           <img
             :src="cat.image"
             :alt="cat.imageAlt"
             loading="lazy"
-            class="w-full h-full object-cover transition-transform duration-[760ms] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.12]"
+            class="w-full h-full object-cover transition-transform duration-[420ms] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.12]"
           />
         </div>
         <p class="font-display font-medium text-navy-900 mb-1">{{ cat.name }}</p>
@@ -236,27 +230,11 @@ function scrollToContent() {
   </section>
 
   <!-- Testimonials -->
-  <section class="py-16 bg-white/70">
+  <section class="py-16 bg-white/70 overflow-hidden">
     <div class="max-w-[1440px] mx-auto px-5 md:px-10">
       <h2 class="font-display text-2xl md:text-3xl font-semibold text-navy-900 mb-10 text-center" data-aos="fade-up">What Schools Are Saying</h2>
-      
-      <div class="testimonial-wrapper">
-  <div class="testimonial-track">
-
-    <TestimonialCard
-      v-for="(t, i) in scrollingTestimonials"
-      :key="`${t.name}-${i}`"
-      v-bind="t"
-      class="w-[380px] flex-shrink-0 transition-opacity duration-300"
-     
-      :style="{ '--aos-delay': `${i * 160}ms` }"
-      :class="{ 'md:opacity-100': true }"
-    />
-
-  </div>
-</div>
-</div>
-
+    </div>
+    <TestimonialMarquee :testimonials="testimonials" />
   </section>
 
   <!-- About preview -->
@@ -268,7 +246,7 @@ function scrollToContent() {
         src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=900&q=80"
         alt="Children learning together in a classroom"
         loading="lazy"
-        class="relative z-10 w-full h-full object-cover transition-transform duration-[820ms] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.08]"
+        class="relative z-10 w-full h-full object-cover transition-transform duration-[420ms] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.08]"
       />
     </div>
     <div class="order-1 lg:order-2" data-aos="slide-left">

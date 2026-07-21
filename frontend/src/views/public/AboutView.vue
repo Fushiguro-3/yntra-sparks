@@ -106,7 +106,7 @@ By turning classroom concepts into real experiences, we help students develop cu
         :key="feature.title"
         class="bg-white rounded-[24px] p-8 shadow-lg border border-gray-100 hover:-translate-y-2 hover:shadow-xl transition-all duration-300"
         data-aos="fade-up"
-        :style="{ '--aos-delay': `${index * 150}ms` }"
+        :style="{ '--aos-delay': `${index * 45}ms` }"
       >
 
         <div class="text-5xl mb-5">
@@ -147,7 +147,7 @@ By turning classroom concepts into real experiences, we help students develop cu
         :key="member.name"
         class="bg-white rounded-[24px] shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-xl transition-all duration-300"
         data-aos="fade-up"
-        :style="{ '--aos-delay': `${index * 150}ms` }"
+        :style="{ '--aos-delay': `${index * 45}ms` }"
       >
 
         <img

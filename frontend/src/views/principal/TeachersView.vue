@@ -5,6 +5,8 @@ import { useAuthStore } from '@/stores/auth'
 import Modal from '@/components/Modal.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import Pagination from '@/components/Pagination.vue'
+import PageHeader from '@/components/PageHeader.vue'
+import AppButton from '@/components/AppButton.vue'
 
 const auth = useAuthStore()
 const schoolId = auth.user?.schoolId
@@ -112,31 +114,23 @@ onMounted(loadTeachers)
 
 <template>
   <div>
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <h1 class="font-display text-xl font-bold text-navy-900">Teachers</h1>
-        <p class="text-slate-500 text-sm">Manage teacher accounts for your school.</p>
-      </div>
-      <button
-        @click="openAddModal"
-        class="px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 transition text-sm"
-      >
-        + Add Teacher
-      </button>
-    </div>
+    <PageHeader title="Teachers" subtitle="Manage teacher accounts for your school.">
+      <AppButton @click="openAddModal">+ Add Teacher</AppButton>
+    </PageHeader>
 
     <p v-if="errorMessage" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">
       {{ errorMessage }}
     </p>
 
-    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-      <table class="w-full text-sm">
+    <div class="app-surface rounded-[22px] overflow-hidden">
+      <div class="overflow-x-auto">
+      <table class="app-data-table w-full min-w-[560px] text-sm">
         <thead class="bg-slate-50 text-left text-slate-500">
           <tr>
             <th class="px-5 py-3 font-medium">Name</th>
             <th class="px-5 py-3 font-medium">Email</th>
             <th class="px-5 py-3 font-medium">Status</th>
-            <th class="px-5 py-3 font-medium text-right">Actions</th>
+            <th class="px-5 py-3 font-medium text-right w-[240px]">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
@@ -150,14 +144,17 @@ onMounted(loadTeachers)
             <td class="px-5 py-3 font-medium text-slate-800">{{ teacher.name }}</td>
             <td class="px-5 py-3 text-slate-500">{{ teacher.email }}</td>
             <td class="px-5 py-3"><StatusBadge :status="teacher.status" /></td>
-            <td class="px-5 py-3 text-right space-x-3">
+            <td class="px-5 py-3">
+              <div class="flex items-center justify-end gap-3 whitespace-nowrap">
               <button @click="resetPassword(teacher)" class="text-navy-600 hover:text-navy-800 font-medium">Reset Password</button>
               <button v-if="teacher.status === 'ACTIVE'" @click="deactivateTeacher(teacher)" class="text-red-500 hover:text-red-700 font-medium">Deactivate</button>
               <button v-else @click="activateTeacher(teacher)" class="text-green-600 hover:text-green-800 font-medium">Activate</button>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
 
     <Pagination :page="page" :total-pages="totalPages" @change="onPageChange" />
@@ -176,11 +173,8 @@ onMounted(loadTeachers)
           <p v-if="addError" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ addError }}</p>
         </Transition>
         <div class="flex justify-end gap-2 pt-2">
-          <button type="button" @click="showAddModal = false" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100">Cancel</button>
-          <button type="submit" :disabled="isSaving" class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 disabled:opacity-60">
-            <span v-if="isSaving" class="btn-spinner" aria-hidden="true"></span>
-            {{ isSaving ? 'Creating…' : 'Create' }}
-          </button>
+          <AppButton type="button" variant="quiet" @click="showAddModal = false">Cancel</AppButton>
+          <AppButton type="submit" :loading="isSaving">{{ isSaving ? 'Creating…' : 'Create' }}</AppButton>
         </div>
       </form>
     </Modal>
@@ -192,9 +186,7 @@ onMounted(loadTeachers)
       <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 font-mono text-lg text-center text-navy-800 tracking-wide select-all">
         {{ revealedPassword }}
       </div>
-      <button @click="showPasswordModal = false" class="w-full mt-4 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700">
-        Done
-      </button>
+      <AppButton @click="showPasswordModal = false" block class="mt-4">Done</AppButton>
     </Modal>
   </div>
 </template>

@@ -62,10 +62,10 @@
   /* Slight overshoot — micro-interactions that should feel tactile.    */
   --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
 
-  --dur-micro: 180ms;
-  --dur-fast: 320ms;
-  --dur-base: 520ms;
-  --dur-slow: 780ms;
+  --dur-micro: 150ms;
+  --dur-fast: 200ms;
+  --dur-base: 280ms;
+  --dur-slow: 380ms;
   --dur-ambient: 1200ms;
 }
 
@@ -240,33 +240,34 @@ h1, h2, h3, h4, .font-display {
   will-change: transform, opacity;
 }
 
+/* Scroll-reveal entrance. Kept short (section-reveal range, ~300ms) so
+   content reads as "almost immediately visible" rather than something the
+   user has to wait out — see utils/aos.js for the IntersectionObserver
+   that adds .aos-visible, and the prefers-reduced-motion override below. */
 [data-aos] {
   opacity: 0;
-  transform: translate3d(0, 42px, 0) scale(.96);
-  filter: blur(6px);
+  transform: translate3d(0, 16px, 0) scale(.98);
   transition:
-    opacity 1s ease-out,
-    transform 1s ease-out,
-    filter 1s ease-out;
+    opacity 320ms var(--ease-premium),
+    transform 320ms var(--ease-premium);
   transition-delay: var(--aos-delay, 0ms);
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
 }
 
 [data-aos="fade-in"] {
-  transform: scale(.98);
+  transform: scale(.99);
 }
 
 [data-aos="zoom-pop"] {
-  transform: translate3d(0, 30px, 0) scale(.88);
-  transition-timing-function: ease-out;
+  transform: translate3d(0, 14px, 0) scale(.94);
 }
 
 [data-aos="slide-left"] {
-  transform: translate3d(52px, 0, 0) scale(.97);
+  transform: translate3d(24px, 0, 0) scale(.99);
 }
 
 [data-aos="slide-right"] {
-  transform: translate3d(-52px, 0, 0) scale(.97);
+  transform: translate3d(-24px, 0, 0) scale(.99);
 }
 
 [data-aos].aos-visible,
@@ -525,11 +526,62 @@ h1, h2, h3, h4, .font-display {
 .app-button-secondary:hover { background: #0a1f4d; transform: translateY(-2px) scale(1.015); box-shadow: 0 16px 26px rgba(10,31,77,.24); }
 .app-button-quiet { color: #40506e; background: #f5f7fb; }
 .app-button-quiet:hover { background: #e9eef8; color: #0a1f4d; transform: translateY(-1px); }
+
+/* Outline, ghost, and destructive — AppButton.vue's remaining variants.
+   Same box model as primary/secondary/quiet (shared min-height/padding/
+   radius rule above) so every button in the app measures identically
+   regardless of variant. */
+.app-button-outline,
+.app-button-ghost,
+.app-button-destructive {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  min-height: 2.65rem;
+  padding: .625rem 1rem;
+  border-radius: .75rem;
+  font-size: .875rem;
+  font-weight: 700;
+  line-height: 1;
+  transition: transform var(--dur-fast) var(--ease-premium), box-shadow var(--dur-fast) var(--ease-premium), background-color var(--dur-fast) var(--ease-premium), border-color var(--dur-fast) var(--ease-premium), color var(--dur-fast) var(--ease-premium);
+}
+.app-button-outline { color: var(--color-navy-700); background: transparent; border: 1.5px solid var(--color-navy-700); }
+.app-button-outline:hover { background: var(--color-navy-50); border-color: var(--color-navy-800); transform: translateY(-1px); }
+.app-button-ghost { color: var(--color-navy-700); background: transparent; }
+.app-button-ghost:hover { background: var(--color-navy-50); }
+.app-button-destructive { color: #b42318; background: #fef3f2; border: 1px solid #fecdca; }
+.app-button-destructive:hover { background: #fee4e2; color: #912018; transform: translateY(-1px); }
+
 .app-button-primary:active,
 .app-button-secondary:active,
-.app-button-quiet:active {
+.app-button-quiet:active,
+.app-button-outline:active,
+.app-button-ghost:active,
+.app-button-destructive:active {
   transition: transform var(--dur-micro) var(--ease-exit);
+  transform: scale(.97);
 }
+
+.app-button-primary:disabled,
+.app-button-secondary:disabled,
+.app-button-quiet:disabled,
+.app-button-outline:disabled,
+.app-button-ghost:disabled,
+.app-button-destructive:disabled,
+.app-button-primary[aria-disabled="true"],
+.app-button-secondary[aria-disabled="true"],
+.app-button-quiet[aria-disabled="true"],
+.app-button-outline[aria-disabled="true"],
+.app-button-ghost[aria-disabled="true"],
+.app-button-destructive[aria-disabled="true"] {
+  opacity: .55;
+  pointer-events: none;
+  transform: none !important;
+}
+
+.app-button-block { display: flex; width: 100%; }
 
 /* Smooth focus transition for every input/textarea/select, including the
    raw Tailwind-styled fields in the admin forms (not just .app-input). */
@@ -784,31 +836,62 @@ input, textarea, select {
     transform:translateY(-8px);
 }
 
-/* Apple-style infinite testimonial slider */
+/* Two-row opposite-moving testimonial marquee (TestimonialMarquee.vue).
+   Each row is a tripled list (see the component) animated by the exact
+   same keyframe — row two just runs it in reverse via
+   animation-direction, so there's only one loop distance (-33.333%, i.e.
+   exactly one of the three copies) to keep in sync between the two rows. */
+.testimonial-marquee {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
-.testimonial-wrapper {
+.testimonial-row {
     overflow: hidden;
     width: 100%;
     position: relative;
 }
 
-.testimonial-track {
+.testimonial-row__track {
     display: flex;
     flex-direction: row;
     gap: 24px;
     width: max-content;
-    animation: testimonial-scroll 40s linear infinite;
+    animation: testimonial-scroll 28s linear infinite;
 }
 
-.testimonial-wrapper:hover .testimonial-track {
+.testimonial-row--reverse .testimonial-row__track {
+    animation-direction: reverse;
+}
+
+.testimonial-marquee:hover .testimonial-row__track,
+.testimonial-marquee:focus-within .testimonial-row__track {
     animation-play-state: paused;
 }
 
 @keyframes testimonial-scroll {
-    from {
-        transform: translateX(0);
+    from { transform: translateX(0); }
+    to { transform: translateX(-33.333%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .testimonial-row__track {
+        animation: none;
+        flex-wrap: wrap;
+        width: 100%;
     }
-    to {
-        transform: translateX(-33.333%);
+    .testimonial-row {
+        overflow: visible;
+    }
+    /* Row two is a cosmetic reversed repeat of row one's content (see the
+       component) — with the animation gone it adds nothing but duplicate
+       reading material, so it's dropped entirely rather than also
+       unwrapped into a second static grid. */
+    .testimonial-row--reverse {
+        display: none;
+    }
+    .testimonial-row__track [aria-hidden="true"] {
+        display: none;
     }
 }

@@ -49,37 +49,38 @@ export function heroReveal(elements = [], heading = null) {
 
   const tl = gsap.timeline({ defaults: { ease: PREMIUM_EASE } })
 
-  // 1. Heading rises into view, word by word — the slowest, most
-  //    deliberate beat, since it's the first thing anyone reads.
+  // 1. Heading rises into view, word by word — still the first beat, but
+  //    quick enough that the headline is legible almost immediately
+  //    instead of assembling itself over a second-plus.
   if (words.length) {
     gsap.set(words, { yPercent: 140, opacity: 0 })
 
     tl.to(words, {
       yPercent: 0,
       opacity: 1,
-      duration: 1.3,
-      stagger: 0.11,
-      ease: 'power4.out'
+      duration: 0.5,
+      stagger: 0.035,
+      ease: 'power3.out'
     }, 0)
   }
 
   // 2. Each remaining element (eyebrow/paragraph/buttons, in the order
-  //    passed in) gets its own generous slot, well after the previous one
-  //    has clearly landed — a slow cascade rather than a near-simultaneous
-  //    group fade.
+  //    passed in) gets its own short slot right behind the previous one —
+  //    a quick cascade, not a near-simultaneous group fade, but nowhere
+  //    near the original ~2s runway.
   if (targets.length) {
-    gsap.set(targets, { opacity: 0, y: 60, scale: 0.94 })
+    gsap.set(targets, { opacity: 0, y: 24, scale: 0.97 })
 
-    const cascadeStart = words.length ? 0.7 : 0.2
-    const slotGap = 0.38
+    const cascadeStart = words.length ? 0.28 : 0.05
+    const slotGap = 0.1
 
     targets.forEach((el, i) => {
       tl.to(el, {
         opacity: 1,
         y: 0,
         scale: 1,
-        duration: 1.05,
-        ease: 'power4.out'
+        duration: 0.4,
+        ease: 'power3.out'
       }, cascadeStart + i * slotGap)
     })
   }
@@ -91,7 +92,7 @@ export function heroReveal(elements = [], heading = null) {
 // alongside heroReveal, offset slightly so it lands after the copy starts.
 // A touch of rotation on the way in reads as more natural than a straight
 // scale-up.
-export function heroVisualReveal(el, delay = 1.95) {
+export function heroVisualReveal(el, delay = 0.45) {
   if (!el) return null
 
   if (prefersReducedMotion()) {
@@ -99,15 +100,15 @@ export function heroVisualReveal(el, delay = 1.95) {
     return null
   }
 
-  gsap.set(el, { opacity: 0, scale: 0.82, y: 70, rotate: -6 })
+  gsap.set(el, { opacity: 0, scale: 0.92, y: 24, rotate: -3 })
   return gsap.to(el, {
     opacity: 1,
     scale: 1,
     y: 0,
     rotate: 0,
-    duration: 1.4,
+    duration: 0.55,
     delay,
-    ease: 'power4.out'
+    ease: 'power3.out'
   })
 }
 

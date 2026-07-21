@@ -5,15 +5,22 @@ let mutationObserver = null
 let refreshScheduled = false
 
 export function initAos(router) {
- // Ignore reduced motion while developing.
-// Uncomment the block below if you want to respect the user's OS preference.
-//
-// if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-//   document.documentElement.classList.add('aos-reduced-motion')
-//   return
-// }
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
-document.documentElement.classList.remove('aos-reduced-motion')
+  function applyMotionPreference() {
+    document.documentElement.classList.toggle('aos-reduced-motion', reducedMotion.matches)
+  }
+  applyMotionPreference()
+  // Respond live if the user flips the OS setting without reloading, not
+  // just on initial load.
+  reducedMotion.addEventListener('change', applyMotionPreference)
+
+  if (reducedMotion.matches) {
+    // [data-aos].aos-reduced-motion is already opacity:1/no-transform via
+    // CSS (style.css) — no need to run the IntersectionObserver machinery
+    // at all for users who asked for reduced motion.
+    return
+  }
 
   const refresh = () => {
     if (observer) observer.disconnect()

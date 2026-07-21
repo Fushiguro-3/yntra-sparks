@@ -5,6 +5,8 @@ import { schoolService } from '@/api/schoolService'
 import Modal from '@/components/Modal.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import Pagination from '@/components/Pagination.vue'
+import PageHeader from '@/components/PageHeader.vue'
+import AppButton from '@/components/AppButton.vue'
 
 const kits = ref([])
 const page = ref(0)
@@ -101,21 +103,11 @@ onMounted(loadKits)
 
 <template>
   <div>
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
-      <div>
-        <p class="text-xs font-bold uppercase tracking-[.16em] text-spark-600 mb-1">Product library</p>
-        <h1 class="app-panel-title text-2xl">Kits</h1>
-        <p class="text-ink-600 text-sm mt-1">Manage the STEM kit catalog.</p>
-      </div>
-      <RouterLink
-        :to="{ name: 'admin-kit-new' }"
-        class="self-start sm:self-auto inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 transition text-sm"
-      >
-        + Add Kit
-      </RouterLink>
-    </div>
+    <PageHeader eyebrow="Product library" title="Kits" subtitle="Manage the STEM kit catalog.">
+      <AppButton as="router-link" :to="{ name: 'admin-kit-new' }">+ Add Kit</AppButton>
+    </PageHeader>
 
-    <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">
+    <p v-if="errorMessage" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">
       {{ errorMessage }}
     </p>
 
@@ -164,7 +156,7 @@ onMounted(loadKits)
       <p class="text-xs text-slate-500 mb-4">
         Toggle which schools can see this kit.
       </p>
-      <p v-if="accessError" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-3">{{ accessError }}</p>
+      <p v-if="accessError" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-3">{{ accessError }}</p>
       <div class="max-h-80 overflow-y-auto divide-y divide-slate-100">
         <div v-for="school in allSchools" :key="school.id" class="flex items-center justify-between py-2.5">
           <span class="text-sm text-slate-700">{{ school.name }}</span>

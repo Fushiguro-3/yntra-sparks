@@ -2,6 +2,8 @@
 import { ref, onMounted } from 'vue'
 import { categoryService } from '@/api/categoryService'
 import Modal from '@/components/Modal.vue'
+import PageHeader from '@/components/PageHeader.vue'
+import AppButton from '@/components/AppButton.vue'
 
 const categories = ref([])
 const isLoading = ref(true)
@@ -79,19 +81,9 @@ onMounted(loadCategories)
 
 <template>
   <div>
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
-      <div>
-        <p class="text-xs font-bold uppercase tracking-[.16em] text-spark-600 mb-1">Catalog setup</p>
-        <h1 class="app-panel-title text-2xl">Categories</h1>
-        <p class="text-ink-600 text-sm mt-1">Organize kits by subject area.</p>
-      </div>
-      <button
-        @click="openCreate"
-        class="self-start sm:self-auto inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 transition text-sm"
-      >
-        + Add Category
-      </button>
-    </div>
+    <PageHeader eyebrow="Catalog setup" title="Categories" subtitle="Organize kits by subject area.">
+      <AppButton @click="openCreate">+ Add Category</AppButton>
+    </PageHeader>
 
     <p v-if="errorMessage" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">
       {{ errorMessage }}
@@ -137,11 +129,8 @@ onMounted(loadCategories)
           <p v-if="formError" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ formError }}</p>
         </Transition>
         <div class="flex flex-wrap justify-end gap-2 pt-2">
-          <button type="button" @click="showModal = false" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100">Cancel</button>
-          <button type="submit" :disabled="isSaving" class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 disabled:opacity-60">
-            <span v-if="isSaving" class="btn-spinner" aria-hidden="true"></span>
-            {{ isSaving ? 'Saving…' : 'Save' }}
-          </button>
+          <AppButton type="button" variant="quiet" @click="showModal = false">Cancel</AppButton>
+          <AppButton type="submit" :loading="isSaving">{{ isSaving ? 'Saving…' : 'Save' }}</AppButton>
         </div>
       </form>
     </Modal>

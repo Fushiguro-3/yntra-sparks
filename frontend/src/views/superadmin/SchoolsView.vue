@@ -4,6 +4,8 @@ import { schoolService } from '@/api/schoolService'
 import Modal from '@/components/Modal.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import Pagination from '@/components/Pagination.vue'
+import PageHeader from '@/components/PageHeader.vue'
+import AppButton from '@/components/AppButton.vue'
 
 const schools = ref([])
 const page = ref(0)
@@ -69,6 +71,7 @@ async function saveSchool() {
 
 async function toggleStatus(school) {
   const next = school.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+  if (next === 'INACTIVE' && !confirm(`Deactivate ${school.name}? Its principals and teachers will lose access immediately.`)) return
   try {
     await schoolService.setStatus(school.id, next)
     await loadSchools()
@@ -87,21 +90,11 @@ onMounted(loadSchools)
 
 <template>
   <div>
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
-      <div>
-        <p class="text-xs font-bold uppercase tracking-[.16em] text-spark-600 mb-1">Workspace directory</p>
-        <h1 class="app-panel-title text-2xl">Schools</h1>
-        <p class="text-ink-600 text-sm mt-1">Onboard and manage school accounts.</p>
-      </div>
-      <button
-        @click="openCreate"
-        class="self-start sm:self-auto inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 transition text-sm"
-      >
-        + Add School
-      </button>
-    </div>
+    <PageHeader eyebrow="Workspace directory" title="Schools" subtitle="Onboard and manage school accounts.">
+      <AppButton @click="openCreate">+ Add School</AppButton>
+    </PageHeader>
 
-    <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">
+    <p v-if="errorMessage" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">
       {{ errorMessage }}
     </p>
 
@@ -161,11 +154,8 @@ onMounted(loadSchools)
           <p v-if="formError" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ formError }}</p>
         </Transition>
         <div class="flex flex-wrap justify-end gap-2 pt-2">
-          <button type="button" @click="showModal = false" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100">Cancel</button>
-          <button type="submit" :disabled="isSaving" class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 disabled:opacity-60">
-            <span v-if="isSaving" class="btn-spinner" aria-hidden="true"></span>
-            {{ isSaving ? 'Saving…' : 'Save' }}
-          </button>
+          <AppButton type="button" variant="quiet" @click="showModal = false">Cancel</AppButton>
+          <AppButton type="submit" :loading="isSaving">{{ isSaving ? 'Saving…' : 'Save' }}</AppButton>
         </div>
       </form>
     </Modal>

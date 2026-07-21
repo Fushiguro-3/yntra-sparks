@@ -3,6 +3,8 @@ import { computed, onMounted, ref } from 'vue'
 import { messagesService } from '@/services/messagesService'
 import Modal from '@/components/Modal.vue'
 import Pagination from '@/components/Pagination.vue'
+import PageHeader from '@/components/PageHeader.vue'
+import AppButton from '@/components/AppButton.vue'
 
 const messages = ref([])
 const page = ref(0)
@@ -93,22 +95,11 @@ onMounted(loadMessages)
 
 <template>
   <div>
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
-      <div>
-        <p class="text-xs font-bold uppercase tracking-[.16em] text-spark-600 mb-1">Inbox</p>
-        <h1 class="app-panel-title text-2xl">Contact Messages</h1>
-        <p class="text-ink-600 text-sm mt-1">Review enquiries submitted from the public contact form.</p>
-      </div>
-      <button
-        @click="loadMessages"
-        :disabled="isLoading"
-        class="self-start sm:self-auto inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 disabled:opacity-60 transition text-sm"
-      >
-        {{ isLoading ? 'Refreshing...' : 'Refresh' }}
-      </button>
-    </div>
+    <PageHeader eyebrow="Inbox" title="Contact Messages" subtitle="Review enquiries submitted from the public contact form.">
+      <AppButton @click="loadMessages" :loading="isLoading">{{ isLoading ? 'Refreshing…' : 'Refresh' }}</AppButton>
+    </PageHeader>
 
-    <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">
+    <p v-if="errorMessage" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">
       {{ errorMessage }}
     </p>
 
@@ -211,24 +202,24 @@ onMounted(loadMessages)
           <p class="whitespace-pre-wrap text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-3">{{ selectedMessage.message }}</p>
         </div>
         <div class="flex flex-wrap justify-end gap-2 pt-2">
-          <a
+          <AppButton
+            as="a"
             :href="buildReplyUrl(selectedMessage)"
             target="_blank"
             rel="noopener noreferrer"
-            class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700"
           >
             Reply
-          </a>
-          <button @click="selectedMessage = null" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100">
+          </AppButton>
+          <AppButton variant="quiet" @click="selectedMessage = null">
             Close
-          </button>
-          <button
+          </AppButton>
+          <AppButton
+            variant="destructive"
             @click="deleteMessage(selectedMessage)"
-            :disabled="deletingId === selectedMessage.id"
-            class="px-4 py-2 rounded-lg text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+            :loading="deletingId === selectedMessage.id"
           >
             {{ deletingId === selectedMessage.id ? 'Deleting...' : 'Delete' }}
-          </button>
+          </AppButton>
         </div>
       </div>
     </Modal>

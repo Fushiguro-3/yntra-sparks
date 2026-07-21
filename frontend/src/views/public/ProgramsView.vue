@@ -70,7 +70,7 @@ onMounted(loadKits)
             :key="kit.id"
             class="group bg-white rounded-[24px] overflow-hidden kit-card-fun hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200"
             data-aos="zoom-pop"
-            :style="{ '--aos-delay': `${index * 130}ms` }"
+            :style="{ '--aos-delay': `${index * 40}ms` }"
           >
             <div class="aspect-[16/10] bg-gradient-to-br from-white to-navy-50 overflow-hidden p-4 relative">
               <span class="absolute -left-8 bottom-2 w-20 h-16 blue-splash opacity-80"></span>

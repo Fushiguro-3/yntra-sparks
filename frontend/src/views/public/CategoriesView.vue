@@ -56,14 +56,14 @@ onMounted(loadCategories)
         :key="cat.id"
         class="group bg-white rounded-[24px] p-6 kit-card-fun hover-glow hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200"
         data-aos="fade-up"
-        :style="{ '--aos-delay': `${index * 115}ms` }"
+        :style="{ '--aos-delay': `${index * 40}ms` }"
       >
         <div class="w-full aspect-square rounded-[18px] mb-4 overflow-hidden">
           <img
             :src="imageForCategory(cat.name)"
             :alt="`${cat.name} illustration`"
             loading="lazy"
-            class="w-full h-full object-cover transition-transform duration-[760ms] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.12]"
+            class="w-full h-full object-cover transition-transform duration-[420ms] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.12]"
           />
         </div>
         <h3 class="font-display font-medium text-lg text-navy-900">{{ cat.name }}</h3>

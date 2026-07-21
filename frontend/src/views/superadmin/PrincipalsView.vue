@@ -5,6 +5,8 @@ import { schoolService } from '@/api/schoolService'
 import Modal from '@/components/Modal.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import Pagination from '@/components/Pagination.vue'
+import PageHeader from '@/components/PageHeader.vue'
+import AppButton from '@/components/AppButton.vue'
 
 const schools = ref([])
 const selectedSchoolId = ref(null)
@@ -130,20 +132,9 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
-      <div>
-        <p class="text-xs font-bold uppercase tracking-[.16em] text-spark-600 mb-1">School accounts</p>
-        <h1 class="app-panel-title text-2xl">Principals</h1>
-        <p class="text-ink-600 text-sm mt-1">Manage principal accounts per school.</p>
-      </div>
-      <button
-        @click="openAddModal"
-        :disabled="!selectedSchoolId"
-        class="self-start sm:self-auto inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 transition text-sm disabled:opacity-50"
-      >
-        + Add Principal
-      </button>
-    </div>
+    <PageHeader eyebrow="School accounts" title="Principals" subtitle="Manage principal accounts per school.">
+      <AppButton @click="openAddModal" :disabled="!selectedSchoolId">+ Add Principal</AppButton>
+    </PageHeader>
 
     <!-- School selector -->
     <div class="mb-5">
@@ -214,11 +205,8 @@ onMounted(async () => {
           <p v-if="addError" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ addError }}</p>
         </Transition>
         <div class="flex justify-end gap-2 pt-2">
-          <button type="button" @click="showAddModal = false" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100">Cancel</button>
-          <button type="submit" :disabled="isSaving" class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700 disabled:opacity-60">
-            <span v-if="isSaving" class="btn-spinner" aria-hidden="true"></span>
-            {{ isSaving ? 'Creating…' : 'Create' }}
-          </button>
+          <AppButton type="button" variant="quiet" @click="showAddModal = false">Cancel</AppButton>
+          <AppButton type="submit" :loading="isSaving">{{ isSaving ? 'Creating…' : 'Create' }}</AppButton>
         </div>
       </form>
     </Modal>
@@ -230,9 +218,7 @@ onMounted(async () => {
       <div class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 font-mono text-lg text-center text-navy-800 tracking-wide select-all">
         {{ revealedPassword }}
       </div>
-      <button @click="showPasswordModal = false" class="w-full mt-4 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-navy-800 to-navy-600 hover:from-navy-900 hover:to-navy-700">
-        Done
-      </button>
+      <AppButton @click="showPasswordModal = false" block class="mt-4">Done</AppButton>
     </Modal>
   </div>
 </template>

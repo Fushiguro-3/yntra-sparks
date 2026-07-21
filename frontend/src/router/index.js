@@ -91,11 +91,43 @@ const routes = [
   }
 ]
 
+// Matches the sticky public header's tallest state (see Navbar.vue) plus a
+// little breathing room, so a hash-target heading doesn't land underneath it.
+export const HASH_SCROLL_OFFSET = 96
+
+// Pure decision logic, split out from the scrollBehavior hook below so it's
+// unit-testable without a real browser/router (see tests/unit/router/scrollBehavior.spec.js).
+export function resolveScrollTarget(to, from, savedPosition) {
+  if (savedPosition) {
+    // Browser Back/Forward — vue-router already captured this position
+    // when the user navigated away; always prefer it over anything else.
+    return savedPosition
+  }
+  if (to.hash) {
+    return { el: to.hash, top: HASH_SCROLL_OFFSET, behavior: 'smooth' }
+  }
+  if (to.path === from.path) {
+    // Same path, e.g. only the query changed (pagination, filters) — don't
+    // yank the user back to the top of a page they're still on.
+    return false
+  }
+  return { top: 0 }
+}
+
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior() {
-    return { top: 0 }
+  scrollBehavior(to, from, savedPosition) {
+    const target = resolveScrollTarget(to, from, savedPosition)
+
+    // The outgoing page is still mid-transition (route-fade leave, 180ms —
+    // see style.css) when scrollBehavior first runs, and the incoming page
+    // may still be fetching data that affects its height (e.g. HomeView's
+    // featured kits). Resolving on a short delay instead of immediately
+    // avoids restoring/scrolling against a not-yet-settled layout.
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(target), 180)
+    })
   }
 })
 
