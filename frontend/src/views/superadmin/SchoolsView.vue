@@ -146,19 +146,19 @@ onMounted(loadSchools)
     <Modal :show="showModal" :title="editingId ? 'Edit School' : 'Add School'" @close="showModal = false">
       <form @submit.prevent="saveSchool" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">School Name</label>
-          <input v-model="form.name" type="text" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
+          <label for="school-name" class="block text-sm font-medium text-slate-700 mb-1">School Name</label>
+          <input id="school-name" v-model="form.name" type="text" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
-          <input v-model="form.email" type="email" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
+          <label for="school-email" class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+          <input id="school-email" v-model="form.email" type="email" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Address</label>
-          <textarea v-model="form.address" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500"></textarea>
+          <label for="school-address" class="block text-sm font-medium text-slate-700 mb-1">Address</label>
+          <textarea id="school-address" v-model="form.address" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500"></textarea>
         </div>
         <Transition name="field-message">
-          <p v-if="formError" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ formError }}</p>
+          <p v-if="formError" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ formError }}</p>
         </Transition>
         <div class="flex flex-wrap justify-end gap-2 pt-2">
           <button type="button" @click="showModal = false" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100">Cancel</button>

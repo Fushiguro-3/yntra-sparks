@@ -13,7 +13,9 @@ const routes = [
       { path: 'grades', name: 'public-grades', component: () => import('@/views/public/GradesView.vue') },
       { path: 'programs', name: 'public-programs', component: () => import('@/views/public/ProgramsView.vue') },
       { path: 'kits/:id', name: 'public-kit-detail', component: () => import('@/views/public/KitDetailView.vue'), props: true },
-      { path: 'contact', name: 'public-contact', component: () => import('@/views/public/ContactView.vue') }
+      { path: 'contact', name: 'public-contact', component: () => import('@/views/public/ContactView.vue') },
+      { path: 'privacy', name: 'public-privacy', component: () => import('@/views/public/PrivacyPolicyView.vue') },
+      { path: 'terms', name: 'public-terms', component: () => import('@/views/public/TermsView.vue') }
     ]
   },
 
@@ -22,6 +24,15 @@ const routes = [
     name: 'login',
     component: () => import('@/views/LoginView.vue'),
     meta: { guestOnly: true }
+  },
+
+  // Reachable by any authenticated role — not role-gated like /admin,
+  // /principal, /teacher. See the mustChangePassword handling below.
+  {
+    path: '/change-password',
+    name: 'change-password',
+    component: () => import('@/views/ChangePasswordView.vue'),
+    meta: { requiresAuth: true }
   },
 
   // ---------------- Super Admin ----------------
@@ -106,20 +117,32 @@ router.beforeEach(async (to) => {
   }
 
   const requiredRoles = to.meta.roles
+  const requiresAuth = !!requiredRoles || !!to.meta.requiresAuth
 
   if (to.meta.guestOnly && auth.isAuthenticated) {
     return { path: auth.homePath }
   }
 
-  if (requiredRoles) {
+  if (requiresAuth) {
     if (!auth.isAuthenticated) {
       return { name: 'login', query: { redirect: to.fullPath } }
     }
     // Authenticated but wrong role → explicit 403, never a silent redirect
     // to their own dashboard and never a blank page (user-flows.md).
-    if (!requiredRoles.includes(auth.role)) {
+    if (requiredRoles && !requiredRoles.includes(auth.role)) {
       return { name: 'forbidden' }
     }
+  }
+
+  // Forced password change (api-contract.md's mustChangePassword flag):
+  // block every protected route until it's cleared, but never touch this
+  // check for the change-password route itself — that's the redirect
+  // loop guard (comparing to.name, not auth state, so it can't flap).
+  if (auth.isAuthenticated && auth.mustChangePassword && to.name !== 'change-password') {
+    return { name: 'change-password' }
+  }
+  if (to.name === 'change-password' && auth.isAuthenticated && !auth.mustChangePassword) {
+    return { path: auth.homePath }
   }
 
   return true

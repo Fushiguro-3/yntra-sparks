@@ -47,17 +47,28 @@ Runs on `http://localhost:5173`
 
 By default the frontend uses mocked data (`VITE_USE_MOCK` defaults to `true`).
 Set `VITE_USE_MOCK=false` in your `.env` (or Vercel env vars) to hit the real
-backend at `http://localhost:8080`.
+backend at `http://localhost:8080` — see `frontend/.env.example` for every
+variable the frontend reads (Web3Forms, Buttondown, feature flags, etc.) and
+`docs/frontend-api-dependencies.md` for what the backend needs to implement
+before that flip is safe.
+
+### Frontend tests
+```bash
+cd frontend
+npm test          # Vitest unit/component tests (mock mode, no backend needed)
+npm run test:e2e  # Playwright smoke tests against the dev server (mock mode)
+```
 
 ## Docs
 
 Start here before touching code — new to the project? Read
 [`docs/onboarding.md`](docs/onboarding.md) first:
 - [`docs/onboarding.md`](docs/onboarding.md) — full setup guide, prerequisites, first run
-- [`docs/requirements.md`](docs/requirements.md) — roles, permissions, scope
+- [`docs/requirements.md`](docs/requirements.md) — roles, permissions, scope, and out-of-scope/future-enhancement features already in the frontend (§3a)
 - [`docs/decisions.md`](docs/decisions.md) — ADR log of architectural decisions
 - [`docs/er-diagram.md`](docs/er-diagram.md) — database schema
-- [`docs/api-contract.md`](docs/api-contract.md) — endpoint contracts
+- [`docs/api-contract.md`](docs/api-contract.md) — endpoint contracts the backend targets
+- [`docs/frontend-api-dependencies.md`](docs/frontend-api-dependencies.md) — every endpoint the frontend actually calls, cross-referenced against `api-contract.md`, including gaps
 - [`docs/user-flows.md`](docs/user-flows.md) — role-based flow diagrams
 
 ## Git Workflow

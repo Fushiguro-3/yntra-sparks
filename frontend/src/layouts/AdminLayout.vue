@@ -1,6 +1,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import DemoModeBadge from '@/components/DemoModeBadge.vue'
 
 const nav = [
   { name: 'admin-schools', label: 'Schools' },
@@ -58,7 +59,10 @@ async function handleLogout() {
     <main class="flex-1 min-w-0">
       <header class="bg-white/80 backdrop-blur border-b border-navy-100 px-5 md:px-8 py-4 flex items-center justify-between">
         <p class="text-sm text-ink-600">{{ auth.user?.email }}</p>
-        <span class="text-xs font-bold text-navy-700 bg-navy-50 rounded-full px-3 py-1.5">Command centre</span>
+        <div class="flex items-center gap-2">
+          <DemoModeBadge />
+          <span class="text-xs font-bold text-navy-700 bg-navy-50 rounded-full px-3 py-1.5">Command centre</span>
+        </div>
       </header>
       <div class="p-5 md:p-8">
         <RouterView v-slot="{ Component }">

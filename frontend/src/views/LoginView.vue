@@ -29,9 +29,9 @@ async function handleSubmit() {
   isSubmitting.value = true
   try {
     await auth.login(email.value, password.value)
-    // user.mustChangePassword is returned by the backend but there's no
-    // forced-change-password screen yet (api-contract.md open question) —
-    // nothing to act on here until that's built.
+    // If user.mustChangePassword is true, router.beforeEach (router/index.js)
+    // intercepts this navigation and redirects to /change-password —
+    // nothing to branch on here.
     const redirect = route.query.redirect
     const target = typeof redirect === 'string' ? redirect : null
     router.push(target || auth.homePath)
@@ -67,8 +67,9 @@ async function handleSubmit() {
       <div class="app-surface rounded-[28px] p-6 sm:p-8 flex flex-col">
         <form @submit.prevent="handleSubmit" class="space-y-4 pd-2">
           <div data-aos="fade-up" data-aos-delay="100">
-            <label class="block text-sm font-bold text-navy-900 mb-1.5">Email address</label>
+            <label for="login-email" class="block text-sm font-bold text-navy-900 mb-1.5">Email address</label>
             <input
+              id="login-email"
               v-model="email"
               type="email"
               placeholder="you@school.com"
@@ -78,8 +79,9 @@ async function handleSubmit() {
           </div>
 
           <div data-aos="fade-up" data-aos-delay="220">
-            <label class="block text-sm font-bold text-navy-900 mb-1.5">Password</label>
+            <label for="login-password" class="block text-sm font-bold text-navy-900 mb-1.5">Password</label>
             <input
+              id="login-password"
               v-model="password"
               type="password"
               placeholder="••••••••"
@@ -89,7 +91,7 @@ async function handleSubmit() {
           </div>
 
           <Transition name="field-message">
-            <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            <p v-if="errorMessage" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
               {{ errorMessage }}
             </p>
           </Transition>

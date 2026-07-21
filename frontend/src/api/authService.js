@@ -20,6 +20,12 @@ const realAuthService = {
 
   logout() {
     return unwrap(http.post('/auth/logout'))
+  },
+
+  // NOT in docs/api-contract.md — see docs/frontend-api-dependencies.md.
+  // Assumed shape pending backend confirmation.
+  changePassword(currentPassword, newPassword) {
+    return unwrap(http.post('/auth/change-password', { currentPassword, newPassword }))
   }
 }
 

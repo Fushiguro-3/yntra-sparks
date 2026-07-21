@@ -211,21 +211,21 @@ onMounted(async () => {
     <form v-else @submit.prevent="handleSave" class="space-y-5">
       <div class="app-surface rounded-[24px] p-6 space-y-4">
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Title</label>
-          <input v-model="form.title" type="text" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
+          <label for="kit-title" class="block text-sm font-medium text-slate-700 mb-1">Title</label>
+          <input id="kit-title" v-model="form.title" type="text" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
-          <textarea v-model="form.description" rows="3" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500"></textarea>
+          <label for="kit-description" class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+          <textarea id="kit-description" v-model="form.description" rows="3" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500"></textarea>
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Thumbnail URL</label>
-          <input v-model="form.thumbnailUrl" type="text" placeholder="https://…" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
+          <label for="kit-thumbnail" class="block text-sm font-medium text-slate-700 mb-1">Thumbnail URL</label>
+          <input id="kit-thumbnail" v-model="form.thumbnailUrl" type="text" placeholder="https://…" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Manual PDF</label>
-          <input type="file" accept="application/pdf,.pdf" @change="handleManualFileChange" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-navy-500">
-          <p class="mt-1 text-xs text-slate-400">PDF only, up to {{ maxManualSizeMb }} MB.</p>
+          <label for="kit-manual" class="block text-sm font-medium text-slate-700 mb-1">Manual PDF</label>
+          <input id="kit-manual" type="file" accept="application/pdf,.pdf" @change="handleManualFileChange" aria-describedby="kit-manual-hint" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-navy-500">
+          <p id="kit-manual-hint" class="mt-1 text-xs text-slate-400">PDF only, up to {{ maxManualSizeMb }} MB.</p>
           <a
             v-if="form.manualPdfUrl"
             :href="form.manualPdfUrl"
@@ -238,16 +238,16 @@ onMounted(async () => {
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Grade</label>
-            <input v-model="form.grade" type="text" placeholder="Grade 6" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
+            <label for="kit-grade" class="block text-sm font-medium text-slate-700 mb-1">Grade</label>
+            <input id="kit-grade" v-model="form.grade" type="text" placeholder="Grade 6" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Price</label>
-            <input v-model="form.price" type="number" min="0" step="0.01" placeholder="0.00" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
+            <label for="kit-price" class="block text-sm font-medium text-slate-700 mb-1">Price (₹)</label>
+            <input id="kit-price" v-model="form.price" type="number" min="0" step="0.01" placeholder="0.00" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Category</label>
-            <select v-model="form.categoryId" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
+            <label for="kit-category" class="block text-sm font-medium text-slate-700 mb-1">Category</label>
+            <select id="kit-category" v-model="form.categoryId" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-500">
               <option value="" disabled>Select a category</option>
               <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
             </select>
@@ -265,14 +265,16 @@ onMounted(async () => {
 
         <div v-for="(video, index) in form.videos" :key="index" class="flex items-start gap-2 mb-3 last:mb-0">
           <div class="flex flex-col gap-1 pt-2">
-            <button type="button" @click="moveVideo(index, -1)" :disabled="index === 0" class="text-slate-400 hover:text-slate-700 disabled:opacity-30 text-xs">▲</button>
-            <button type="button" @click="moveVideo(index, 1)" :disabled="index === form.videos.length - 1" class="text-slate-400 hover:text-slate-700 disabled:opacity-30 text-xs">▼</button>
+            <button type="button" @click="moveVideo(index, -1)" :disabled="index === 0" :aria-label="`Move video ${index + 1} up`" class="text-slate-400 hover:text-slate-700 disabled:opacity-30 text-xs">▲</button>
+            <button type="button" @click="moveVideo(index, 1)" :disabled="index === form.videos.length - 1" :aria-label="`Move video ${index + 1} down`" class="text-slate-400 hover:text-slate-700 disabled:opacity-30 text-xs">▼</button>
           </div>
           <div class="flex-1 grid grid-cols-2 gap-2">
-            <input v-model="video.title" type="text" placeholder="Video title" class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-navy-500">
-            <input v-model="video.youtubeVideoId" type="text" placeholder="YouTube URL or video ID" class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-navy-500">
+            <label :for="`video-title-${index}`" class="sr-only">Video {{ index + 1 }} title</label>
+            <input :id="`video-title-${index}`" v-model="video.title" type="text" placeholder="Video title" class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-navy-500">
+            <label :for="`video-url-${index}`" class="sr-only">Video {{ index + 1 }} YouTube URL or ID</label>
+            <input :id="`video-url-${index}`" v-model="video.youtubeVideoId" type="text" placeholder="YouTube URL or video ID" class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-navy-500">
           </div>
-          <button type="button" @click="removeVideo(index)" class="text-red-400 hover:text-red-600 pt-2 text-sm">&times;</button>
+          <button type="button" @click="removeVideo(index)" :aria-label="`Remove video ${index + 1}`" class="text-red-400 hover:text-red-600 pt-2 text-sm">&times;</button>
         </div>
       </div>
 
@@ -296,7 +298,7 @@ onMounted(async () => {
         <p v-else class="text-sm text-slate-400">No active schools are available to assign.</p>
       </div>
 
-      <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ errorMessage }}</p>
+      <p v-if="errorMessage" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{{ errorMessage }}</p>
 
       <div class="flex flex-wrap justify-end gap-2">
         <RouterLink :to="{ name: 'admin-kits' }" class="app-button-quiet">Cancel</RouterLink>

@@ -12,11 +12,11 @@ onMounted(() => {
   auth.bootstrap()
 })
 
-// Only the authenticated dashboard routes (meta.roles) need to wait on
-// bootstrap before rendering — the public marketing site and /login don't
-// depend on auth state at all, so gating them too would show a pointless
-// blank flash on every homepage visit.
-const needsBootstrapGate = computed(() => !!route.meta.roles)
+// Only routes that depend on auth state (meta.roles or meta.requiresAuth,
+// e.g. /change-password) need to wait on bootstrap before rendering — the
+// public marketing site and /login don't, so gating them too would show a
+// pointless blank flash on every homepage visit.
+const needsBootstrapGate = computed(() => !!route.meta.roles || !!route.meta.requiresAuth)
 
 // Purely cosmetic top progress bar tracking route changes — observes
 // navigation via router.beforeEach/afterEach without altering any guard

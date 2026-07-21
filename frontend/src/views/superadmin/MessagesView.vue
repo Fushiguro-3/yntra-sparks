@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { contactService } from '@/api/contactService'
+import { messagesService } from '@/services/messagesService'
 import Modal from '@/components/Modal.vue'
 import Pagination from '@/components/Pagination.vue'
 
@@ -53,7 +53,7 @@ async function loadMessages() {
   isLoading.value = true
   errorMessage.value = ''
   try {
-    const res = await contactService.list({ page: page.value })
+    const res = await messagesService.list({ page: page.value })
     messages.value = res.content || []
     totalPages.value = res.totalPages || 0
     totalElements.value = res.totalElements || 0
@@ -76,7 +76,7 @@ async function deleteMessage(message) {
   deletingId.value = message.id
   errorMessage.value = ''
   try {
-    await contactService.delete(message.id)
+    await messagesService.delete(message)
     if (selectedMessage.value?.id === message.id) {
       selectedMessage.value = null
     }
@@ -117,22 +117,23 @@ onMounted(loadMessages)
         {{ messageCountLabel }}
       </div>
       <div class="overflow-x-auto">
-      <table class="app-data-table w-full min-w-[760px] text-sm">
+      <table class="app-data-table w-full min-w-[860px] text-sm">
         <thead class="bg-slate-50 text-left text-slate-500">
           <tr>
             <th class="px-5 py-3 font-medium">Name</th>
             <th class="px-5 py-3 font-medium">Email</th>
             <th class="px-5 py-3 font-medium">Subject</th>
+            <th class="px-5 py-3 font-medium">Source</th>
             <th class="px-5 py-3 font-medium">Received</th>
             <th class="px-5 py-3 font-medium text-right w-[220px]">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
           <tr v-if="isLoading">
-            <td colspan="5" class="px-5 py-6 text-center text-slate-400">Loading...</td>
+            <td colspan="6" class="px-5 py-6 text-center text-slate-400">Loading...</td>
           </tr>
           <tr v-else-if="messages.length === 0">
-            <td colspan="5" class="px-5 py-6 text-center text-slate-400">No contact messages yet.</td>
+            <td colspan="6" class="px-5 py-6 text-center text-slate-400">No contact messages yet.</td>
           </tr>
           <tr v-for="message in messages" :key="message.id" class="hover:bg-slate-50">
             <td class="px-5 py-3 font-medium text-slate-800">{{ message.name }}</td>
@@ -140,6 +141,14 @@ onMounted(loadMessages)
               <a :href="`mailto:${message.email}`" class="hover:text-navy-700">{{ message.email }}</a>
             </td>
             <td class="px-5 py-3 text-slate-700 max-w-xs truncate">{{ message.subject }}</td>
+            <td class="px-5 py-3">
+              <span
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                :class="message.source === 'web3forms' ? 'bg-spark-50 text-spark-700' : 'bg-emerald-50 text-emerald-700'"
+              >
+                {{ message.source === 'web3forms' ? 'Web3Forms' : 'Backend' }}
+              </span>
+            </td>
             <td class="px-5 py-3 text-slate-500 whitespace-nowrap">{{ formatDate(message.createdAt) }}</td>
             <td class="px-5 py-3">
               <div class="flex items-center justify-end gap-3 whitespace-nowrap">
@@ -192,6 +201,10 @@ onMounted(loadMessages)
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Received</p>
           <p class="text-slate-600">{{ formatDate(selectedMessage.createdAt) }}</p>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Source</p>
+          <p class="text-slate-600">{{ selectedMessage.source === 'web3forms' ? 'Web3Forms (synced from public Contact form)' : 'Backend' }}</p>
         </div>
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Message</p>

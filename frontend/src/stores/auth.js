@@ -30,7 +30,8 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     isAuthenticated: (state) => !!state.accessToken && !!state.user,
     role: (state) => state.user?.role ?? null,
-    homePath: (state) => (state.user ? (ROLE_HOME[state.user.role] ?? '/login') : '/login')
+    homePath: (state) => (state.user ? (ROLE_HOME[state.user.role] ?? '/login') : '/login'),
+    mustChangePassword: (state) => !!state.user?.mustChangePassword
   },
 
   actions: {
@@ -75,6 +76,16 @@ export const useAuthStore = defineStore('auth', {
     forceLogout() {
       this.accessToken = null
       this.user = null
+    },
+
+    /** Used by ChangePasswordView.vue — see router/index.js for the guard that forces this flow. */
+    async changePassword(currentPassword, newPassword) {
+      await authService.changePassword(currentPassword, newPassword)
+      // Response shape is unconfirmed for the real backend (undocumented
+      // endpoint — see docs/frontend-api-dependencies.md), so we don't
+      // trust its payload beyond "it didn't throw" and just clear the flag
+      // locally.
+      this.user = { ...this.user, mustChangePassword: false }
     }
   }
 })

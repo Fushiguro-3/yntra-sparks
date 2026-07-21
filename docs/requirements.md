@@ -2,7 +2,7 @@
 
 **Status:** Draft v1 — Day 1
 **Owner:** [vandana / thaneesha ]
-**Last updated:** 2026-07-10
+**Last updated:** 2026-07-21
 
 ## 1. Product Summary
 
@@ -56,6 +56,23 @@ Explicitly excluded — do not build, do not leave half-built stubs for:
 - Self-service "forgot password" email flow (admin-mediated only, see §4.1)
 - File upload for PDFs/manuals (videos via YouTube link only)
 - Analytics dashboards
+
+## 3a. Out of Scope, But Already Built in the Frontend
+
+Two features from §3 exist as working frontend UI today, ahead of the documented
+MVP. They are being **kept and documented**, not stripped, and are gated behind
+feature flags so they can be hidden per-environment without a code change. See
+ADR-010 in `decisions.md` for the full rationale.
+
+| Feature | Where | Flag | Backend expectation |
+|---|---|---|---|
+| Kit pricing (`price` field) | Kit create/edit form, all kit list/detail views, public catalog | `VITE_FEATURE_KIT_PRICING` (default `true`) | `Kit.price` (numeric, INR) does not exist in `er-diagram.md`. Not implemented anywhere server-side. |
+| Kit manuals (PDF upload/download) | Super Admin kit form (upload), Principal/Teacher kit detail (download) | `VITE_FEATURE_KIT_MANUALS` (default `true`) | `POST /kits/manuals`, `GET /kits/manuals/{key}/download-url` — not in `api-contract.md`. Not implemented server-side. |
+
+Both flags default **on** — the UI is fully functional today against the mock
+API layer. They exist so a future environment (e.g. a production deploy ahead
+of backend support) can hide the feature by setting the flag to `false` in
+that environment's `.env`, without touching component code.
 
 ## 4. Decisions Required Before Schema Lock
 
