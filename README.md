@@ -1,23 +1,30 @@
 # Yntra Sparks
 
-B2B platform giving schools access to STEM learning kits. MVP scope: Super
-Admin, School Admin (Principal), and Teacher roles — no student/parent login,
-no marketplace, no quizzes (see `docs/requirements.md` §3 for full out-of-scope list).
+B2B platform giving schools access to STEM learning kits, plus a public
+marketing/catalog site. MVP scope for the app: Super Admin, School Admin
+(Principal), and Teacher roles — no student/parent login, no marketplace,
+no quizzes (see `docs/requirements.md` §3 for full out-of-scope list).
 
 ## Tech Stack
 
-**Frontend:** Vue.js 3, Tailwind CSS, Vue Router, Pinia, Axios
+**Frontend:** Vue.js 3, Tailwind CSS, Vue Router, Pinia, Axios, GSAP
 **Backend:** Java, Spring Boot, Spring Security, JWT (access + refresh token)
 **Database:** PostgreSQL
 **Migrations:** Flyway
+**Deployment:** Vercel (frontend)
 
 ## Repo Structure
 
 ```
 yntra-sparks/
-├── docs/          # requirements, decisions log, ER diagram, API contract, user flows
+├── docs/          # requirements, decisions log, ER diagram, API contract, user flows, onboarding
 ├── backend/       # Spring Boot app (layered: controller/service/repository/entity/dto)
 ├── frontend/      # Vue 3 app (Vite)
+│   └── src/views/
+│       ├── public/      # marketing site (home, about, programs, categories, grades, contact)
+│       ├── superadmin/  # Super Admin console
+│       ├── principal/   # School Admin console
+│       └── teacher/     # Teacher console
 └── .github/       # PR template
 ```
 
@@ -38,14 +45,20 @@ npm run dev
 ```
 Runs on `http://localhost:5173`
 
+By default the frontend uses mocked data (`VITE_USE_MOCK` defaults to `true`).
+Set `VITE_USE_MOCK=false` in your `.env` (or Vercel env vars) to hit the real
+backend at `http://localhost:8080`.
+
 ## Docs
 
-Start here before touching code:
+Start here before touching code — new to the project? Read
+[`docs/onboarding.md`](docs/onboarding.md) first:
+- [`docs/onboarding.md`](docs/onboarding.md) — full setup guide, prerequisites, first run
 - [`docs/requirements.md`](docs/requirements.md) — roles, permissions, scope
 - [`docs/decisions.md`](docs/decisions.md) — ADR log of architectural decisions
-- `docs/er-diagram.md` — database schema (coming Day 2)
-- `docs/api-contract.md` — endpoint contracts (coming Day 2-3)
-- `docs/user-flows.md` — role-based flow diagrams
+- [`docs/er-diagram.md`](docs/er-diagram.md) — database schema
+- [`docs/api-contract.md`](docs/api-contract.md) — endpoint contracts
+- [`docs/user-flows.md`](docs/user-flows.md) — role-based flow diagrams
 
 ## Git Workflow
 
