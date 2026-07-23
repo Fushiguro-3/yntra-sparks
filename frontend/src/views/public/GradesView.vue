@@ -2,6 +2,8 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { publicService } from '@/api/publicService'
+import ExploreKitButton from '@/components/public/ExploreKitButton.vue'
+import { buildKitContext } from '@/utils/kitNavContext'
 
 const route = useRoute()
 const router = useRouter()
@@ -71,7 +73,7 @@ onMounted(loadKits)
           v-for="(grade, index) in grades"
           :key="grade.name"
           :to="{ name: 'public-grades', query: { grade: grade.name } }"
-          class="bg-white rounded-[22px] p-6 kit-card-fun hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200"
+          class="bg-white rounded-[22px] p-6 kit-card-fun hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spark-400"
           data-aos="zoom-pop"
           :style="{ '--aos-delay': `${index * 30}ms` }"
         >
@@ -94,7 +96,10 @@ onMounted(loadKits)
         <p class="text-ink-600 text-sm">STEM kits designed for {{ selectedGrade }} students.</p>
       </div>
 
-      <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4">{{ errorMessage }}</p>
+      <div v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4 flex items-center justify-between gap-3">
+        <span>{{ errorMessage }}</span>
+        <button type="button" class="app-button-outline shrink-0" @click="loadKits">Retry</button>
+      </div>
 
       <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div v-for="item in 3" :key="item" class="bg-white rounded-[24px] p-5 kit-card-fun">
@@ -108,33 +113,33 @@ onMounted(loadKits)
         No kits are available for {{ selectedGrade }} yet.
       </div>
 
-      <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
         <article
           v-for="(kit, index) in kits"
           :key="kit.id"
-          class="group bg-white rounded-[24px] overflow-hidden kit-card-fun hover-glow hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200"
+          class="group h-full flex flex-col bg-white rounded-[24px] overflow-hidden kit-card-fun hover-glow hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200"
           data-aos="fade-up"
           :style="{ '--aos-delay': `${index * 40}ms` }"
         >
-          <div class="aspect-[16/10] bg-gradient-to-br from-white to-spark-50 overflow-hidden p-4 relative">
+          <div class="aspect-[16/10] shrink-0 bg-gradient-to-br from-white to-spark-50 overflow-hidden p-4 relative">
             <span class="absolute -left-8 top-3 w-20 h-16 blue-splash opacity-80"></span>
             <span class="absolute -right-8 bottom-3 w-20 h-16 orange-splash opacity-80"></span>
             <img v-if="kit.thumbnailUrl" :src="kit.thumbnailUrl" :alt="kit.title" loading="lazy" class="relative z-10 w-full h-full object-contain transition-transform duration-500 ease-out group-hover:scale-110">
           </div>
-          <div class="p-5">
-            <p class="text-xs font-semibold text-spark-600 mb-1">{{ kit.categoryName || 'STEM Kit' }}</p>
-            <h3 class="font-display font-medium text-lg text-navy-900">{{ kit.title }}</h3>
-            <p class="text-sm text-ink-600 mt-2">{{ kit.description }}</p>
-            <div class="flex flex-wrap gap-2 mt-4 text-xs text-slate-600">
+          <div class="p-5 flex-1 flex flex-col">
+            <p class="text-xs font-semibold text-spark-600 mb-1 line-clamp-1">{{ kit.categoryName || 'STEM Kit' }}</p>
+            <h3 class="font-display font-medium text-lg text-navy-900 line-clamp-1">{{ kit.title }}</h3>
+            <p class="text-sm text-ink-600 mt-2 line-clamp-2">{{ kit.description }}</p>
+            <div class="flex flex-wrap items-center gap-2 mt-4 mb-4 text-xs text-slate-600">
               <span class="rounded-md bg-slate-100 px-2 py-1">{{ kit.grade }}</span>
               <span class="rounded-md bg-slate-100 px-2 py-1">{{ formatPrice(kit.price) }}</span>
-              <RouterLink
-                :to="{ name: 'public-kit-detail', params: { id: kit.id } }"
-                class="rounded-md bg-navy-50 px-2 py-1 font-semibold text-navy-700 hover:bg-navy-100"
-              >
-                Explore Kit
-              </RouterLink>
             </div>
+            <ExploreKitButton
+              :to="{ name: 'public-kit-detail', params: { id: kit.id }, query: buildKitContext('grade', selectedGrade) }"
+              size="sm"
+              block
+              class="mt-auto"
+            />
           </div>
         </article>
       </div>

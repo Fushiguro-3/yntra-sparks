@@ -2,12 +2,17 @@
 import { ref, onMounted } from 'vue'
 import { kitService } from '@/api/kitService'
 import Pagination from '@/components/Pagination.vue'
+import { useAuthStore } from '@/stores/auth'
+import { recentlyViewedStore } from '@/services/recentlyViewedStore'
+import SaveKitButton from '@/components/portal/SaveKitButton.vue'
 
+const auth = useAuthStore()
 const kits = ref([])
 const page = ref(0)
 const totalPages = ref(0)
 const isLoading = ref(true)
 const errorMessage = ref('')
+const recentlyViewed = ref(recentlyViewedStore.list(auth.user?.id))
 
 async function loadKits() {
   isLoading.value = true
@@ -48,6 +53,24 @@ onMounted(loadKits)
       <p class="text-slate-500 text-sm">Kits your school has purchased — pick one to start a video.</p>
     </div>
 
+    <div v-if="recentlyViewed.length > 0" class="mb-7">
+      <p class="text-xs font-semibold uppercase tracking-wide text-ink-600 mb-3">Recently viewed</p>
+      <div class="flex gap-3 overflow-x-auto pb-2">
+        <RouterLink
+          v-for="kit in recentlyViewed"
+          :key="kit.id"
+          :to="{ name: 'teacher-kit-detail', params: { id: kit.id } }"
+          class="shrink-0 w-48 flex items-center gap-2.5 bg-white rounded-xl border border-navy-100 hover-glow-soft transition p-2.5"
+        >
+          <span class="w-9 h-9 rounded-lg bg-navy-50 shrink-0 overflow-hidden flex items-center justify-center text-[10px] font-bold text-navy-700">
+            <img v-if="kit.thumbnailUrl" :src="kit.thumbnailUrl" :alt="kit.title" class="w-full h-full object-cover">
+            <span v-else aria-hidden="true">STEM</span>
+          </span>
+          <span class="min-w-0 text-sm font-semibold text-navy-900 truncate">{{ kit.title }}</span>
+        </RouterLink>
+      </div>
+    </div>
+
     <p v-if="errorMessage" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">
       {{ errorMessage }}
     </p>
@@ -58,17 +81,17 @@ onMounted(loadKits)
     <div v-if="isLoading" class="text-slate-400 text-sm">Loading…</div>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <RouterLink
+      <article
         v-for="kit in kits"
         :key="kit.id"
-        :to="{ name: 'teacher-kit-detail', params: { id: kit.id } }"
-        class="kit-dashboard-card bg-white rounded-[22px] border border-navy-100 overflow-hidden transition duration-300 group"
+        class="relative group kit-dashboard-card bg-white rounded-[22px] border border-navy-100 overflow-hidden transition duration-300"
       >
-        <div class="aspect-video accent-grid flex items-center justify-center overflow-hidden">
+        <RouterLink :to="{ name: 'teacher-kit-detail', params: { id: kit.id } }" class="absolute inset-0 z-0" :aria-label="kit.title"></RouterLink>
+        <div class="aspect-video accent-grid flex items-center justify-center overflow-hidden pointer-events-none">
           <img v-if="kit.thumbnailUrl" :src="kit.thumbnailUrl" :alt="kit.title" class="w-full h-full object-cover">
           <span v-else class="text-slate-300 text-3xl">🧪</span>
         </div>
-        <div class="p-4">
+        <div class="p-4 pointer-events-none">
           <p class="text-xs text-spark-600 font-semibold mb-1">{{ kit.categoryName ?? kit.category?.name ?? 'Uncategorized' }}</p>
           <h3 class="font-display font-semibold text-navy-900 group-hover:text-spark-600 transition">{{ kit.title }}</h3>
           <div class="mt-3 flex flex-wrap gap-2 text-xs text-slate-500">
@@ -76,7 +99,8 @@ onMounted(loadKits)
             <span v-if="kit.price !== null && kit.price !== undefined" class="rounded-md bg-slate-100 px-2 py-1">{{ formatPrice(kit.price) }}</span>
           </div>
         </div>
-      </RouterLink>
+        <SaveKitButton :kit="kit" :user-id="auth.user?.id" size="sm" class="absolute top-3 right-3 z-10 shadow-sm" />
+      </article>
     </div>
 
     <Pagination :page="page" :total-pages="totalPages" @change="onPageChange" />

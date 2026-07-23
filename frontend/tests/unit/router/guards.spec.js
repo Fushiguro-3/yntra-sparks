@@ -68,4 +68,31 @@ describe('router guards (router/index.js beforeEach)', () => {
     await router.push('/programs')
     expect(router.currentRoute.value.name).toBe('public-programs')
   })
+
+  it('renders each role\'s own dashboard (no redirect) once role-gated routes resolve', async () => {
+    const auth = useAuthStore()
+    await auth.login('admin@yntrasparks.com', 'demo1234')
+    await router.push('/admin')
+    expect(router.currentRoute.value.name).toBe('admin-dashboard')
+  })
+
+  it('lets a correctly-roled user reach their own Profile page', async () => {
+    const auth = useAuthStore()
+    await auth.login('teacher@dps.edu.in', 'demo1234')
+    await router.push('/teacher/profile')
+    expect(router.currentRoute.value.name).toBe('teacher-profile')
+  })
+
+  it('blocks a wrong-role user from another portal\'s Profile route with an explicit 403', async () => {
+    const auth = useAuthStore()
+    await auth.login('teacher@dps.edu.in', 'demo1234')
+    await router.push('/admin/profile')
+    expect(router.currentRoute.value.name).toBe('forbidden')
+  })
+
+  it('redirects an unauthenticated visitor away from a Profile route, preserving the destination', async () => {
+    await router.push('/principal/profile')
+    expect(router.currentRoute.value.name).toBe('login')
+    expect(router.currentRoute.value.query.redirect).toBe('/principal/profile')
+  })
 })

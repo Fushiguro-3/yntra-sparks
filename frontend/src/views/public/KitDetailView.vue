@@ -1,18 +1,24 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import MarketingButton from '@/components/public/MarketingButton.vue'
+import VideoModal from '@/components/VideoModal.vue'
 import { publicService } from '@/api/publicService'
+import { resolveBackTarget } from '@/utils/kitNavContext'
 
 const props = defineProps({
   id: { type: String, required: true }
 })
 
+const route = useRoute()
 const kit = ref(null)
 const activeVideoIndex = ref(0)
 const isLoading = ref(true)
 const errorMessage = ref('')
+const isVideoOpen = ref(false)
 
 const activeVideo = computed(() => kit.value?.videos?.[activeVideoIndex.value] || null)
+const backTarget = computed(() => resolveBackTarget(route.query))
 
 function formatPrice(price) {
   if (price === null || price === undefined || price === '') return ''
@@ -41,8 +47,8 @@ onMounted(loadKit)
 
 <template>
   <section class="max-w-[1440px] mx-auto px-5 md:px-10 pt-10 pb-20">
-    <RouterLink :to="{ name: 'public-programs' }" class="group inline-flex items-center text-sm font-semibold text-navy-700 hover:text-navy-900 transition-colors">
-      <span class="inline-block transition-transform duration-200 group-hover:-translate-x-1">&larr;</span>&nbsp;Back to Programs
+    <RouterLink :to="backTarget.to" class="group inline-flex items-center text-sm font-semibold text-navy-700 hover:text-navy-900 transition-colors">
+      <span class="inline-block transition-transform duration-200 group-hover:-translate-x-1">&larr;</span>&nbsp;{{ backTarget.label }}
     </RouterLink>
 
     <div v-if="isLoading" class="mt-8 text-sm text-slate-400">Loading kit...</div>
@@ -69,20 +75,22 @@ onMounted(loadKit)
         </div>
 
         <div data-aos="slide-left">
-          <div v-if="activeVideo" class="bg-white rounded-[20px] overflow-hidden shadow-[0px_4px_12px_rgba(31,27,46,0.06)]">
-            <div class="aspect-video bg-black">
-              <iframe
-                class="w-full h-full"
-                :src="`https://www.youtube.com/embed/${activeVideo.youtubeVideoId}`"
-                :title="activeVideo.title"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-              ></iframe>
-            </div>
-            <div class="p-4">
-              <p class="font-display font-medium text-navy-900">{{ activeVideo.title }}</p>
-            </div>
+          <div v-if="activeVideo" class="group relative aspect-video rounded-[20px] overflow-hidden bg-navy-900 shadow-[0px_4px_12px_rgba(31,27,46,0.06)]">
+            <img
+              v-if="kit.thumbnailUrl"
+              :src="kit.thumbnailUrl"
+              :alt="kit.title"
+              loading="lazy"
+              class="absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-300 group-hover:opacity-45"
+            >
+            <button
+              type="button"
+              class="absolute inset-0 w-full h-full flex flex-col items-center justify-center gap-3 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spark-400"
+              @click="isVideoOpen = true"
+            >
+              <span class="w-16 h-16 rounded-full bg-white/90 text-navy-900 flex items-center justify-center text-2xl shadow-lg transition-transform duration-200 group-hover:scale-110" aria-hidden="true">▶</span>
+              <span class="font-display font-semibold px-4 text-center">Watch Demo — {{ activeVideo.title }}</span>
+            </button>
           </div>
 
           <div v-else-if="kit.thumbnailUrl" class="group aspect-video rounded-[20px] overflow-hidden bg-lavender-50 shadow-[0px_4px_12px_rgba(31,27,46,0.06)]">
@@ -108,6 +116,13 @@ onMounted(loadKit)
           </div>
         </div>
       </div>
+
+      <VideoModal
+        :show="isVideoOpen"
+        :video-id="activeVideo?.youtubeVideoId || ''"
+        :title="activeVideo?.title || kit.title"
+        @close="isVideoOpen = false"
+      />
     </div>
   </section>
 </template>

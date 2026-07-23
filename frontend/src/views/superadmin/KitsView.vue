@@ -7,12 +7,24 @@ import StatusBadge from '@/components/StatusBadge.vue'
 import Pagination from '@/components/Pagination.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import AppButton from '@/components/AppButton.vue'
+import { useClientTable } from '@/composables/useClientTable'
+import { useToast } from '@/composables/useToast'
+import { useConfirm } from '@/composables/useConfirm'
+
+const toast = useToast()
+const { confirm } = useConfirm()
 
 const kits = ref([])
-const page = ref(0)
-const totalPages = ref(0)
 const isLoading = ref(true)
 const errorMessage = ref('')
+
+const { search, page, filtered, paged } = useClientTable(
+  kits,
+  (kit, q) =>
+    kit.title.toLowerCase().includes(q) ||
+    (kit.categoryName || '').toLowerCase().includes(q) ||
+    (kit.grade || '').toLowerCase().includes(q)
+)
 
 const showAccessModal = ref(false)
 const activeKit = ref(null)
@@ -25,9 +37,8 @@ async function loadKits() {
   isLoading.value = true
   errorMessage.value = ''
   try {
-    const res = await kitService.list({ page: page.value })
+    const res = await kitService.list({ size: 200 })
     kits.value = res.content
-    totalPages.value = res.totalPages
   } catch (err) {
     errorMessage.value = err.message
   } finally {
@@ -45,13 +56,21 @@ function formatPrice(price) {
 }
 
 async function archiveKit(kit) {
-  if (!confirm(`Delete "${kit.title}" from the active catalog? It will be hidden from the public site and schools.`)) return
+  const confirmed = await confirm({
+    title: 'Delete kit?',
+    message: `Delete "${kit.title}" from the active catalog? It will be hidden from the public site and schools.`,
+    confirmLabel: 'Delete',
+    danger: true
+  })
+  if (!confirmed) return
   errorMessage.value = ''
   try {
     await kitService.archive(kit.id)
+    toast.success(`"${kit.title}" removed from the active catalog.`)
     await loadKits()
   } catch (err) {
     errorMessage.value = err.message
+    toast.error(err.message)
   }
 }
 
@@ -93,11 +112,6 @@ async function toggleSchoolAccess(school) {
   }
 }
 
-function onPageChange(newPage) {
-  page.value = newPage
-  loadKits()
-}
-
 onMounted(loadKits)
 </script>
 
@@ -110,6 +124,17 @@ onMounted(loadKits)
     <p v-if="errorMessage" role="alert" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 mb-4">
       {{ errorMessage }}
     </p>
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+      <input
+        v-model="search"
+        type="search"
+        class="app-input sm:max-w-xs"
+        placeholder="Search by title, category, or grade"
+        aria-label="Search kits"
+      >
+      <p class="text-xs text-ink-600 shrink-0">{{ filtered.length }} kit{{ filtered.length === 1 ? '' : 's' }}</p>
+    </div>
 
     <div class="app-surface rounded-[22px] overflow-hidden">
       <div class="overflow-x-auto">
@@ -128,10 +153,10 @@ onMounted(loadKits)
           <tr v-if="isLoading">
             <td colspan="6" class="px-5 py-6 text-center text-slate-400">Loading...</td>
           </tr>
-          <tr v-else-if="kits.length === 0">
-            <td colspan="6" class="px-5 py-6 text-center text-slate-400">No kits yet.</td>
+          <tr v-else-if="paged.content.length === 0">
+            <td colspan="6" class="px-5 py-6 text-center text-slate-400">{{ search ? 'No kits match your search.' : 'No kits yet.' }}</td>
           </tr>
-          <tr v-for="kit in kits" :key="kit.id" class="hover:bg-slate-50">
+          <tr v-for="kit in paged.content" :key="kit.id" class="hover:bg-slate-50">
             <td class="px-5 py-3 font-medium text-slate-800">{{ kit.title }}</td>
             <td class="px-5 py-3 text-slate-500">{{ kit.grade || '-' }}</td>
             <td class="px-5 py-3 text-slate-500">{{ formatPrice(kit.price) }}</td>
@@ -150,7 +175,7 @@ onMounted(loadKits)
       </div>
     </div>
 
-    <Pagination :page="page" :total-pages="totalPages" @change="onPageChange" />
+    <Pagination :page="page" :total-pages="paged.totalPages" @change="page = $event" />
 
     <Modal :show="showAccessModal" :title="`Manage Access - ${activeKit?.title}`" @close="showAccessModal = false" max-width="max-w-lg">
       <p class="text-xs text-slate-500 mb-4">

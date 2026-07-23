@@ -4,17 +4,16 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import MarketingButton from '@/components/public/MarketingButton.vue'
 import FeatureCard from '@/components/public/FeatureCard.vue'
 import MarketingKitCard from '@/components/public/MarketingKitCard.vue'
+import KitCarousel from '@/components/public/KitCarousel.vue'
 import TestimonialMarquee from '@/components/public/TestimonialMarquee.vue'
 import CtaBanner from '@/components/public/CtaBanner.vue'
 import FloatingBubbles from '@/components/public/FloatingBubbles.vue'
 import { publicService } from '@/api/publicService'
+import { categoryService } from '@/api/categoryService'
 import { heroReveal, heroVisualReveal, attachCursorParallax } from '@/utils/motion'
-import scienceImage from '@/assets/images/categories/science.svg'
-import technologyImage from '@/assets/images/categories/technology.svg'
-import engineeringImage from '@/assets/images/categories/engineering.svg'
-import mathematicsImage from '@/assets/images/categories/mathematics.svg'
-import codingImage from '@/assets/images/categories/coding.svg'
-import roboticsImage from '@/assets/images/categories/robotics.svg'
+import { imageForCategory } from '@/utils/categoryImages'
+import { blurbForCategory } from '@/utils/categoryBlurbs'
+import { buildKitContext } from '@/utils/kitNavContext'
 
 const heroEyebrow = ref(null)
 const heroHeading = ref(null)
@@ -61,7 +60,7 @@ const publicFeaturedKits = ref([])
 const featuredKitCards = computed(() => {
   if (publicFeaturedKits.value.length === 0) return featuredKits
 
-  return publicFeaturedKits.value.map((kit) => ({
+  return publicFeaturedKits.value.slice(0, 6).map((kit) => ({
     title: kit.title,
     category: kit.categoryName || 'STEM Kit',
     description: kit.description || '',
@@ -69,18 +68,22 @@ const featuredKitCards = computed(() => {
     duration: kit.videos?.length ? `${kit.videos.length} video${kit.videos.length === 1 ? '' : 's'}` : '',
     emoji: 'STEM',
     imageUrl: kit.thumbnailUrl || '',
-    to: { name: 'public-kit-detail', params: { id: kit.id } }
+    to: { name: 'public-kit-detail', params: { id: kit.id }, query: buildKitContext('home') }
   }))
 })
 
-const categories = [
-  { name: 'Science', blurb: 'Experiments that make abstract concepts tangible', image: scienceImage, imageAlt: 'Science illustration' },
-  { name: 'Technology', blurb: 'Real tools, real interfaces, real confidence', image: technologyImage, imageAlt: 'Technology illustration' },
-  { name: 'Engineering', blurb: 'Design, build, test, iterate', image: engineeringImage, imageAlt: 'Engineering illustration' },
-  { name: 'Mathematics', blurb: 'Numbers made visual and physical', image: mathematicsImage, imageAlt: 'Mathematics illustration' },
-  { name: 'Coding', blurb: 'From block-based logic to first real code', image: codingImage, imageAlt: 'Coding illustration' },
-  { name: 'Robotics', blurb: 'Assemble, wire, and program working robots', image: roboticsImage, imageAlt: 'Robotics illustration' }
-]
+// Categories are read live from categoryService — the same source Super
+// Admin's Categories page writes through — rather than a hardcoded list, so
+// a category added/renamed/removed there shows up here too.
+const categories = ref([])
+const categoryCards = computed(() => categories.value.map((cat) => ({
+  id: cat.id,
+  name: cat.name,
+  blurb: blurbForCategory(cat.name),
+  image: imageForCategory(cat.name),
+  imageAlt: `${cat.name} illustration`,
+  kitCount: publicFeaturedKits.value.filter((k) => k.categoryId === cat.id).length
+})))
 
 const testimonials = [
   { quote: 'Our students went from watching science to actually doing it. The engagement shift was immediate.', name: 'Anita Rao', role: 'Principal, Greenview School', initials: 'AR' },
@@ -92,10 +95,18 @@ const testimonials = [
 
 async function loadFeaturedKits() {
   try {
-    const res = await publicService.listKits({ size: 6 })
+    const res = await publicService.listKits({ size: 100 })
     publicFeaturedKits.value = res.content || []
   } catch {
     publicFeaturedKits.value = []
+  }
+}
+
+async function loadCategories() {
+  try {
+    categories.value = await categoryService.list()
+  } catch {
+    categories.value = []
   }
 }
 
@@ -103,6 +114,7 @@ let detachParallax = () => {}
 
 onMounted(() => {
   loadFeaturedKits()
+  loadCategories()
   heroReveal([heroEyebrow.value, heroCopy.value, heroActions.value], heroHeading.value)
   heroVisualReveal(heroVisual.value)
   detachParallax = attachCursorParallax(heroVisual.value, { strength: 6 })
@@ -134,8 +146,8 @@ function scrollToContent() {
         <MarketingButton as="router-link" :to="{ name: 'public-categories' }" variant="primary" size="lg">
           Explore Categories
         </MarketingButton>
-        <MarketingButton as="router-link" :to="{ name: 'public-contact' }" variant="ghost" size="lg">
-          ▶ Watch Demo
+        <MarketingButton as="router-link" :to="{ name: 'public-programs' }" variant="ghost" size="lg">
+          View Programs
         </MarketingButton>
       </div>
     </div>
@@ -153,7 +165,7 @@ function scrollToContent() {
 
     <button
       type="button"
-      class="scroll-indicator absolute left-1/2 -bottom-2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-1.5 text-navy-700/60 hover:text-navy-800 z-10"
+      class="scroll-indicator absolute left-1/2 -bottom-2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-1.5 text-spark-600/80 hover:text-spark-600 z-10"
       aria-label="Scroll to explore"
       @click="scrollToContent"
     >
@@ -190,16 +202,18 @@ function scrollToContent() {
         </RouterLink>
       </div>
     </div>
-    <div class="max-w-[1440px] mx-auto px-5 md:px-10 flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory">
-      <div
-        v-for="(kit, index) in featuredKitCards"
-        :key="kit.to?.params?.id || `${kit.title}-${index}`"
-        class="snap-start"
-        data-aos="fade-up"
-        :style="{ '--aos-delay': `${index * 40}ms` }"
-      >
-        <MarketingKitCard v-bind="kit" />
-      </div>
+    <div class="max-w-[1440px] mx-auto px-5 md:px-10">
+      <KitCarousel aria-label="Featured STEM Kits">
+        <div
+          v-for="(kit, index) in featuredKitCards"
+          :key="kit.to?.params?.id || `${kit.title}-${index}`"
+          class="snap-start h-full"
+          data-aos="fade-up"
+          :style="{ '--aos-delay': `${index * 40}ms` }"
+        >
+          <MarketingKitCard v-bind="kit" />
+        </div>
+      </KitCarousel>
     </div>
   </section>
 
@@ -208,10 +222,10 @@ function scrollToContent() {
     <h2 class="font-display text-2xl md:text-3xl font-semibold text-navy-900 mb-10 text-center" data-aos="fade-up">Explore by Category</h2>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
       <RouterLink
-        v-for="(cat, index) in categories"
-        :key="cat.name"
-        :to="{ name: 'public-categories' }"
-        class="group bg-white rounded-[22px] p-5 text-center kit-card-fun hover-glow"
+        v-for="(cat, index) in categoryCards"
+        :key="cat.id"
+        :to="{ name: 'public-categories', query: { category: cat.id } }"
+        class="group bg-white rounded-[22px] p-5 text-center kit-card-fun hover-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spark-400"
         data-aos="zoom-pop"
         :style="{ '--aos-delay': `${index * 35}ms` }"
       >
@@ -224,7 +238,8 @@ function scrollToContent() {
           />
         </div>
         <p class="font-display font-medium text-navy-900 mb-1">{{ cat.name }}</p>
-        <p class="text-xs text-ink-600">{{ cat.blurb }}</p>
+        <p class="text-xs text-ink-600 line-clamp-2">{{ cat.blurb }}</p>
+        <p v-if="cat.kitCount > 0" class="text-[11px] font-semibold text-spark-600 mt-1.5">{{ cat.kitCount }} kit{{ cat.kitCount === 1 ? '' : 's' }}</p>
       </RouterLink>
     </div>
   </section>

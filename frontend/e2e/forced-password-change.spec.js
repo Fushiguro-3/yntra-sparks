@@ -21,12 +21,12 @@ test('a freshly created account is forced through password change before reachin
   await page.getByRole('button', { name: /update password/i }).click()
 
   await expect(page.getByText('Password updated')).toBeVisible()
-  await expect(page).toHaveURL(/\/teacher\/kits$/, { timeout: 5000 })
+  await expect(page).toHaveURL(/\/teacher$/, { timeout: 5000 })
 
   // Visiting /change-password again afterwards should bounce away — the
   // flag is cleared, there's nothing left to force.
   await page.evaluate(() => window.__router.push('/change-password'))
-  await expect(page).toHaveURL(/\/teacher\/kits$/)
+  await expect(page).toHaveURL(/\/teacher$/)
 })
 
 test('rejects the wrong current (temporary) password with an inline error', async ({ page }) => {

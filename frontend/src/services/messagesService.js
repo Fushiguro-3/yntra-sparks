@@ -15,6 +15,7 @@
 // (MessagesView.vue) keeps working unchanged.
 import { contactService } from '@/api/contactService'
 import { web3formsMessageStore } from './web3formsMessageStore'
+import { messageStatusStore } from './messageStatusStore'
 import { paginate } from '@/utils/paginate'
 
 // contactService.list() is itself paginated (mock or real backend), but we
@@ -24,17 +25,43 @@ import { paginate } from '@/utils/paginate'
 // comment above and docs/frontend-api-dependencies.md for the real fix.
 const BACKEND_FETCH_SIZE = 1000
 
+async function loadMerged() {
+  const backendPage = await contactService.list({ page: 0, size: BACKEND_FETCH_SIZE })
+  const backendMessages = (backendPage.content || []).map((m) => ({ ...m, source: m.source || 'backend' }))
+  const web3formsMessages = web3formsMessageStore.getAll()
+
+  return [...backendMessages, ...web3formsMessages]
+    .map((m) => ({ ...m, status: messageStatusStore.getStatus(m.id) }))
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+}
+
 export const messagesService = {
   async list({ page = 0, size = 20 } = {}) {
-    const backendPage = await contactService.list({ page: 0, size: BACKEND_FETCH_SIZE })
-    const backendMessages = (backendPage.content || []).map((m) => ({ ...m, source: m.source || 'backend' }))
-    const web3formsMessages = web3formsMessageStore.getAll()
-
-    const merged = [...backendMessages, ...web3formsMessages].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    )
-
+    const merged = await loadMerged()
     return paginate(merged, page, size)
+  },
+
+  /** Unread count across the whole inbox — used for sidebar/dashboard badges. */
+  async countUnread() {
+    const merged = await loadMerged()
+    return merged.filter((m) => m.status === 'unread').length
+  },
+
+  markRead(message) {
+    messageStatusStore.setStatus(message.id, 'read')
+  },
+
+  markUnread(message) {
+    messageStatusStore.setStatus(message.id, 'unread')
+  },
+
+  archive(message) {
+    messageStatusStore.setStatus(message.id, 'archived')
+  },
+
+  /** Restores an archived message back to 'read' — it was, definitionally, already seen. */
+  restore(message) {
+    messageStatusStore.setStatus(message.id, 'read')
   },
 
   async delete(message) {

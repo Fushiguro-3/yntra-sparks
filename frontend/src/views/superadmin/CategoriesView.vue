@@ -4,6 +4,11 @@ import { categoryService } from '@/api/categoryService'
 import Modal from '@/components/Modal.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import AppButton from '@/components/AppButton.vue'
+import { useToast } from '@/composables/useToast'
+import { useConfirm } from '@/composables/useConfirm'
+
+const toast = useToast()
+const { confirm } = useConfirm()
 
 const categories = ref([])
 const isLoading = ref(true)
@@ -51,8 +56,10 @@ async function saveCategory() {
   try {
     if (editingId.value) {
       await categoryService.update(editingId.value, name.value)
+      toast.success('Category updated.')
     } else {
       await categoryService.create(name.value)
+      toast.success('Category added.')
     }
     showModal.value = false
     await loadCategories()
@@ -65,14 +72,22 @@ async function saveCategory() {
 }
 
 async function removeCategory(category) {
-  if (!confirm(`Delete category "${category.name}"? This only works if no kits reference it.`)) return
+  const confirmed = await confirm({
+    title: 'Delete category?',
+    message: `Delete category "${category.name}"? This only works if no kits reference it.`,
+    confirmLabel: 'Delete',
+    danger: true
+  })
+  if (!confirmed) return
   errorMessage.value = ''
   try {
     await categoryService.remove(category.id)
+    toast.success('Category deleted.')
     await loadCategories()
   } catch (err) {
     // Backend blocks with 409 if a Kit still references this category
     errorMessage.value = err.message
+    toast.error(err.message)
   }
 }
 

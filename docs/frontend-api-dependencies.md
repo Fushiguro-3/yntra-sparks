@@ -286,6 +286,26 @@ These aren't part of `api-contract.md` at all — they're third-party integratio
 
 ---
 
+## Frontend-only mock stores (no backend endpoint exists at all)
+
+Added across the two July 2026 frontend passes. None of these are network
+calls — they're localStorage overlays that stand in for a future backend
+feature. Listed here so a future backend implementer can see exactly what
+UI depends on them, without hunting through `src/services/`. See ADR-012 in
+`decisions.md` for why each one is shaped the way it is.
+
+| Store | Scope | Stands in for |
+|---|---|---|
+| `profileStore.js` | per user id | `PATCH /me` (display name/phone/avatar overlay) |
+| `recentlyViewedStore.js` | per user id | account-level "recently viewed" sync |
+| `savedKitsStore.js` | per user id | `GET/POST/DELETE /me/saved-kits` |
+| `messageStatusStore.js` | **per message id** (shared, not per-user — see ADR-012) | a `status` column + `PATCH /contact/{id}/status` on the real `ContactMessage` entity |
+| `teacherInvitationStore.js` | per school id | a real invitation-token email endpoint + public "accept invitation" page |
+| `notificationStore.js` | per user id | a real notifications table + polling/SSE/WebSocket |
+| `web3formsMessageStore.js` | global | see ADR-011 |
+
+---
+
 ## Summary — endpoint groups needing a contract before `VITE_USE_MOCK=false` anywhere real
 
 1. `GET /users/me` — every authenticated page depends on this
