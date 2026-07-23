@@ -246,3 +246,64 @@ a real backend endpoint exists. This is disclosed explicitly, not silently.
 **Revisit when:** The backend implements `/contact` (and ideally a
 Web3Forms webhook that writes directly to it, removing the local-storage
 bridge entirely).
+
+---
+
+## ADR-012: Net-new portal features (saved kits, message status, invitations, notifications, avatars) stay mock-only, one shared `mockStorage.js`
+
+**Date:** 2026-07-23
+**Status:** Accepted
+
+**Context:** The July 2026 portal-hardening pass (see
+`docs/frontend-portal-hardening-2026-07.md`) added five features with no
+backend support at all: saved/favourite kits, message read/unread/archive
+status, teacher invitations, a notification centre, and avatar upload. Per
+this phase's constraints the backend is not being touched, and the existing
+mock service layer must be extended, never replaced.
+
+**Decision:**
+- All five features are implemented as localStorage-backed stores under
+  `src/services/*Store.js`, sharing one new helper,
+  `src/utils/mockStorage.js` (`readJSON`/`writeJSON` — centralized JSON
+  parsing and corrupt-data/quota-error handling). `profileStore.js` and
+  `recentlyViewedStore.js` (from the prior pass) were refactored onto the
+  same helper for consistency.
+- **Per-user scoping is the default** (storage key suffixed `_${userId}`) —
+  saved kits, notifications, recently-viewed. **Message status is the one
+  deliberate exception**, keyed by message id only: the Contact Messages
+  inbox is one shared organizational resource that any Super Admin should
+  see the same state for, not personal data.
+- **Avatar images** are canvas-compressed client-side to a ≤128px square
+  JPEG before being stored in the same synchronous localStorage overlay as
+  the rest of `profileStore.js`, rather than introduced into IndexedDB. At
+  this payload size (5–15KB) IndexedDB's async API would only add
+  complexity (every reader of `profileStore` would need to become async)
+  for no real benefit.
+- **Teacher invitations** simulate the "someone else accepts" half of the
+  flow with an explicitly labeled "Simulate acceptance (mock)" action
+  (calls the real `teacherService.create()` under the hood) rather than
+  pretending an email was actually sent — there is no second party to click
+  a real link in a frontend-only mock, and the UI never claims otherwise.
+- **Notifications** are generated only at a small, deterministic list of
+  concrete code paths (see the full list in
+  `frontend-portal-hardening-2026-07.md`), each de-duplicated via an
+  explicit `dedupeKey`, instead of a speculative generic event bus that
+  would risk firing on every minor action or duplicating on re-renders.
+
+**Why:** Every one of these features needed to work end-to-end, today,
+without backend changes, while staying honest about what's actually
+simulated (mock invitation acceptance, mock notification triggers) rather
+than fabricating results a real backend would need to contradict later. One
+shared storage helper keeps five independently-added stores from each
+re-inventing the same try/catch/parse boilerplate.
+
+**Trade-off:** None of this data syncs across devices or browsers — saved
+kits, notification history, and invitation state are all local to the
+browser that created them, same limitation already accepted for
+`recentlyViewedStore.js` and `web3formsMessageStore.js` in earlier passes.
+This is disclosed in-doc, not silently.
+
+**Revisit when:** A real backend adds endpoints for any of these — see
+"Remaining backend dependencies" in
+`docs/frontend-portal-hardening-2026-07.md` for the shape each one should
+take, and delete the corresponding mock store when it does.

@@ -1,10 +1,12 @@
 import { test, expect } from '@playwright/test'
 
 // All against mock mode (VITE_USE_MOCK defaults true — see frontend/.env.example).
+// Login now lands each role on its own Dashboard page (/admin, /principal,
+// /teacher) rather than redirecting straight to a list view.
 const USERS = {
-  superAdmin: { email: 'admin@yntrasparks.com', password: 'demo1234', home: '/admin/schools', heading: 'Schools' },
-  principal: { email: 'principal@dps.edu.in', password: 'demo1234', home: '/principal/kits', heading: null },
-  teacher: { email: 'teacher@dps.edu.in', password: 'demo1234', home: '/teacher/kits', heading: null }
+  superAdmin: { email: 'admin@yntrasparks.com', password: 'demo1234', home: '/admin' },
+  principal: { email: 'principal@dps.edu.in', password: 'demo1234', home: '/principal' },
+  teacher: { email: 'teacher@dps.edu.in', password: 'demo1234', home: '/teacher' }
 }
 
 async function login(page, email, password) {
@@ -21,7 +23,10 @@ test.describe('Login → role-based landing', () => {
       await expect(page).toHaveURL(new RegExp(user.home.replace('/', '\\/')))
       await expect(page.getByText('Demo Mode')).toBeVisible()
 
-      await page.getByRole('button', { name: /log out/i }).first().click()
+      // Logout lives inside the top-right Account menu now, not as a
+      // directly-visible button — see PortalShell/UserMenu consolidation.
+      await page.locator('button[aria-label="Account menu"]:visible').click()
+      await page.getByRole('menuitem', { name: /log out/i }).click()
       await expect(page).toHaveURL(/\/login$/)
     })
   }

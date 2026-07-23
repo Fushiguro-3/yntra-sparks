@@ -4,6 +4,9 @@ import { useRouter } from 'vue-router'
 import { kitService } from '@/api/kitService'
 import { categoryService } from '@/api/categoryService'
 import { schoolService } from '@/api/schoolService'
+import { useToast } from '@/composables/useToast'
+
+const toast = useToast()
 
 const props = defineProps({
   id: { type: String, default: null } // present when editing (route param)
@@ -179,6 +182,7 @@ async function handleSave() {
       ? await kitService.update(props.id, payload)
       : await kitService.create(payload)
     await syncSchoolAccess(savedKit.id)
+    toast.success(isEditing.value ? 'Kit updated.' : 'Kit added.')
     router.push({ name: 'admin-kits' })
   } catch (err) {
     errorMessage.value = err.errors?.map((e) => e.message).join(' ') || err.message

@@ -3,6 +3,8 @@ import { onMounted, onUnmounted, computed, ref } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { routeTransition } from '@/utils/page-transition'
+import ToastContainer from '@/components/ToastContainer.vue'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const auth = useAuthStore()
 const route = useRoute()
@@ -65,4 +67,7 @@ onUnmounted(() => {
       </div>
     </Transition>
   </RouterView>
+
+  <ToastContainer />
+  <ConfirmDialog />
 </template>

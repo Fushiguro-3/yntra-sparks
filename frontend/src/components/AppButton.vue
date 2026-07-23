@@ -12,7 +12,7 @@ const props = defineProps({
   variant: {
     type: String,
     default: 'primary',
-    validator: (v) => ['primary', 'secondary', 'outline', 'ghost', 'destructive'].includes(v)
+    validator: (v) => ['primary', 'secondary', 'quiet', 'outline', 'ghost', 'destructive'].includes(v)
   },
   size: { type: String, default: 'md', validator: (v) => ['sm', 'md', 'lg'].includes(v) },
   /** Renders as <button> (default), <RouterLink> ('router-link'), or <a> ('a'). */

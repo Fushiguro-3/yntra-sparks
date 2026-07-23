@@ -1,11 +1,19 @@
 <script setup>
 import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore, ROLES } from '@/stores/auth'
 import FloatingBubbles from '@/components/public/FloatingBubbles.vue'
+import { useNotifications } from '@/composables/useNotifications'
 
 const auth = useAuthStore()
 const router = useRouter()
+const { notify } = useNotifications()
+
+const PROFILE_ROUTE = {
+  [ROLES.SUPER_ADMIN]: 'admin-profile',
+  [ROLES.PRINCIPAL]: 'principal-profile',
+  [ROLES.TEACHER]: 'teacher-profile'
+}
 
 const form = reactive({ currentPassword: '', newPassword: '', confirmPassword: '' })
 const errorMessage = ref('')
@@ -46,6 +54,21 @@ async function handleSubmit() {
   try {
     await auth.changePassword(form.currentPassword, form.newPassword)
     succeeded.value = true
+    // Clear password values out of component state immediately — nothing
+    // here is persisted anywhere, but there's no reason to keep them in
+    // memory a moment longer than needed.
+    form.currentPassword = ''
+    form.newPassword = ''
+    form.confirmPassword = ''
+    // A persistent security record, distinct from the transient toast/
+    // status message above — not every profile save gets one of these,
+    // but a password change is worth a durable record.
+    notify(auth.user?.id, {
+      type: 'password-changed',
+      title: 'Password changed',
+      message: 'Your password was updated successfully.',
+      to: { name: PROFILE_ROUTE[auth.role] }
+    })
     // Brief confirmation before handing off — router guard now lets this
     // role through since auth.user.mustChangePassword is false.
     setTimeout(() => {

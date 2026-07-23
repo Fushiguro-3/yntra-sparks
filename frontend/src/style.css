@@ -483,6 +483,28 @@ h1, h2, h3, h4, .font-display {
   color: var(--color-navy-900);
 }
 
+/* Shared "eyebrow" / small section-label style — one canonical orange-accent
+   treatment for muted metadata headings (Footer columns, Contact info
+   labels, card eyebrows) instead of every component recomposing its own
+   text-xs/uppercase/tracking/color combination. Use `.eyebrow-label` on
+   light surfaces, `.eyebrow-label-inverse` on dark navy surfaces. */
+.eyebrow-label {
+  display: inline-block;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--color-spark-600);
+}
+.eyebrow-label-inverse {
+  display: inline-block;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--color-spark-300);
+}
+
 .app-button-primary,
 .app-button-secondary,
 .app-button-quiet {
@@ -894,4 +916,35 @@ input, textarea, select {
     .testimonial-row__track [aria-hidden="true"] {
         display: none;
     }
+}
+
+/* ------------------------------------------------------------------ */
+/* Toast (ToastContainer.vue), dropdown popover (UserMenu.vue), and     */
+/* confirm dialog reuse Modal.vue's own transitions already defined     */
+/* above — these are the small pieces that don't.                      */
+/* ------------------------------------------------------------------ */
+.toast-list-enter-active { transition: opacity var(--dur-base) var(--ease-premium), transform var(--dur-base) var(--ease-premium); }
+.toast-list-leave-active { transition: opacity var(--dur-micro) var(--ease-exit), transform var(--dur-micro) var(--ease-exit); position: absolute; width: 100%; }
+.toast-list-enter-from { opacity: 0; transform: translate3d(0, -10px, 0) scale(.97); }
+.toast-list-leave-to { opacity: 0; transform: translate3d(0, -6px, 0) scale(.98); }
+.toast-list-move { transition: transform var(--dur-base) var(--ease-premium); }
+
+.menu-pop-enter-active { transition: opacity var(--dur-fast) var(--ease-premium), transform var(--dur-fast) var(--ease-premium); }
+.menu-pop-leave-active { transition: opacity var(--dur-micro) var(--ease-exit), transform var(--dur-micro) var(--ease-exit); }
+.menu-pop-enter-from,
+.menu-pop-leave-to { opacity: 0; transform: translateY(-6px) scale(.97); }
+
+/* KitCarousel.vue arrow buttons. */
+.carousel-arrow {
+  transition: transform var(--dur-fast) var(--ease-premium), box-shadow var(--dur-fast) var(--ease-premium), opacity var(--dur-fast) ease;
+}
+.carousel-arrow:hover:not(:disabled) { transform: translateY(-50%) scale(1.08); }
+.carousel-arrow:active:not(:disabled) { transform: translateY(-50%) scale(.96); }
+.carousel-arrow:disabled { opacity: 0; pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .toast-list-enter-active, .toast-list-leave-active, .toast-list-move,
+  .menu-pop-enter-active, .menu-pop-leave-active,
+  .carousel-arrow { transition: none; }
+  .carousel-arrow:hover:not(:disabled), .carousel-arrow:active:not(:disabled) { transform: translateY(-50%); }
 }

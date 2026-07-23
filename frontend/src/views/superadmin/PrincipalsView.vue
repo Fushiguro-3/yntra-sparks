@@ -7,14 +7,27 @@ import StatusBadge from '@/components/StatusBadge.vue'
 import Pagination from '@/components/Pagination.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import AppButton from '@/components/AppButton.vue'
+import { useClientTable } from '@/composables/useClientTable'
+import { useToast } from '@/composables/useToast'
+import { useConfirm } from '@/composables/useConfirm'
+import { useNotifications } from '@/composables/useNotifications'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+const toast = useToast()
+const { confirm } = useConfirm()
+const { notify } = useNotifications()
 
 const schools = ref([])
 const selectedSchoolId = ref(null)
 const principals = ref([])
-const page = ref(0)
-const totalPages = ref(0)
 const isLoading = ref(false)
 const errorMessage = ref('')
+
+const { search, page, filtered, paged } = useClientTable(
+  principals,
+  (p, q) => p.name.toLowerCase().includes(q) || p.email.toLowerCase().includes(q)
+)
 
 const showAddModal = ref(false)
 const addForm = ref({ name: '', email: '' })
@@ -42,9 +55,8 @@ async function loadPrincipals() {
   isLoading.value = true
   errorMessage.value = ''
   try {
-    const res = await principalService.list(selectedSchoolId.value, { page: page.value })
+    const res = await principalService.list(selectedSchoolId.value, { size: 200 })
     principals.value = res.content
-    totalPages.value = res.totalPages
   } catch (err) {
     errorMessage.value = err.message
   } finally {
@@ -53,7 +65,7 @@ async function loadPrincipals() {
 }
 
 watch(selectedSchoolId, () => {
-  page.value = 0
+  search.value = ''
   loadPrincipals()
 })
 
@@ -76,6 +88,14 @@ async function savePrincipal() {
     revealedPassword.value = tempPassword
     revealedFor.value = addForm.value.name
     showPasswordModal.value = true
+    toast.success('Principal added.')
+    const school = schools.value.find((s) => s.id === selectedSchoolId.value)
+    notify(auth.user?.id, {
+      type: 'principal-created',
+      title: 'Principal created',
+      message: `${addForm.value.name} was added as principal${school ? ` of ${school.name}` : ''}.`,
+      to: { name: 'admin-principals' }
+    })
     await loadPrincipals()
   } catch (err) {
     addError.value = err.message
@@ -85,29 +105,50 @@ async function savePrincipal() {
 }
 
 async function deactivatePrincipal(principal) {
-  if (!confirm(`Deactivate ${principal.name}? They'll lose access immediately.`)) return
+  const confirmed = await confirm({
+    title: 'Deactivate principal?',
+    message: `Deactivate ${principal.name}? They'll lose access immediately.`,
+    confirmLabel: 'Deactivate',
+    danger: true
+  })
+  if (!confirmed) return
   errorMessage.value = ''
   try {
     await principalService.deactivate(selectedSchoolId.value, principal.id)
+    toast.success(`${principal.name} deactivated.`)
     await loadPrincipals()
   } catch (err) {
     errorMessage.value = err.message
+    toast.error(err.message)
   }
 }
 
 async function activatePrincipal(principal) {
-  if (!confirm(`Activate ${principal.name}? They'll be able to sign in again.`)) return
+  const confirmed = await confirm({
+    title: 'Activate principal?',
+    message: `Activate ${principal.name}? They'll be able to sign in again.`,
+    confirmLabel: 'Activate'
+  })
+  if (!confirmed) return
   errorMessage.value = ''
   try {
     await principalService.activate(selectedSchoolId.value, principal.id)
+    toast.success(`${principal.name} activated.`)
     await loadPrincipals()
   } catch (err) {
     errorMessage.value = err.message
+    toast.error(err.message)
   }
 }
 
 async function resetPassword(principal) {
-  if (!confirm(`Reset password for ${principal.name}? Their old password will stop working immediately.`)) return
+  const confirmed = await confirm({
+    title: 'Reset password?',
+    message: `Reset password for ${principal.name}? Their old password will stop working immediately.`,
+    confirmLabel: 'Reset password',
+    danger: true
+  })
+  if (!confirmed) return
   errorMessage.value = ''
   try {
     const { tempPassword } = await principalService.resetPassword(selectedSchoolId.value, principal.id)
@@ -116,12 +157,8 @@ async function resetPassword(principal) {
     showPasswordModal.value = true
   } catch (err) {
     errorMessage.value = err.message
+    toast.error(err.message)
   }
-}
-
-function onPageChange(newPage) {
-  page.value = newPage
-  loadPrincipals()
 }
 
 onMounted(async () => {
@@ -154,6 +191,17 @@ onMounted(async () => {
       {{ errorMessage }}
     </p>
 
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+      <input
+        v-model="search"
+        type="search"
+        class="app-input sm:max-w-xs"
+        placeholder="Search by name or email"
+        aria-label="Search principals"
+      >
+      <p class="text-xs text-ink-600 shrink-0">{{ filtered.length }} principal{{ filtered.length === 1 ? '' : 's' }}</p>
+    </div>
+
     <div class="app-surface rounded-[22px] overflow-hidden">
       <div class="overflow-x-auto">
         <table class="app-data-table w-full min-w-[560px] text-sm">
@@ -169,10 +217,10 @@ onMounted(async () => {
             <tr v-if="isLoading">
               <td colspan="4" class="px-5 py-6 text-center text-slate-400">Loading…</td>
             </tr>
-            <tr v-else-if="principals.length === 0">
-              <td colspan="4" class="px-5 py-6 text-center text-slate-400">No principals for this school yet.</td>
+            <tr v-else-if="paged.content.length === 0">
+              <td colspan="4" class="px-5 py-6 text-center text-slate-400">{{ search ? 'No principals match your search.' : 'No principals for this school yet.' }}</td>
             </tr>
-            <tr v-for="principal in principals" :key="principal.id" class="hover:bg-slate-50">
+            <tr v-for="principal in paged.content" :key="principal.id" class="hover:bg-slate-50">
               <td class="px-5 py-3 font-medium text-slate-800">{{ principal.name }}</td>
               <td class="px-5 py-3 text-slate-500">{{ principal.email }}</td>
               <td class="px-5 py-3"><StatusBadge :status="principal.status" /></td>
@@ -189,7 +237,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <Pagination :page="page" :total-pages="totalPages" @change="onPageChange" />
+    <Pagination :page="page" :total-pages="paged.totalPages" @change="page = $event" />
 
     <Modal :show="showAddModal" title="Add Principal" @close="showAddModal = false">
       <form @submit.prevent="savePrincipal" class="space-y-4">

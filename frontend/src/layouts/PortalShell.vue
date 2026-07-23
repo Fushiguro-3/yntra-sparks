@@ -1,8 +1,11 @@
 <script setup>
-import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue'
+import { ref, watch, nextTick, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import DemoModeBadge from '@/components/DemoModeBadge.vue'
+import UserMenu from '@/components/portal/UserMenu.vue'
+import NotificationBell from '@/components/portal/NotificationBell.vue'
+import { useProfileOverlay } from '@/composables/useProfileOverlay'
 
 // Shared chrome for the three authenticated portals (Super Admin,
 // Principal, Teacher) — sidebar nav, mobile drawer, topbar, and logout are
@@ -12,19 +15,41 @@ import DemoModeBadge from '@/components/DemoModeBadge.vue'
 const props = defineProps({
   navItems: { type: Array, required: true }, // [{ name, label }]
   roleLabel: { type: String, required: true }, // "Super Admin", "Principal", "Teacher"
-  topbarLabel: { type: String, required: true } // "Command centre", "School workspace", ...
+  topbarLabel: { type: String, required: true }, // "Command centre", "School workspace", ...
+  dashboardRoute: { type: String, required: true },
+  profileRoute: { type: String, required: true },
+  notificationsRoute: { type: String, default: '' }
 })
 
 const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
+const { overlayState, load: loadProfileOverlay } = useProfileOverlay()
+
+const displayName = computed(() => overlayState.overlay.displayName || auth.user?.name || '')
+const avatarUrl = computed(() => overlayState.overlay.avatarUrl || '')
+
+watch(() => auth.user?.id, (id) => loadProfileOverlay(id), { immediate: true })
 
 const isDrawerOpen = ref(false)
 const menuButtonRef = ref(null)
+const isLoggingOut = ref(false)
 
 async function handleLogout() {
-  await auth.logout()
-  router.push('/login')
+  // Guards against a second click firing a concurrent logout() call while
+  // the first is still in flight (e.g. a double-click before the redirect).
+  if (isLoggingOut.value) return
+  isLoggingOut.value = true
+  try {
+    await auth.logout()
+  } finally {
+    // logout() already clears local session state even on failure — this
+    // only resets the button's own guard, never re-throws.
+    isLoggingOut.value = false
+  }
+  // replace, not push — a logged-out session should never be able to hit
+  // Back and land on the still-rendered protected page underneath.
+  router.replace('/login')
 }
 
 // Same drawer contract as the public Navbar: close on route change,
@@ -69,29 +94,13 @@ onUnmounted(() => {
           {{ item.label }}
         </RouterLink>
       </nav>
-      <div class="px-3 py-4 border-t border-white/10">
-        <p class="px-3 pb-2 text-xs text-white/50 truncate" :title="auth.user?.email">{{ auth.user?.email }}</p>
-        <button
-          @click="handleLogout"
-          class="w-full text-left px-3 py-2 rounded-lg text-sm text-white/70 hover:bg-white/10 hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spark-400"
-        >
-          Log out
-        </button>
-      </div>
     </aside>
 
     <!-- Mobile topbar -->
-    <header class="md:hidden flex items-center justify-between px-4 py-3 dashboard-rail text-white shrink-0">
-      <div class="flex items-center gap-2">
-        <img src="@/assets/logo.png" alt="Yntra Sparks" width="500" height="500" class="w-8 h-8 object-contain" />
-        <div class="leading-tight">
-          <p class="font-display font-bold text-sm">Yntra Sparks</p>
-          <p class="text-[10px] text-white/50">{{ roleLabel }}</p>
-        </div>
-      </div>
+    <header class="md:hidden flex items-center justify-between gap-2 px-4 py-3 dashboard-rail text-white shrink-0">
       <button
         ref="menuButtonRef"
-        class="w-11 h-11 flex flex-col items-center justify-center gap-[5px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spark-400"
+        class="w-11 h-11 shrink-0 flex flex-col items-center justify-center gap-[5px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spark-400"
         @click="isDrawerOpen = true"
         aria-label="Open menu"
         aria-haspopup="true"
@@ -101,6 +110,26 @@ onUnmounted(() => {
         <span class="w-5 h-0.5 rounded-full bg-white"></span>
         <span class="w-5 h-0.5 rounded-full bg-white"></span>
       </button>
+      <div class="flex items-center gap-2 min-w-0 flex-1 justify-center">
+        <img src="@/assets/logo.png" alt="Yntra Sparks" width="500" height="500" class="w-8 h-8 object-contain shrink-0" />
+        <div class="leading-tight min-w-0">
+          <p class="font-display font-bold text-sm truncate">Yntra Sparks</p>
+          <p class="text-[10px] text-white/50 truncate">{{ roleLabel }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1 shrink-0">
+        <NotificationBell v-if="notificationsRoute" :user-id="auth.user?.id" :view-all-route="notificationsRoute" />
+        <UserMenu
+          :name="displayName"
+          :email="auth.user?.email"
+          :avatar-url="avatarUrl"
+          :role-label="roleLabel"
+          :dashboard-route="dashboardRoute"
+          :profile-route="profileRoute"
+          :notifications-route="notificationsRoute"
+          @logout="handleLogout"
+        />
+      </div>
     </header>
 
     <!-- Mobile drawer -->
@@ -146,24 +175,31 @@ onUnmounted(() => {
             {{ item.label }}
           </RouterLink>
         </nav>
-        <div class="pt-4 border-t border-white/10">
-          <p class="px-3 pb-2 text-xs text-white/50 truncate">{{ auth.user?.email }}</p>
-          <button
-            @click="handleLogout"
-            class="w-full text-left px-3 py-2.5 rounded-lg text-sm text-white/70 hover:bg-white/10 hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spark-400"
-          >
-            Log out
-          </button>
-        </div>
+        <!-- Account actions (My Profile, Change Password, Notifications, Logout)
+             live exclusively in the top-right UserMenu now — reachable on
+             mobile via the avatar trigger in the topbar above, so this drawer
+             stays pure navigation instead of duplicating those actions. -->
       </div>
     </Transition>
 
     <main class="flex-1 min-w-0">
-      <header class="hidden md:flex bg-white/80 backdrop-blur border-b border-navy-100 px-5 md:px-8 py-4 items-center justify-between">
-        <p class="text-sm text-ink-600 truncate">{{ auth.user?.email }}</p>
+      <header class="relative z-20 hidden md:flex bg-white/80 backdrop-blur border-b border-navy-100 px-5 md:px-8 py-4 items-center justify-between gap-3">
         <div class="flex items-center gap-2 shrink-0">
           <DemoModeBadge />
           <span class="text-xs font-bold text-navy-700 bg-navy-50 rounded-full px-3 py-1.5 whitespace-nowrap">{{ topbarLabel }}</span>
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+          <NotificationBell v-if="notificationsRoute" :user-id="auth.user?.id" :view-all-route="notificationsRoute" />
+          <UserMenu
+            :name="displayName"
+            :email="auth.user?.email"
+            :avatar-url="avatarUrl"
+            :role-label="roleLabel"
+            :dashboard-route="dashboardRoute"
+            :profile-route="profileRoute"
+            :notifications-route="notificationsRoute"
+            @logout="handleLogout"
+          />
         </div>
       </header>
       <div class="p-4 sm:p-5 md:p-8">

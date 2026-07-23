@@ -70,6 +70,8 @@ Start here before touching code — new to the project? Read
 - [`docs/api-contract.md`](docs/api-contract.md) — endpoint contracts the backend targets
 - [`docs/frontend-api-dependencies.md`](docs/frontend-api-dependencies.md) — every endpoint the frontend actually calls, cross-referenced against `api-contract.md`, including gaps
 - [`docs/user-flows.md`](docs/user-flows.md) — role-based flow diagrams
+- [`docs/frontend-ui-pass-2026-07.md`](docs/frontend-ui-pass-2026-07.md) — July 2026 UI/UX polish pass: new routes, contextual kit navigation, category browsing, portal profile/dashboard additions
+- [`docs/frontend-portal-hardening-2026-07.md`](docs/frontend-portal-hardening-2026-07.md) — July 2026 portal hardening pass: account menu/logout fix, saved kits, message status, teacher invitations, notification centre, advanced search, role permissions matrix
 
 ## Git Workflow
 

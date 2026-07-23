@@ -33,7 +33,7 @@ const columns = [
       </div>
 
       <div v-for="col in columns" :key="col.title">
-        <p class="text-xs font-semibold uppercase tracking-wide text-white/40 mb-2.5">{{ col.title }}</p>
+        <p class="eyebrow-label-inverse mb-2.5">{{ col.title }}</p>
         <ul class="space-y-1.5">
           <li v-for="link in col.links" :key="link.label">
             <RouterLink :to="link.to" class="text-sm text-white/70 hover:text-white hover:pl-1 transition-[color,padding] duration-[340ms] ease-[cubic-bezier(.16,1,.3,1)]">{{ link.label }}</RouterLink>
@@ -42,7 +42,7 @@ const columns = [
       </div>
 
       <div class="col-span-2 md:col-span-1">
-        <p class="text-xs font-semibold uppercase tracking-wide text-white/40 mb-2.5">Stay updated</p>
+        <p class="eyebrow-label-inverse mb-2.5">Stay updated</p>
         <NewsletterForm />
       </div>
     </div>

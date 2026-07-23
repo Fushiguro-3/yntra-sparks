@@ -13,6 +13,7 @@ const routes = [
       { path: 'grades', name: 'public-grades', component: () => import('@/views/public/GradesView.vue') },
       { path: 'programs', name: 'public-programs', component: () => import('@/views/public/ProgramsView.vue') },
       { path: 'kits/:id', name: 'public-kit-detail', component: () => import('@/views/public/KitDetailView.vue'), props: true },
+      { path: 'search', name: 'public-search', component: () => import('@/views/public/SearchView.vue') },
       { path: 'contact', name: 'public-contact', component: () => import('@/views/public/ContactView.vue') },
       { path: 'privacy', name: 'public-privacy', component: () => import('@/views/public/PrivacyPolicyView.vue') },
       { path: 'terms', name: 'public-terms', component: () => import('@/views/public/TermsView.vue') }
@@ -41,14 +42,16 @@ const routes = [
     component: () => import('@/layouts/AdminLayout.vue'),
     meta: { roles: [ROLES.SUPER_ADMIN] },
     children: [
-      { path: '', name: 'admin-dashboard', redirect: { name: 'admin-schools' } },
+      { path: '', name: 'admin-dashboard', component: () => import('@/views/superadmin/DashboardView.vue') },
       { path: 'schools', name: 'admin-schools', component: () => import('@/views/superadmin/SchoolsView.vue') },
       { path: 'principals', name: 'admin-principals', component: () => import('@/views/superadmin/PrincipalsView.vue') },
       { path: 'categories', name: 'admin-categories', component: () => import('@/views/superadmin/CategoriesView.vue') },
       { path: 'kits', name: 'admin-kits', component: () => import('@/views/superadmin/KitsView.vue') },
       { path: 'messages', name: 'admin-messages', component: () => import('@/views/superadmin/MessagesView.vue') },
       { path: 'kits/new', name: 'admin-kit-new', component: () => import('@/views/superadmin/KitFormView.vue') },
-      { path: 'kits/:id/edit', name: 'admin-kit-edit', component: () => import('@/views/superadmin/KitFormView.vue'), props: true }
+      { path: 'kits/:id/edit', name: 'admin-kit-edit', component: () => import('@/views/superadmin/KitFormView.vue'), props: true },
+      { path: 'profile', name: 'admin-profile', component: () => import('@/views/portal/ProfileView.vue') },
+      { path: 'notifications', name: 'admin-notifications', component: () => import('@/views/portal/NotificationsView.vue') }
     ]
   },
 
@@ -58,10 +61,13 @@ const routes = [
     component: () => import('@/layouts/PrincipalLayout.vue'),
     meta: { roles: [ROLES.PRINCIPAL] },
     children: [
-      { path: '', name: 'principal-dashboard', redirect: { name: 'principal-kits' } },
+      { path: '', name: 'principal-dashboard', component: () => import('@/views/principal/DashboardView.vue') },
       { path: 'kits', name: 'principal-kits', component: () => import('@/views/principal/KitsView.vue') },
       { path: 'kits/:id', name: 'principal-kit-detail', component: () => import('@/views/principal/KitDetailView.vue'), props: true },
-      { path: 'teachers', name: 'principal-teachers', component: () => import('@/views/principal/TeachersView.vue') }
+      { path: 'saved', name: 'principal-saved-kits', component: () => import('@/views/portal/SavedKitsView.vue') },
+      { path: 'teachers', name: 'principal-teachers', component: () => import('@/views/principal/TeachersView.vue') },
+      { path: 'profile', name: 'principal-profile', component: () => import('@/views/portal/ProfileView.vue') },
+      { path: 'notifications', name: 'principal-notifications', component: () => import('@/views/portal/NotificationsView.vue') }
     ]
   },
 
@@ -71,9 +77,12 @@ const routes = [
     component: () => import('@/layouts/TeacherLayout.vue'),
     meta: { roles: [ROLES.TEACHER] },
     children: [
-      { path: '', name: 'teacher-dashboard', redirect: { name: 'teacher-kits' } },
+      { path: '', name: 'teacher-dashboard', component: () => import('@/views/teacher/DashboardView.vue') },
       { path: 'kits', name: 'teacher-kits', component: () => import('@/views/teacher/KitsView.vue') },
-      { path: 'kits/:id', name: 'teacher-kit-detail', component: () => import('@/views/teacher/KitDetailView.vue'), props: true }
+      { path: 'kits/:id', name: 'teacher-kit-detail', component: () => import('@/views/teacher/KitDetailView.vue'), props: true },
+      { path: 'saved', name: 'teacher-saved-kits', component: () => import('@/views/portal/SavedKitsView.vue') },
+      { path: 'profile', name: 'teacher-profile', component: () => import('@/views/portal/ProfileView.vue') },
+      { path: 'notifications', name: 'teacher-notifications', component: () => import('@/views/portal/NotificationsView.vue') }
     ]
   },
 
